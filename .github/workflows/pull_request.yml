@@ -12,6 +12,6 @@ jobs:
       - name: golangci-lint
         uses: reviewdog/action-golangci-lint@v2.2.2
         with:
-          golangci_lint_flags: "--enable-all --exclude-use-default=false"
+          golangci_lint_flags: "--config=golangci.yml"
           level: warning
           github_token: ${{ secrets.REVIEWDOG_TOKEN }}

@@ -7,7 +7,8 @@ import (
 
 func TestNoteNameString(t *testing.T) {
 	expectedNoteName := "C"
-	var nn = NoteName(expectedNoteName)
+	nn := NoteName(expectedNoteName)
+
 	result := nn.String()
 	if _, ok := interface{}(result).(string); !ok {
 		t.Errorf("note name Stringer return value: %s is not string: %s", result, reflect.TypeOf(result))

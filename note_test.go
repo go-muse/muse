@@ -7,15 +7,31 @@ import (
 )
 
 func Test_NewNote(t *testing.T) {
-	note1 := newNote(C)
-	if note1.name != C {
-		t.Errorf("Expected %s, but got %s", C, note1.name)
-	}
+	expectedNoteName := C
+	assert.Equal(t, newNote(C).name, expectedNoteName)
 }
 
 func TestNewNote(t *testing.T) {
 	t.Run("TestNewNote: valid note name", func(t *testing.T) {
-		noteNames := []NoteName{C, DFLAT, CSHARP, D, EFLAT, DSHARP, E, F, GFLAT, FSHARP, G, AFLAT, GSHARP, A, BFLAT, ASHARP, B}
+		noteNames := []NoteName{
+			C,
+			DFLAT,
+			CSHARP,
+			D,
+			EFLAT,
+			DSHARP,
+			E,
+			F,
+			GFLAT,
+			FSHARP,
+			G,
+			AFLAT,
+			GSHARP,
+			A,
+			BFLAT,
+			ASHARP,
+			B,
+		}
 		var newNote *Note
 		var err error
 		for _, noteName := range noteNames {
@@ -42,11 +58,29 @@ func TestNewNote(t *testing.T) {
 
 func TestMustNewNote(t *testing.T) {
 	t.Run("TestNewNote: valid note name", func(t *testing.T) {
-		noteNames := []NoteName{C, DFLAT, CSHARP, D, EFLAT, DSHARP, E, F, GFLAT, FSHARP, G, AFLAT, GSHARP, A, BFLAT, ASHARP, B}
+		noteNames := []NoteName{
+			C,
+			DFLAT,
+			CSHARP,
+			D,
+			EFLAT,
+			DSHARP,
+			E,
+			F,
+			GFLAT,
+			FSHARP,
+			G,
+			AFLAT,
+			GSHARP,
+			A,
+			BFLAT,
+			ASHARP,
+			B,
+		}
 		var newNote *Note
 		for _, noteName := range noteNames {
 			// assert that the function works without panic
-			assert.NotPanics(t, func() { newNote = MustNewNote(noteName) })
+			assert.NotPanics(t, func() { newNote = MustNewNote(noteName) }) //nolint:scopelint
 
 			// assert that the returned name matches the expected name
 			if newNote.name != noteName {
@@ -72,9 +106,7 @@ func TestNoteName(t *testing.T) {
 	actualName := note.Name()
 
 	// assert that the returned name matches the expected name
-	if actualName != expectedName {
-		t.Errorf("Expected note name to be '%s', but got '%s'", expectedName, actualName)
-	}
+	assert.Equal(t, expectedName, actualName, "expected note name: %s, actual: %s", expectedName, actualName)
 }
 
 func TestNoteIsEqualByName(t *testing.T) {
