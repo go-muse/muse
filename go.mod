@@ -1,4 +1,4 @@
-module muse
+module github.com/go-muse/muse
 
 go 1.20
 
