@@ -2,6 +2,7 @@
 ## Toolkit for working with musical theory concepts - modes, scales, degrees, notes etc.
 ![GitHub release (latest SemVer)](https://custom-icon-badges.demolab.com/github/v/release/go-muse/muse?logo=tag&sort=semver)
 [![codecov](https://codecov.io/gh/go-muse/muse/branch/main/graph/badge.svg?token=cVbYqHMT3o)](https://codecov.io/gh/go-muse/muse)
+[![Go Report Card](https://goreportcard.com/badge/github.com/go-muse/muse)](https://goreportcard.com/report/github.com/go-muse/muse)
 ![GitHub go.mod Go version](https://custom-icon-badges.demolab.com/github/go-mod/go-version/go-muse/muse?color=gray&label=%20&logo=go)
 [![Go Reference](https://pkg.go.dev/badge/github.com/go-muse/muse.svg)](https://pkg.go.dev/github.com/go-muse/muse)
 ![GitHub](https://custom-icon-badges.demolab.com/github/license/go-muse/muse?logo=law)
