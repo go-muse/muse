@@ -14,13 +14,13 @@
 - [ ] Chords
 
 ### Modes:
-- [ ] Templates of most commonly used modes
-- [ ] Creating a mode based on formula and tonic
-- [ ] Calculation of modal positions of degrees in seven-degree modes
-- [ ] Finding modes from an incoming set of degres
+- [x] Templates of most commonly used modes
+- [x] Creating a mode based on formula and tonic
+- [x] Calculation of modal positions of degrees in seven-degree modes
+- [x] Finding modes from an incoming set of degres
 ### Scales:
-- [ ] Generating scales
+- [x] Generating scales
 ### Intervals:
-- [ ] Templates of intervals within an octave
-- [ ] Identifying the interval between two degrees
-- [ ] Acoustic and Chromatic intervals
+- [x] Templates of intervals within an octave
+- [x] Identifying the interval between two degrees
+- [x] Acoustic and Chromatic intervals
