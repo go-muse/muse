@@ -68,6 +68,10 @@ func MustNewNote(noteName NoteName) *Note {
 	return note
 }
 
+func NewNoteFromString(s string) (*Note, error) {
+	return NewNote(NoteName(s))
+}
+
 // Name returns name of the note.
 func (n *Note) Name() NoteName {
 	return n.name

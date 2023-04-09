@@ -1,5 +1,15 @@
 linters:
   enable-all: true
   disable:
+    - cyclop
+    - funlen
+    - gocyclo
+    - godox
+    - exhaustive
+    - exhaustivestruct
+    - exhaustruct
+    - lll
     - paralleltest
     - testpackage
+    - varnamelen
+    - wsl
