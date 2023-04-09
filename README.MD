@@ -9,7 +9,7 @@
 
 ## Functionality
 ### Notes:
-- [ ] Name comparison
+- [x] Name comparison
 - [ ] Octaves
 - [ ] Chords
 

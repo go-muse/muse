@@ -1,0 +1,11 @@
+linters-settings:
+  paralleltest:
+    # Ignore missing calls to `t.Parallel()` and only report incorrect uses of it.
+    # Default: false
+    ignore-missing: false
+
+linters:
+  enable-all: true
+  disable:
+    - paralleltest
+    - testpackage
