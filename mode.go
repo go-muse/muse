@@ -41,6 +41,16 @@ func MakeNewMode(modeName ModeName, firstNoteName NoteName) (*Mode, error) {
 	return mode, nil
 }
 
+// MustMakeNewMode creates a mode as MakeNewMode does, if you are confident in the correctness of the mode name and notes.
+func MustMakeNewMode(modeName ModeName, firstNoteName NoteName) *Mode {
+	mode, err := MakeNewMode(modeName, firstNoteName)
+	if err != nil {
+		panic(err)
+	}
+
+	return mode
+}
+
 // MakeNewCustomMode makes custom mode with intervals described in mode template.
 func MakeNewCustomMode(modeTemplate ModeTemplate, firstNoteName string, modeName ModeName) (*Mode, error) {
 	if err := modeTemplate.Validate(); err != nil {

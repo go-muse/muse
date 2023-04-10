@@ -122,6 +122,30 @@ func TestMakeNewMode(t *testing.T) {
 	})
 }
 
+func TestMustMakeNewMode(t *testing.T) {
+	// Test case with valid inputs
+	var mode *Mode
+	store := InitModeTemplatesStore()
+	for modeName := range store {
+		assert.NotPanics(t, func() { mode = MustMakeNewMode(modeName, A) }) //nolint:scopelint
+		if mode == nil {
+			t.Errorf("Expected mode to be created successfully, but got nil")
+		}
+	}
+
+	// Negative test case with invalid mode name
+	withPanic := func() {
+		MustMakeNewMode(ModeName(""), NoteName("C"))
+	}
+	assert.Panics(t, withPanic)
+
+	// Negative test case with invalid note name
+	withPanic = func() {
+		MustMakeNewMode(ModeName("testMode"), NoteName(""))
+	}
+	assert.Panics(t, withPanic)
+}
+
 func TestOpenCircleOfDegreesMethod(t *testing.T) {
 	// Create a Mode with a circle of degrees
 	degree1 := &Degree{number: 1}
