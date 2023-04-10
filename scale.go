@@ -1,7 +1,7 @@
 package muse
 
 // Scale is a set of notes.
-type Scale []*Note
+type Scale []Note
 
 // GenerateScale generates  an ascending or descending scale.
 func (m *Mode) GenerateScale(desc bool) Scale {
@@ -20,7 +20,7 @@ func (m *Mode) GenerateScale(desc bool) Scale {
 
 	var i int
 	for degree := range fromDegree.IterateOneRound(desc) {
-		scale[i] = degree.Note()
+		scale[i] = *degree.Note()
 		i++
 	}
 
@@ -30,22 +30,22 @@ func (m *Mode) GenerateScale(desc bool) Scale {
 // GetFullChromaticScale returns all notes of the tonal system.
 func GetFullChromaticScale() Scale {
 	return Scale{
-		newNote(C),
-		newNote(DFLAT),
-		newNote(CSHARP),
-		newNote(D),
-		newNote(EFLAT),
-		newNote(DSHARP),
-		newNote(E),
-		newNote(F),
-		newNote(GFLAT),
-		newNote(FSHARP),
-		newNote(G),
-		newNote(AFLAT),
-		newNote(GSHARP),
-		newNote(A),
-		newNote(BFLAT),
-		newNote(ASHARP),
-		newNote(B),
+		*newNote(C),
+		*newNote(DFLAT),
+		*newNote(CSHARP),
+		*newNote(D),
+		*newNote(EFLAT),
+		*newNote(DSHARP),
+		*newNote(E),
+		*newNote(F),
+		*newNote(GFLAT),
+		*newNote(FSHARP),
+		*newNote(G),
+		*newNote(AFLAT),
+		*newNote(GSHARP),
+		*newNote(A),
+		*newNote(BFLAT),
+		*newNote(ASHARP),
+		*newNote(B),
 	}
 }

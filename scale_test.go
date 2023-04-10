@@ -19,7 +19,7 @@ func TestGenerateScale(t *testing.T) {
 				},
 			},
 		}
-		exp := Scale([]*Note{
+		exp := Scale([]Note{
 			{
 				name: C,
 			},
@@ -40,7 +40,7 @@ func TestGenerateScale(t *testing.T) {
 		firstDegree := generateDegreesWithNotes(true, TemplateDorian(), &Note{name: D})
 		m = &Mode{name: ModeNameDorian, degree: firstDegree}
 
-		exp := Scale([]*Note{
+		exp := Scale([]Note{
 			{
 				name: D,
 			},
@@ -68,7 +68,7 @@ func TestGenerateScale(t *testing.T) {
 			t.Errorf("Unexpected results for GenerateScale; expected %v but got %v", exp, got)
 		}
 
-		exp = Scale([]*Note{
+		exp = Scale([]Note{
 			{
 				name: C,
 			},
@@ -109,23 +109,23 @@ func TestGenerateScale(t *testing.T) {
 
 func TestGetFullChromaticScale(t *testing.T) {
 	expected := Scale{
-		newNote(C),
-		newNote(DFLAT),
-		newNote(CSHARP),
-		newNote(D),
-		newNote(EFLAT),
-		newNote(DSHARP),
-		newNote(E),
-		newNote(F),
-		newNote(GFLAT),
-		newNote(FSHARP),
-		newNote(G),
-		newNote(AFLAT),
-		newNote(GSHARP),
-		newNote(A),
-		newNote(BFLAT),
-		newNote(ASHARP),
-		newNote(B),
+		*newNote(C),
+		*newNote(DFLAT),
+		*newNote(CSHARP),
+		*newNote(D),
+		*newNote(EFLAT),
+		*newNote(DSHARP),
+		*newNote(E),
+		*newNote(F),
+		*newNote(GFLAT),
+		*newNote(FSHARP),
+		*newNote(G),
+		*newNote(AFLAT),
+		*newNote(GSHARP),
+		*newNote(A),
+		*newNote(BFLAT),
+		*newNote(ASHARP),
+		*newNote(B),
 	}
 
 	actual := GetFullChromaticScale()
