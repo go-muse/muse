@@ -193,6 +193,22 @@ func TestDegreesIterator_GetAll(t *testing.T) {
 	})
 }
 
+func TestDegreesIterator_GetAllNotes(t *testing.T) {
+	t.Run("GetAllNotes: get all notes from degrees iterator", func(t *testing.T) {
+		firstDegree := generateDegreesWithNotes(true, TemplateAeolian(), newNote(C))
+		iter := firstDegree.IterateOneRound(false)
+		notes := iter.GetAllNotes()
+
+		currentDegree := firstDegree
+		for _, note := range notes {
+			if !reflect.DeepEqual(*currentDegree.Note(), note) {
+				t.Errorf("expected: %+v, result: %+v", *currentDegree.Note(), note)
+			}
+			currentDegree = currentDegree.GetNext()
+		}
+	})
+}
+
 func TestGetDegrees(t *testing.T) {
 	firstDegreeNum := DegreeNum(1)
 	firstDegree := &Degree{
@@ -357,7 +373,7 @@ func TestIterateOneRound(t *testing.T) {
 	})
 }
 
-func TestSortByAbsoluteModalPositions(t *testing.T) {
+func Test_sortByAbsoluteModalPositions(t *testing.T) {
 	n10, err := rand.Int(rand.Reader, big.NewInt(10))
 	assert.NoError(t, err)
 	n20, err := rand.Int(rand.Reader, big.NewInt(10))
@@ -394,14 +410,14 @@ func TestSortByAbsoluteModalPositions(t *testing.T) {
 
 	t.Run("test sort by AMP of not cycled degrees chain", func(t *testing.T) {
 		firstDegree, _ := getDegrees()
-		firstSortedDegree := firstDegree.SortByAbsoluteModalPositions()
+		firstSortedDegree := firstDegree.sortByAbsoluteModalPositions()
 		testingFunc(t, firstSortedDegree)
 	})
 
 	t.Run("test sort by AMP of cycled degrees chain", func(t *testing.T) {
 		firstDegree, lastDegree := getDegrees()
 		lastDegree.AttachNext(firstDegree)
-		firstSortedDegree := firstDegree.SortByAbsoluteModalPositions()
+		firstSortedDegree := firstDegree.sortByAbsoluteModalPositions()
 		testingFunc(t, firstSortedDegree)
 	})
 
@@ -409,7 +425,7 @@ func TestSortByAbsoluteModalPositions(t *testing.T) {
 		firstDegree, lastDegree := getDegrees()
 		lastDegree.AttachNext(firstDegree)
 		firstDegree.GetNext().absoluteModalPosition = nil // just one random degree without set absolute modal position
-		firstSortedDegree := firstDegree.SortByAbsoluteModalPositions()
+		firstSortedDegree := firstDegree.sortByAbsoluteModalPositions()
 		assert.Nil(t, firstSortedDegree)
 	})
 }

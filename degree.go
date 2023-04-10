@@ -71,12 +71,6 @@ func (d *Degree) GetDegreeByDegreeNum(degreeNum DegreeNum) *Degree {
 		}
 	}
 
-	// for currentDegree := firstDegree.GetNext(); currentDegree.GetNext() != nil && unsafe.Pointer(currentDegree) != unsafe.Pointer(firstDegree); currentDegree = currentDegree.GetNext() {
-	// 	if currentDegree.Number() == degreeNum {
-	// 		return currentDegree
-	// 	}
-	// }
-
 	return nil
 }
 
@@ -104,6 +98,7 @@ func (di DegreesIterator) GetAll() []*Degree {
 	if di == nil {
 		return nil
 	}
+
 	var degrees []*Degree
 	for {
 		degree, ok := <-di
@@ -111,6 +106,25 @@ func (di DegreesIterator) GetAll() []*Degree {
 			return degrees
 		}
 		degrees = append(degrees, degree)
+	}
+}
+
+// GetAllNotes iterates through a sequence of degrees
+// and returns their notes as slice.
+func (di DegreesIterator) GetAllNotes() []Note {
+	if di == nil {
+		return nil
+	}
+
+	notes := make([]Note, 0)
+	for {
+		degree, ok := <-di
+		if !ok {
+			return notes
+		}
+		if degree.Note() != nil {
+			notes = append(notes, *degree.Note())
+		}
 	}
 }
 
@@ -145,8 +159,8 @@ func (d *Degree) IterateOneRound(left bool) DegreesIterator {
 	return c
 }
 
-// SortByAbsoluteModalPositions sorts the chain of steps by absolute modal positions.
-func (d *Degree) SortByAbsoluteModalPositions() *Degree {
+// sortByAbsoluteModalPositions sorts the chain of degrees by absolute modal positions.
+func (d *Degree) sortByAbsoluteModalPositions() *Degree {
 	// validation of degrees chain
 	for degree := range d.IterateOneRound(false) {
 		if degree.absoluteModalPosition == nil {
