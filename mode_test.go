@@ -1,7 +1,10 @@
 package muse
 
 import (
+	"crypto/rand"
+	"math/big"
 	"testing"
+	"unsafe"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -201,4 +204,74 @@ func TestIsClosedCircleOfDegrees(t *testing.T) {
 	if !mode.IsClosedCircleOfDegrees() {
 		t.Errorf("IsClosedCircleOfDegrees failed: expected true, got false")
 	}
+}
+
+func TestSortByAbsoluteModalPositions(t *testing.T) {
+	n10, err := rand.Int(rand.Reader, big.NewInt(10))
+	assert.NoError(t, err)
+	n20, err := rand.Int(rand.Reader, big.NewInt(10))
+	assert.NoError(t, err)
+
+	getDegrees := func() (*Degree, *Degree) {
+		firstDegree := &Degree{number: 1, absoluteModalPosition: NewModalPositionByWeight(Weight(n10.Int64() - 5))}
+		lastDegree := firstDegree
+		for i := DegreeNum(2); i <= DegreesInTonality; i++ {
+			degree := &Degree{number: i, absoluteModalPosition: NewModalPositionByWeight(Weight(n20.Int64() - 10))}
+			lastDegree.AttachNext(degree)
+			lastDegree = degree
+		}
+
+		return firstDegree, lastDegree
+	}
+
+	testingFunc := func(t *testing.T, firstSortedDegree *Degree) {
+		t.Helper()
+		iterator := firstSortedDegree.IterateOneRound(false)
+		firstDegree := <-iterator
+		var comparison bool
+		for degree := range iterator {
+			if degree.NextExists() {
+				comparison = degree.absoluteModalPosition.GetWeight() <= degree.GetNext().absoluteModalPosition.GetWeight()
+				if unsafe.Pointer(degree.GetNext()) != unsafe.Pointer(firstDegree) {
+					assert.True(t, comparison, "current - degree Num: %d, w: %d, next - degree Num: %d, w: %d", degree.Number(), degree.absoluteModalPosition.GetWeight(), degree.GetNext().Number, degree.GetNext().absoluteModalPosition.GetWeight())
+				} else {
+					assert.True(t, !comparison, "current - degree Num: %d, w: %d, next - degree Num: %d, w: %d", degree.Number(), degree.absoluteModalPosition.GetWeight(), degree.GetNext().Number, degree.GetNext().absoluteModalPosition.GetWeight())
+				}
+			}
+		}
+	}
+
+	t.Run("test sort by AMP of cycled degrees chain", func(t *testing.T) {
+		firstDegree, lastDegree := getDegrees()
+		lastDegree.AttachNext(firstDegree)
+		mode, err := MakeNewCustomModeWithDegree("custom mode", firstDegree)
+		assert.NoError(t, err)
+		mode.SortByAbsoluteModalPositions(false)
+		testingFunc(t, mode.GetFirstDegree())
+	})
+
+	t.Run("test sort by AMP of uncycled degrees chain", func(t *testing.T) {
+		firstDegree, _ := getDegrees()
+		mode, err := MakeNewCustomModeWithDegree("custom mode", firstDegree)
+		assert.NoError(t, err)
+		mode.SortByAbsoluteModalPositions(false)
+		testingFunc(t, mode.GetFirstDegree())
+	})
+
+	t.Run("test sort by AMP in case of degree without AMP", func(t *testing.T) {
+		firstDegree, lastDegree := getDegrees()
+		lastDegree.AttachNext(firstDegree)
+		firstDegree.GetNext().absoluteModalPosition = nil // just one random degree without set absolute modal position
+		mode, err := MakeNewCustomModeWithDegree("custom mode", firstDegree)
+		assert.NoError(t, err)
+		mode.SortByAbsoluteModalPositions(false)
+		assert.Equal(t, firstDegree, mode.GetFirstDegree())
+
+		// check for the old order
+		currentDegree := firstDegree
+		for modeDegree := range mode.IterateOneRound(false) {
+			assert.Equal(t, currentDegree, modeDegree)
+			currentDegree = currentDegree.GetNext()
+		}
+	})
 }

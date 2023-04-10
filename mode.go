@@ -181,8 +181,8 @@ func (m *Mode) InsertNote(note *Note, halfTonesFromPrime HalfTones) {
 }
 
 // IterateOneRound returns channel with degrees of the mode to iterate through them.
-func (m *Mode) IterateOneRound() <-chan *Degree {
-	return m.degree.IterateOneRound(false)
+func (m *Mode) IterateOneRound(left bool) DegreesIterator {
+	return m.degree.IterateOneRound(left)
 }
 
 // Equal compares modes.
@@ -252,4 +252,22 @@ func (m *Mode) IsClosedCircleOfDegrees() bool {
 	}
 
 	return false
+}
+
+// SortByAbsoluteModalPositions sorts the chain of mode's degrees by absolute modal positions.
+// The order of sorting (ascending or descending) can be specified by the argument.
+func (m *Mode) SortByAbsoluteModalPositions(asc bool) {
+	firstDegree := m.GetFirstDegree()
+	if firstDegree == nil {
+		return
+	}
+
+	degree := firstDegree.sortByAbsoluteModalPositions()
+	if degree != nil {
+		m.degree = degree
+	}
+
+	if asc {
+		m.degree = m.degree.ReverseSequence()
+	}
 }
