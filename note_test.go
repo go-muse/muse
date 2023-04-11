@@ -160,3 +160,67 @@ func TestNoteCopy(t *testing.T) {
 		t.Error("Expected nil output for nil input, but got non-nil result")
 	}
 }
+
+func TestNote_AlterUp(t *testing.T) {
+	// Test case when note is nil
+	var n *Note
+	if n.AlterUp() != nil {
+		t.Errorf("AlterUp on nil note should return nil")
+	}
+
+	// Test case when NoteName doesn't end with any symbols
+	n = &Note{name: B}
+	if n.AlterUp().name != BSHARP {
+		t.Errorf("AlterUp on note B should result in B#, got: %s", n.name)
+	}
+
+	// Test case when NoteName ends with AlterSymbolSharp
+	n = &Note{name: BSHARP}
+	if n.AlterUp().name != BSHARP2 {
+		t.Errorf("AlterUp on note B# should result in B##, got: %s", n.name)
+	}
+
+	// Test case when NoteName ends with AlterSymbolFlat
+	n = &Note{name: BFLAT}
+	if n.AlterUp().name != B {
+		t.Errorf("AlterUp on note Bb should result in B, got: %s", n.name)
+	}
+
+	// Test case when NoteName ends with AlterSymbolFlat twice
+	n = &Note{name: BFLAT2}
+	if n.AlterUp().name != BFLAT {
+		t.Errorf("AlterUp on note Bbb should result in Bb, got: %s", n.name)
+	}
+}
+
+func TestNote_AlterDown(t *testing.T) {
+	// Test case when note is nil
+	var n *Note
+	if n.AlterDown() != nil {
+		t.Errorf("AlterDown on nil note should return nil")
+	}
+
+	// Test case when NoteName doesn't end with any symbols
+	n = &Note{name: B}
+	if n.AlterDown().name != BFLAT {
+		t.Errorf("AlterDown on note B should result in Bb, got: %s", n.name)
+	}
+
+	// Test case when NoteName ends with AlterSymbolSharp
+	n = &Note{name: BSHARP}
+	if n.AlterDown().name != B {
+		t.Errorf("AlterDown on note B# should result in B, got: %s", n.name)
+	}
+
+	// Test case when NoteName ends with AlterSymbolFlat
+	n = &Note{name: BFLAT}
+	if n.AlterDown().name != BFLAT2 {
+		t.Errorf("AlterDown on note Bb should result in Bbb, got: %s", n.name)
+	}
+
+	// Test case when NoteName ends with AlterSymbolSharp twice
+	n = &Note{name: BSHARP2}
+	if n.AlterDown().name != BSHARP {
+		t.Errorf("AlterDown on note B## should result in Bb# got: %s", n.name)
+	}
+}
