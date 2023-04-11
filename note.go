@@ -1,6 +1,9 @@
 package muse
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/pkg/errors"
 )
 
@@ -95,4 +98,34 @@ func (n *Note) Copy() *Note {
 	}
 
 	return &Note{name: n.Name()}
+}
+
+// AlterUp alterates the note upwards.
+func (n *Note) AlterUp() *Note {
+	if n == nil {
+		return nil
+	}
+
+	if len(n.name) > 1 && strings.HasSuffix(n.name.String(), string(AlterSymbolFlat)) {
+		n.name = n.name[:len(n.name)-len(AlterSymbolFlat)]
+		return n
+	}
+
+	n.name = NoteName(fmt.Sprintf("%s%s", n.name, AlterSymbolSharp))
+	return n
+}
+
+// AlterDown alterates the note downwards.
+func (n *Note) AlterDown() *Note {
+	if n == nil {
+		return nil
+	}
+
+	if len(n.name) > 1 && strings.HasSuffix(n.name.String(), string(AlterSymbolSharp)) {
+		n.name = n.name[:len(n.name)-len(AlterSymbolSharp)]
+		return n
+	}
+
+	n.name = NoteName(fmt.Sprintf("%s%s", n.name, AlterSymbolFlat))
+	return n
 }

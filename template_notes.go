@@ -28,7 +28,7 @@ type templateNote struct {
 	resultingNote *noteRelation
 }
 
-func (tn *templateNote) GetNext() *templateNote {
+func (tn *templateNote) getNext() *templateNote {
 	return tn.next
 }
 
@@ -58,7 +58,7 @@ func (tn *templateNote) setNextTemplateNote(next *templateNote) {
 func (tn *templateNote) getByHalftones(halfTones HalfTones) *templateNote {
 	templateNote := tn
 	for i := 0; i < int(halfTones); i++ {
-		templateNote = templateNote.GetNext()
+		templateNote = templateNote.getNext()
 	}
 
 	return templateNote
@@ -107,7 +107,7 @@ func (ti *templateInstance) getTemplateNote(note *Note) *templateNote {
 
 	// the condition that it will not endlessly drive in a circle in search of a non-existent note
 	for i := 2; i <= int(HalftonesInOctave); i++ {
-		currentTemplateNote = currentTemplateNote.GetNext()
+		currentTemplateNote = currentTemplateNote.getNext()
 		if currentTemplateNote.Equal(note) {
 			return currentTemplateNote
 		}
