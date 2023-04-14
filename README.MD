@@ -53,7 +53,6 @@ A: You need to create new mode and get it's scale. [![example](https://img.shiel
 Q: How to determine the next note by interval?\
 A: You can do it by interval's name. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MakeNoteByIntervalName)
 
-
 Q: How to determine the next degree by interval?\
 A: You can do it by interval's name. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MakeDegreeByIntervalName)
 
