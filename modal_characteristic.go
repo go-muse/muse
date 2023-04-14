@@ -57,7 +57,7 @@ func (degree *Degree) setRelativeMCsOfDegree(modeTemplate ModeTemplate) {
 		degreeNum, _, halfTonesFromPrime := iteratorResult()
 		nextDegree := degree.GetForwardDegreeByDegreeNum(degreeNum - 1)
 
-		interval := NewIntervalByHalfTonesAndDegrees(halfTonesFromPrime, degreeNum-1) // -1 means we always get interval from 1st degree
+		interval := MustNewIntervalByHalfTonesAndDegrees(halfTonesFromPrime, degreeNum-1) // -1 means we always get interval from 1st degree
 		intervalWithDegrees := &Interval{interval, degree, nextDegree}
 
 		// Calculation of relative modal characteristics of the degree
