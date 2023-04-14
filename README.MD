@@ -51,7 +51,7 @@ Q: How can I find out the set of notes in a chosen mode constructed from a given
 A: You need to create new mode and get it's scale. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Mode.GenerateScale)
 
 Q: How to determine the next degree by interval?\
-A: You can do it by interval's name. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Mode.GenerateScale)
+A: You can do it by interval's name. 
 
 Q: How to determine the next degree by interval?\
 A: You can do it by interval's name.
@@ -61,3 +61,6 @@ A: You need to create interval from that notes.
 
 Q: How to know interval by two degrees?\
 A: You need to create interval from that degrees.
+
+Q: How to get notes from a mode sorted by their modal positions?\
+A: You need to create a mode from the selected tonic and call sorting function. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Mode.SortByAbsoluteModalPositions)
