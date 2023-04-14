@@ -98,7 +98,7 @@ func ExampleMakeNoteByIntervalName() {
 	// Output: the second note is: F#
 }
 
-// Making degree by existing note and known interval.
+// Making degree by existing degree and known interval.
 func ExampleMakeDegreeByIntervalName() {
 	firstDegree := muse.NewDegree(1, 0, nil, nil, muse.MustNewNote(muse.C), nil, nil)
 
