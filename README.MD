@@ -32,14 +32,14 @@ Definitions may differ from conventional.
 
 **Mode** is a set of degrees within octave spaced apart by a certain number of semitones.
 
-**Degree** degree is a position of a note within a mode, possessing modal characteristics. 
+**Degree** is a position of a note within a mode, possessing modal characteristics. 
 
 **Note** is the representation of a musical sount. It's name represent a pitch class.
 
 **Scale** is the set of musical notes got from the mode and ordered by fundamental frequency or pitch.
 
 **Interval** is the ratio of two musical sounds in pitch. 
-Chromatic interval means the ratio of two notes, diatonic interval means the radio of two degrees.
+Chromatic interval means the ratio of two notes, diatonic interval means the ratio of two degrees.
 
 ![Concept pic](/img/concept.jpg)
 
