@@ -50,17 +50,18 @@ Chromatic interval means the ratio of two notes, diatonic interval means the rat
 Q: How can I find out the set of notes in a chosen mode constructed from a given tonic?\
 A: You need to create new mode and get it's scale. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Mode.GenerateScale)
 
-Q: How to determine the next degree by interval?\
-A: You can do it by interval's name. 
+Q: How to determine the next note by interval?\
+A: You can do it by interval's name. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MakeNoteByIntervalName)
+
 
 Q: How to determine the next degree by interval?\
-A: You can do it by interval's name.
+A: You can do it by interval's name. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MakeDegreeByIntervalName)
 
 Q: How to know interval by two notes?\
-A: You need to create interval from that notes.
+A: You need to create interval from that notes. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NewIntervalChromatic)
 
 Q: How to know interval by two degrees?\
-A: You need to create interval from that degrees.
+A: You need to create interval from that degrees. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NewIntervalByDegrees)
 
 Q: How to get notes from a mode sorted by their modal positions?\
 A: You need to create a mode from the selected tonic and call sorting function. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Mode.SortByAbsoluteModalPositions)
