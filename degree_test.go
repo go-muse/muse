@@ -10,13 +10,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDegreeNum(t *testing.T) {
+func TestDegree_Number(t *testing.T) {
 	expected := DegreeNum(3)
 	d := Degree{number: expected}
 	assert.Equal(t, expected, d.Number())
 }
 
-func TestHalfTonesFromPrime(t *testing.T) {
+func TestDegree_HalfTonesFromPrime(t *testing.T) {
 	expected := HalfTones(3)
 	degree := Degree{halfTonesFromPrime: expected}
 
@@ -27,7 +27,7 @@ func TestHalfTonesFromPrime(t *testing.T) {
 	}
 }
 
-func TestGetNext(t *testing.T) {
+func TestDegree_GetNext(t *testing.T) {
 	testCases := []struct {
 		degree *Degree
 	}{
@@ -49,7 +49,7 @@ func TestGetNext(t *testing.T) {
 	}
 }
 
-func TestSetNext(t *testing.T) {
+func TestDegree_SetNext(t *testing.T) {
 	d1 := &Degree{number: 1}
 	d2 := &Degree{number: 2}
 	d1.SetNext(d2)
@@ -59,7 +59,7 @@ func TestSetNext(t *testing.T) {
 	}
 }
 
-func TestGetPrevious(t *testing.T) {
+func TestDegree_GetPrevious(t *testing.T) {
 	// Create a new instance of Degree with a Previous degree.
 	degree := &Degree{previous: &Degree{}}
 
@@ -72,7 +72,7 @@ func TestGetPrevious(t *testing.T) {
 	}
 }
 
-func TestSetPrevious(t *testing.T) {
+func TestDegree_SetPrevious(t *testing.T) {
 	// Create a degree and its previous degree
 	d := &Degree{}
 	prev := &Degree{}
@@ -97,7 +97,83 @@ func TestSetPrevious(t *testing.T) {
 	}
 }
 
-func TestDegreeNoteReturnsNotePointer(t *testing.T) {
+func TestDegree_Note(t *testing.T) {
+	expectedNote := newNote(C)
+	degree := Degree{note: expectedNote}
+
+	if degree.Note() != expectedNote {
+		t.Errorf("Expected Note %v but got %v", expectedNote, degree.Note())
+	}
+}
+
+func TestDegree_SetNote(t *testing.T) {
+	t.Run("TestGetDegreeByDegreeNum: uncycled degrees chain", func(t *testing.T) {
+		// create a degree and a note
+		d := &Degree{}
+		n := newNote(C)
+
+		// set note on degree
+		d.SetNote(n)
+
+		// check if note was set correctly
+		if d.note != n {
+			t.Errorf("Expected note %v, but got %v", n, d.note)
+		}
+	})
+
+	t.Run("TestGetDegreeByDegreeNum: uncycled degrees chain", func(t *testing.T) {
+		// create a degree with a note
+		d := &Degree{note: newNote(C)}
+
+		// set nil note on degree
+		d.SetNote(nil)
+
+		// check if note was set to nil
+		if d.note != nil {
+			t.Errorf("Expected nil note, but got %v", d.note)
+		}
+	})
+
+	t.Run("TestGetDegreeByDegreeNum: uncycled degrees chain", func(t *testing.T) {
+		// create a degree with a note
+		d := &Degree{note: newNote(C)}
+
+		// create a new note and set it on degree
+		n := newNote(D)
+		d.SetNote(n)
+
+		// check if note was overwritten correctly
+		if d.note != n {
+			t.Errorf("Expected note %v, but got %v", n, d.note)
+		}
+	})
+}
+
+func TestDegree_ModalCharacteristics(t *testing.T) {
+	mc := ModalCharacteristics{{
+		name:   DegreeCharacteristicClean,
+		degree: &Degree{number: 1, note: newNote(C)},
+	}, {
+		name:   DegreeCharacteristicAug,
+		degree: &Degree{number: 2, note: newNote(DSHARP)},
+	}}
+	degree := Degree{modalCharacteristics: mc}
+	result := degree.ModalCharacteristics()
+	if !reflect.DeepEqual(mc, result) {
+		t.Errorf("Expected modal characteristics %v but got %v", mc, result)
+	}
+}
+
+func TestDegree_AbsoluteModalPosition(t *testing.T) {
+	amp := &ModalPosition{name: ModalPositionNameNeutral, weight: 0}
+	degree := Degree{absoluteModalPosition: amp}
+	result := degree.AbsoluteModalPosition()
+	if !reflect.DeepEqual(amp, result) {
+		t.Errorf("Expected absolute modal position %v but got %v", amp, result)
+	}
+}
+
+func TestDegree_NoteReturnsNotePointer(t *testing.T) {
 	note := &Note{name: C}
 	degree := &Degree{note: note}
 
@@ -124,7 +200,7 @@ func TestGetDegreeByDegreeNum(t *testing.T) {
 	})
 }
 
-func TestGetForwardDegreeByDegreeNum(t *testing.T) {
+func TestDegree_GetForwardDegreeByDegreeNum(t *testing.T) {
 	firstDegreeNum := DegreeNum(1)
 	firstDegree := &Degree{
 		number: firstDegreeNum,
@@ -209,7 +285,7 @@ func TestDegreesIterator_GetAllNotes(t *testing.T) {
 	})
 }
 
-func TestGetDegrees(t *testing.T) {
+func TestDegree_GetDegrees(t *testing.T) {
 	firstDegreeNum := DegreeNum(1)
 	firstDegree := &Degree{
 		number: firstDegreeNum,
@@ -287,7 +363,7 @@ func TestGetDegrees(t *testing.T) {
 	})
 }
 
-func TestIterateOneRound(t *testing.T) {
+func TestDegree_IterateOneRound(t *testing.T) {
 	mode0, err := MakeNewCustomMode(ModeTemplate{2, 2, 2, 3, 2, 1}, "B", "Custom Mode 0")
 	assert.NoError(t, err)
 	mode1, err := MakeNewCustomMode(ModeTemplate{2, 2, 2, 2, 2, 2}, "C", "Custom Mode 1")
@@ -373,7 +449,7 @@ func TestIterateOneRound(t *testing.T) {
 	})
 }
 
-func Test_sortByAbsoluteModalPositions(t *testing.T) {
+func TestDegree_sortByAbsoluteModalPositions(t *testing.T) {
 	n10, err := rand.Int(rand.Reader, big.NewInt(10))
 	assert.NoError(t, err)
 	n20, err := rand.Int(rand.Reader, big.NewInt(10))
@@ -430,7 +506,7 @@ func Test_sortByAbsoluteModalPositions(t *testing.T) {
 	})
 }
 
-func TestString(t *testing.T) {
+func TestDegree_String(t *testing.T) {
 	testCases := []*Degree{
 		{
 			number:                0,
@@ -540,7 +616,7 @@ func TestString(t *testing.T) {
 	}
 }
 
-func TestEqual(t *testing.T) {
+func TestDegree_Equal(t *testing.T) {
 	testCases := []struct {
 		degree1, degree2 *Degree
 		want             bool
@@ -589,7 +665,7 @@ func TestEqual(t *testing.T) {
 	}
 }
 
-func TestEqualByDegreeNum(t *testing.T) {
+func TestDegree_EqualByDegreeNum(t *testing.T) {
 	// Test the case where both degrees are nil
 	if degree1, degree2 := (*Degree)(nil), (*Degree)(nil); degree1.EqualByDegreeNum(degree2) {
 		t.Error("Expected nil degrees to be equal")
@@ -614,7 +690,7 @@ func TestEqualByDegreeNum(t *testing.T) {
 	}
 }
 
-func TestDegreeCopy(t *testing.T) {
+func TestDegree_Copy(t *testing.T) {
 	// Arrange
 	d := &Degree{
 		number:                1,
@@ -655,7 +731,7 @@ func TestDegreeCopy(t *testing.T) {
 	}
 }
 
-func TestDegreeCopyCut(t *testing.T) {
+func TestDegree_CopyCut(t *testing.T) {
 	// Arrange
 	d := &Degree{
 		number:                1,
@@ -696,7 +772,7 @@ func TestDegreeCopyCut(t *testing.T) {
 	}
 }
 
-func TestInsertBetween(t *testing.T) {
+func TestDegree_InsertBetween(t *testing.T) {
 	degree1 := &Degree{number: 1}
 	degree2 := &Degree{number: 2}
 	degree3 := &Degree{number: 3}
@@ -717,7 +793,7 @@ func TestInsertBetween(t *testing.T) {
 	}
 }
 
-func TestAttachNext(t *testing.T) {
+func TestDegree_AttachNext(t *testing.T) {
 	// Set up initial Degrees
 	degree1 := &Degree{number: 1}
 	degree2 := &Degree{number: 2}
@@ -778,7 +854,7 @@ func TestAttachNext(t *testing.T) {
 	}
 }
 
-func TestInsertNext(t *testing.T) {
+func TestDegree_InsertNext(t *testing.T) {
 	// Create three-degree objects
 	degree1 := &Degree{}
 	degree2 := &Degree{}
@@ -807,7 +883,7 @@ func TestInsertNext(t *testing.T) {
 	}
 }
 
-func TestAttachPrevious(t *testing.T) {
+func TestDegree_AttachPrevious(t *testing.T) {
 	// Create the first degree
 	rootDegree := &Degree{number: 1}
 
@@ -848,7 +924,7 @@ func TestAttachPrevious(t *testing.T) {
 	}
 }
 
-func TestInsertPrevious(t *testing.T) {
+func TestDegree_InsertPrevious(t *testing.T) {
 	// create degrees
 	degree1 := &Degree{number: 1}
 	degree2 := &Degree{number: 2}
@@ -870,7 +946,7 @@ func TestInsertPrevious(t *testing.T) {
 	assert.Equal(t, degree2.next, degree3)
 }
 
-func TestNextExists(t *testing.T) {
+func TestDegree_NextExists(t *testing.T) {
 	// Create a degree with no next degree attached
 	degree := &Degree{number: 1}
 
@@ -889,7 +965,7 @@ func TestNextExists(t *testing.T) {
 	}
 }
 
-func TestPreviousExists(t *testing.T) {
+func TestDegree_PreviousExists(t *testing.T) {
 	// Create a degree with no previous degree attached
 	degree := &Degree{number: 1}
 
@@ -908,7 +984,7 @@ func TestPreviousExists(t *testing.T) {
 	}
 }
 
-func TestGetLast(t *testing.T) {
+func TestDegree_GetLast(t *testing.T) {
 	getDegrees := func() (*Degree, *Degree) {
 		firstDegree := &Degree{number: 1}
 		lastDegree := firstDegree
@@ -953,7 +1029,7 @@ func TestGetLast(t *testing.T) {
 	})
 }
 
-func TestAttachToTheEnd(t *testing.T) {
+func TestDegree_AttachToTheEnd(t *testing.T) {
 	t.Run("TestAttachToTheEnd test case when degrees chain is not cycled", func(t *testing.T) {
 		d1 := &Degree{number: 1}
 		d2 := &Degree{number: 2}
@@ -1021,7 +1097,7 @@ func TestAttachToTheEnd(t *testing.T) {
 	})
 }
 
-func TestReverseSequence(t *testing.T) {
+func TestDegree_ReverseSequence(t *testing.T) {
 	t.Run("TestReverseSequence with cycled sequence", func(t *testing.T) {
 		d := generateDegrees(7, true)
 		res := d.ReverseSequence()
@@ -1043,7 +1119,7 @@ func TestReverseSequence(t *testing.T) {
 	})
 }
 
-func Test_generateDegreesWithNotes(t *testing.T) {
+func TestDegree_generateDegreesWithNotes(t *testing.T) {
 	firstDegree := &Degree{number: 1, halfTonesFromPrime: 0, note: &Note{name: C}}
 	secondDegree := &Degree{number: 2, halfTonesFromPrime: 2, note: &Note{name: D}, previous: firstDegree}
 	thirdDegree := &Degree{number: 3, halfTonesFromPrime: 4, note: &Note{name: E}, previous: secondDegree}
