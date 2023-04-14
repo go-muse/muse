@@ -126,10 +126,11 @@ func NewIntervalChromatic(halfTones HalfTones) (*ChromaticInterval, error) {
 		return IntervalPerfectFifteenth(), nil
 	}
 
-	return nil, ErrUnknownInterval
+	return nil, ErrIntervalUnknown
 }
 
-var ErrUnknownInterval = errors.New("unknown interval")
+// ErrIntervalUnknown means that it is impossible to determine the interval based on the available data.
+var ErrIntervalUnknown = errors.New("unknown interval")
 
 // NewIntervalByHalfTonesAndDegrees creates interval by 1) half tones between degrees 2) amount of degrees between.
 //
@@ -229,7 +230,7 @@ func NewIntervalByHalfTonesAndDegrees(halfTones HalfTones, degrees DegreeNum) (*
 		}
 	}
 
-	return nil, ErrUnknownInterval
+	return nil, ErrIntervalUnknown
 }
 
 // MustNewIntervalByHalfTonesAndDegrees creates interval by 1) half tones between degrees 2) amount of degrees between.
@@ -250,7 +251,7 @@ func newIntervalByDegreesAndHalfTones(halfTones HalfTones, degree1, degree2 *Deg
 
 	chromaticInterval, err := NewIntervalByHalfTonesAndDegrees(halfTones, degreesDiff)
 	if err != nil {
-		return nil, ErrUnknownInterval
+		return nil, ErrIntervalUnknown
 	}
 
 	return &Interval{
@@ -342,34 +343,36 @@ func NewIntervalByName(intervalName IntervalName) (*ChromaticInterval, error) {
 		return IntervalDiminishedSecond(), nil
 	}
 
-	return nil, ErrUnknownInterval
+	return nil, ErrIntervalUnknown
 }
 
-// MakeNoteByInterval creates new note by the given interval.
-func MakeNoteByInterval(firstNote *Note, intervalName IntervalName) (*Note, error) {
+// MakeNoteByIntervalName creates new note by the given interval name.
+func MakeNoteByIntervalName(firstNote *Note, intervalName IntervalName) (*Note, error) {
 	interval, err := NewIntervalByName(intervalName)
-	if err == nil {
+	if err != nil {
 		return nil, err
 	}
-
 	newNote, _ := (<-coreBuilding(ModeTemplate{interval.HalfTones()}, firstNote))()
 
 	return newNote, nil
 }
 
-// MakeDegreeByInterval creates new degree by the given interval.
-func MakeDegreeByInterval(degree *Degree, intervalName IntervalName) (*Degree, error) {
+// ErrDegreeEmpty means nil degree was given as a parameter.
+var ErrDegreeEmpty = errors.New("empty degree")
+
+// MakeDegreeByIntervalName creates new degree by the given interval name.
+func MakeDegreeByIntervalName(degree *Degree, intervalName IntervalName) (*Degree, error) {
 	if degree == nil {
-		return nil, errors.New("Empty degree")
+		return nil, ErrDegreeEmpty
 	}
 
 	interval, err := NewIntervalByName(intervalName)
-	if err == nil {
+	if err != nil {
 		return nil, err
 	}
 
-	note, err := MakeNoteByInterval(degree.note, intervalName)
-	if err == nil {
+	note, err := MakeNoteByIntervalName(degree.note, intervalName)
+	if err != nil {
 		return nil, err
 	}
 

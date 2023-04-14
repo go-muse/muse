@@ -19,7 +19,6 @@ func ExampleNewIntervalChromatic() {
 
 // Diatonic interval is defined by the number of semitones and steps in a scale.
 func ExampleNewIntervalByHalfTonesAndDegrees() {
-
 	halfTones := muse.HalfTones(4)
 	degrees := muse.DegreeNum(3)
 
@@ -40,6 +39,79 @@ func ExampleNewIntervalByHalfTonesAndDegrees() {
 	// Chromatic interval of 4 halfTones: MajorThird
 }
 
+// Interval can be calculated between diatonic degrees.
 func ExampleNewIntervalByDegrees() {
-	degree1 := &muse.NewDegree()
+	// For example, degree1 is a second degree in a mode, and in contains note "D"
+	degree1 := muse.NewDegree(2, 2, nil, nil, muse.MustNewNote(muse.D), nil, nil)
+	// degree2 is the fourth degree in a mode, and it contains note "F"
+	degree2 := muse.NewDegree(4, 5, nil, nil, muse.MustNewNote(muse.F), nil, nil)
+
+	interval, err := muse.NewIntervalByDegrees(degree1, degree2)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("HalfTones: %d, interval name: %s, short name: %s\n", interval.HalfTones(), interval.Name(), interval.ShortName())
+	// Output: HalfTones: 3, interval name: MinorThird, short name: m3
+}
+
+// Get chromatic interval by it's name.
+func ExampleNewIntervalByName() {
+	interval, err := muse.NewIntervalByName(muse.IntervalNameMajorSixth)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("HalfTones: %d, interval name: %s\n", interval.HalfTones(), interval.Name())
+	// Output: HalfTones: 9, interval name: MajorSixth
+}
+
+// Making note by existing note and known interval.
+func ExampleMakeNoteByIntervalName() {
+	// The note from which we will make the second note by the interval.
+	firstNote := muse.MustNewNote(muse.C)
+
+	// Needed interval
+	interval, err := muse.NewIntervalChromatic(6) // six halftones means tritone interval
+	if err != nil {
+		panic(err)
+	}
+
+	// We can get the second note from the name extracted from interval
+	secondNote1, err := muse.MakeNoteByIntervalName(firstNote, interval.Name())
+	if err != nil {
+		panic(err)
+	}
+
+	// or we can get it directly by the interval name
+	secondNote2, err := muse.MakeNoteByIntervalName(firstNote, muse.IntervalNameTritone) // tritone interval
+	if err != nil {
+		panic(err)
+	}
+
+	// The notes made from the same note and interval must be equal
+	if !secondNote1.IsEqualByName(secondNote2) {
+		panic("notes aren't equal")
+	}
+
+	fmt.Printf("the second note is: %s", secondNote1.Name())
+	// Output: the second note is: F#
+}
+
+// Making degree by existing note and known interval.
+func ExampleMakeDegreeByIntervalName() {
+	firstDegree := muse.NewDegree(1, 0, nil, nil, muse.MustNewNote(muse.C), nil, nil)
+
+	secondDegree, err := muse.MakeDegreeByIntervalName(firstDegree, muse.IntervalNameTritone)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf(
+		"Second Interval Degree Number: %d, half tones from prime: %d, Note name: %s\n",
+		secondDegree.Number(),
+		secondDegree.HalfTonesFromPrime(),
+		secondDegree.Note().Name(),
+	)
+	// Output: Second Interval Degree Number: 2, half tones from prime: 6, Note name: F#
 }

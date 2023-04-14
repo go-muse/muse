@@ -1,6 +1,10 @@
 package muse
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestChromaticIntervalHalfTonesMethod(t *testing.T) {
 	expectedHalfTones := HalfTones(12)
@@ -13,4 +17,24 @@ func TestChromaticIntervalHalfTonesMethod(t *testing.T) {
 	if testInterval.HalfTones() != expectedHalfTones {
 		t.Errorf("HalfTones() returned %d, expected %d", testInterval.HalfTones(), expectedHalfTones)
 	}
+}
+
+func TestMakeNoteByIntervalName(t *testing.T) {
+	firstNote := MustNewNote(C)
+	note, err := MakeNoteByIntervalName(firstNote, IntervalNameTritone)
+	assert.NoError(t, err)
+	assert.NotNil(t, note)
+	assert.Equal(t, note.Name(), FSHARP)
+}
+
+func TestMakeDegreeByIntervalName(t *testing.T) {
+	firstDegree := NewDegree(1, 0, nil, nil, MustNewNote(C), nil, nil)
+	interval, err := NewIntervalChromatic(6)
+	assert.NoError(t, err)
+	secondDegree, err := MakeDegreeByIntervalName(firstDegree, interval.Name())
+	assert.NoError(t, err)
+	assert.NotNil(t, secondDegree)
+	assert.Equal(t, secondDegree.Note().Name(), FSHARP)
+	assert.Equal(t, secondDegree.Number(), firstDegree.Number()+1)
+	assert.Equal(t, secondDegree.HalfTonesFromPrime(), interval.HalfTones())
 }
