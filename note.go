@@ -133,3 +133,33 @@ func (n *Note) AlterDown() *Note {
 
 	return n
 }
+
+// AlterDown alterates the note up by the specified number of times.
+func (n *Note) AlterUpBy(i uint) *Note {
+	if n == nil {
+		return nil
+	}
+
+	for ; i > 0; i-- {
+		n.AlterUp()
+	}
+
+	return n
+}
+
+// AlterDown alterates the note down by the specified number of times.
+func (n *Note) AlterDownBy(i uint) *Note {
+	if n == nil {
+		return nil
+	}
+
+	for ; i > 0; i-- {
+		n.AlterDown()
+	}
+
+	return n
+}
+
+func (n *Note) BaseName() NoteName {
+	return n.name[0:1]
+}
