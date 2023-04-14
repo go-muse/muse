@@ -1,6 +1,10 @@
 package muse
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/pkg/errors"
+)
 
 // IntervalName is string type for interval's name.
 type IntervalName string
@@ -67,80 +71,83 @@ func (iwd *Interval) String() string {
 
 // NewIntervalChromatic creates interval just by half tones between the notes
 // Such interval is known as chromatic  interval or acoustic interval.
-func NewIntervalChromatic(halfTones HalfTones) *ChromaticInterval {
+func NewIntervalChromatic(halfTones HalfTones) (*ChromaticInterval, error) {
 	switch halfTones {
 	case IntervalHalfTones0:
-		return IntervalPerfectUnison()
+		return IntervalPerfectUnison(), nil
 	case IntervalHalfTones1:
-		return IntervalMinorSecond()
+		return IntervalMinorSecond(), nil
 	case IntervalHalfTones2:
-		return IntervalMajorSecond()
+		return IntervalMajorSecond(), nil
 	case IntervalHalfTones3:
-		return IntervalMinorThird()
+		return IntervalMinorThird(), nil
 	case IntervalHalfTones4:
-		return IntervalMajorThird()
+		return IntervalMajorThird(), nil
 	case IntervalHalfTones5:
-		return IntervalPerfectFourth()
+		return IntervalPerfectFourth(), nil
 	case IntervalHalfTones6:
-		return IntervalTritone()
+		return IntervalTritone(), nil
 	case IntervalHalfTones7:
-		return IntervalPerfectFifth()
+		return IntervalPerfectFifth(), nil
 	case IntervalHalfTones8:
-		return IntervalMinorSixth()
+		return IntervalMinorSixth(), nil
 	case IntervalHalfTones9:
-		return IntervalMajorSixth()
+		return IntervalMajorSixth(), nil
 	case IntervalHalfTones10:
-		return IntervalMinorSeventh()
+		return IntervalMinorSeventh(), nil
 	case IntervalHalfTones11:
-		return IntervalMajorSeventh()
+		return IntervalMajorSeventh(), nil
 	case IntervalHalfTones12:
-		return IntervalPerfectOctave()
+		return IntervalPerfectOctave(), nil
 
 	case IntervalHalfTones13:
-		return IntervalMinorNinth()
+		return IntervalMinorNinth(), nil
 	case IntervalHalfTones14:
-		return IntervalMajorNinth()
+		return IntervalMajorNinth(), nil
 	case IntervalHalfTones15:
-		return IntervalMinorTenth()
+		return IntervalMinorTenth(), nil
 	case IntervalHalfTones16:
-		return IntervalMajorTenth()
+		return IntervalMajorTenth(), nil
 	case IntervalHalfTones17:
-		return IntervalPerfectEleventh()
+		return IntervalPerfectEleventh(), nil
 	case IntervalHalfTones18:
 		// no name for tritone after octave
 	case IntervalHalfTones19:
-		return IntervalPerfectTwelfth()
+		return IntervalPerfectTwelfth(), nil
 	case IntervalHalfTones20:
-		return IntervalMinorThirteenth()
+		return IntervalMinorThirteenth(), nil
 	case IntervalHalfTones21:
-		return IntervalMajorThirteenth()
+		return IntervalMajorThirteenth(), nil
 	case IntervalHalfTones22:
-		return IntervalMinorFourteenth()
+		return IntervalMinorFourteenth(), nil
 	case IntervalHalfTones23:
-		return IntervalMajorFourteenth()
+		return IntervalMajorFourteenth(), nil
 	case IntervalHalfTones24:
-		return IntervalPerfectFifteenth()
+		return IntervalPerfectFifteenth(), nil
 	}
 
-	return nil
+	return nil, ErrIntervalUnknown
 }
+
+// ErrIntervalUnknown means that it is impossible to determine the interval based on the available data.
+var ErrIntervalUnknown = errors.New("unknown interval")
 
 // NewIntervalByHalfTonesAndDegrees creates interval by 1) half tones between degrees 2) amount of degrees between.
 //
 //nolint:gomnd
-func NewIntervalByHalfTonesAndDegrees(halfTones HalfTones, degrees DegreeNum) *ChromaticInterval {
+func NewIntervalByHalfTonesAndDegrees(halfTones HalfTones, degrees DegreeNum) (*ChromaticInterval, error) {
 	switch halfTones {
 	case IntervalHalfTones0:
 		switch degrees {
 		case 0:
 			return NewIntervalChromatic(halfTones)
 		case 1:
-			return IntervalDiminishedSecond()
+			return IntervalDiminishedSecond(), nil
 		}
 	case IntervalHalfTones1:
 		switch degrees {
 		case 0:
-			return IntervalAugmentedUnison()
+			return IntervalAugmentedUnison(), nil
 		case 1:
 			return NewIntervalChromatic(halfTones)
 		}
@@ -149,12 +156,12 @@ func NewIntervalByHalfTonesAndDegrees(halfTones HalfTones, degrees DegreeNum) *C
 		case 1:
 			return NewIntervalChromatic(halfTones)
 		case 2:
-			return IntervalDiminishedThird()
+			return IntervalDiminishedThird(), nil
 		}
 	case IntervalHalfTones3:
 		switch degrees {
 		case 1:
-			return IntervalAugmentedSecond()
+			return IntervalAugmentedSecond(), nil
 		case 2:
 			return NewIntervalChromatic(halfTones)
 		}
@@ -163,33 +170,33 @@ func NewIntervalByHalfTonesAndDegrees(halfTones HalfTones, degrees DegreeNum) *C
 		case 2:
 			return NewIntervalChromatic(halfTones)
 		case 3:
-			return IntervalDiminishedFourth()
+			return IntervalDiminishedFourth(), nil
 		}
 	case IntervalHalfTones5:
 		switch degrees {
 		case 2:
-			return IntervalAugmentedThird()
+			return IntervalAugmentedThird(), nil
 		case 3:
 			return NewIntervalChromatic(halfTones)
 		}
 	case IntervalHalfTones6:
 		switch degrees {
 		case 3:
-			return IntervalAugmentedFourth()
+			return IntervalAugmentedFourth(), nil
 		case 4:
-			return IntervalDiminishedFifth()
+			return IntervalDiminishedFifth(), nil
 		}
 	case IntervalHalfTones7:
 		switch degrees {
 		case 4:
 			return NewIntervalChromatic(halfTones)
 		case 5:
-			return IntervalDiminishedSixth()
+			return IntervalDiminishedSixth(), nil
 		}
 	case IntervalHalfTones8:
 		switch degrees {
 		case 4:
-			return IntervalAugmentedFifth()
+			return IntervalAugmentedFifth(), nil
 		case 5:
 			return NewIntervalChromatic(halfTones)
 		}
@@ -198,12 +205,12 @@ func NewIntervalByHalfTonesAndDegrees(halfTones HalfTones, degrees DegreeNum) *C
 		case 5:
 			return NewIntervalChromatic(halfTones)
 		case 6:
-			return IntervalDiminishedSeventh()
+			return IntervalDiminishedSeventh(), nil
 		}
 	case IntervalHalfTones10:
 		switch degrees {
 		case 5:
-			return IntervalAugmentedSixth()
+			return IntervalAugmentedSixth(), nil
 		case 6:
 			return NewIntervalChromatic(halfTones)
 		}
@@ -212,144 +219,172 @@ func NewIntervalByHalfTonesAndDegrees(halfTones HalfTones, degrees DegreeNum) *C
 		case 6:
 			return NewIntervalChromatic(halfTones)
 		case 7:
-			return IntervalDiminishedOctave()
+			return IntervalDiminishedOctave(), nil
 		}
 	case IntervalHalfTones12:
 		switch degrees {
 		case 6:
-			return IntervalAugmentedSeventh()
+			return IntervalAugmentedSeventh(), nil
 		case 7:
 			return NewIntervalChromatic(halfTones)
 		}
 	}
 
-	return nil
+	return nil, ErrIntervalUnknown
+}
+
+// MustNewIntervalByHalfTonesAndDegrees creates interval by 1) half tones between degrees 2) amount of degrees between.
+// The function panics in case of unknown interval.
+func MustNewIntervalByHalfTonesAndDegrees(halfTones HalfTones, degrees DegreeNum) *ChromaticInterval {
+	chromaticInterval, err := NewIntervalByHalfTonesAndDegrees(halfTones, degrees)
+	if err != nil {
+		panic(err)
+	}
+
+	return chromaticInterval
 }
 
 // Mode interval is determined by degrees and half tones between them.
 // The function is needed in case of lack of information about the halftone distance of the steps from each other.
-func newIntervalByDegreesAndHalfTones(halfTones HalfTones, degree1, degree2 *Degree) *Interval {
+func newIntervalByDegreesAndHalfTones(halfTones HalfTones, degree1, degree2 *Degree) (*Interval, error) {
 	degreesDiff := degree2.Number() - degree1.Number()
 
+	chromaticInterval, err := NewIntervalByHalfTonesAndDegrees(halfTones, degreesDiff)
+	if err != nil {
+		return nil, ErrIntervalUnknown
+	}
+
 	return &Interval{
-		ChromaticInterval: NewIntervalByHalfTonesAndDegrees(halfTones, degreesDiff),
+		ChromaticInterval: chromaticInterval,
 		degree1:           degree1,
 		degree2:           degree2,
-	}
+	}, nil
 }
 
 // NewIntervalByDegrees creates mode interval by degrees and half tones between them.
-func NewIntervalByDegrees(degree1, degree2 *Degree) *Interval {
+func NewIntervalByDegrees(degree1, degree2 *Degree) (*Interval, error) {
 	halfTonesDiff := degree2.halfTonesFromPrime - degree1.halfTonesFromPrime
 
 	return newIntervalByDegreesAndHalfTones(halfTonesDiff, degree1, degree2)
 }
 
 // NewIntervalByName returns new interval by it's name.
-func NewIntervalByName(intervalName IntervalName) *ChromaticInterval {
+func NewIntervalByName(intervalName IntervalName) (*ChromaticInterval, error) {
 	switch intervalName {
 	// Chromatic intervals
 	case IntervalNamePerfectUnison, IntervalNamePerfectUnisonShort:
-		return IntervalPerfectUnison()
+		return IntervalPerfectUnison(), nil
 	case IntervalNameMinorSecond, IntervalNameMinorSecondShort:
-		return IntervalMinorSecond()
+		return IntervalMinorSecond(), nil
 	case IntervalNameMajorSecond, IntervalNameMajorSecondShort:
-		return IntervalMajorSecond()
+		return IntervalMajorSecond(), nil
 	case IntervalNameMinorThird, IntervalNameMinorThirdShort:
-		return IntervalMinorThird()
+		return IntervalMinorThird(), nil
 	case IntervalNameMajorThird, IntervalNameMajorThirdShort:
-		return IntervalMajorThird()
+		return IntervalMajorThird(), nil
 	case IntervalNamePerfectFourth, IntervalNamePerfectFourthShort:
-		return IntervalPerfectFourth()
+		return IntervalPerfectFourth(), nil
 	case IntervalNameTritone, IntervalNameTritoneShort:
-		return IntervalTritone()
+		return IntervalTritone(), nil
 	case IntervalNamePerfectFifth, IntervalNamePerfectFifthShort:
-		return IntervalPerfectFifth()
+		return IntervalPerfectFifth(), nil
 	case IntervalNameMinorSixth, IntervalNameMinorSixthShort:
-		return IntervalMinorSixth()
+		return IntervalMinorSixth(), nil
 	case IntervalNameMajorSixth, IntervalNameMajorSixthShort:
-		return IntervalMajorSixth()
+		return IntervalMajorSixth(), nil
 	case IntervalNameMinorSeventh, IntervalNameMinorSeventhShort:
-		return IntervalMinorSeventh()
+		return IntervalMinorSeventh(), nil
 	case IntervalNameMajorSeventh, IntervalNameMajorSeventhShort:
-		return IntervalMajorSeventh()
+		return IntervalMajorSeventh(), nil
 	case IntervalNamePerfectOctave, IntervalNamePerfectOctaveShort:
-		return IntervalPerfectOctave()
+		return IntervalPerfectOctave(), nil
 
 	// Diatonic intervals
 	case IntervalNameModifiedDiminishedSecond, IntervalNameModifiedDiminishedSecondShort:
-		return IntervalDiminishedSecond()
+		return IntervalDiminishedSecond(), nil
 
 	case IntervalNameModifiedAugmentedUnison, IntervalNameModifiedAugmentedUnisonShort:
-		return IntervalDiminishedSecond()
+		return IntervalDiminishedSecond(), nil
 
 	case IntervalNameModifiedDiminishedThird, IntervalNameModifiedDiminishedThirdShort:
-		return IntervalDiminishedSecond()
+		return IntervalDiminishedSecond(), nil
 
 	case IntervalNameModifiedAugmentedSecond, IntervalNameModifiedAugmentedSecondShort:
-		return IntervalDiminishedSecond()
+		return IntervalDiminishedSecond(), nil
 
 	case IntervalNameModifiedDiminishedFourth, IntervalNameModifiedDiminishedFourthShort:
-		return IntervalDiminishedSecond()
+		return IntervalDiminishedSecond(), nil
 
 	case IntervalNameModifiedAugmentedThird, IntervalNameModifiedAugmentedThirdShort:
-		return IntervalDiminishedSecond()
+		return IntervalDiminishedSecond(), nil
 
 	case IntervalNameModifiedDiminishedFifth, IntervalNameModifiedDiminishedFifthShort:
-		return IntervalDiminishedSecond()
+		return IntervalDiminishedSecond(), nil
 
 	case IntervalNameModifiedAugmentedFourth, IntervalNameModifiedAugmentedFourthShort:
-		return IntervalDiminishedSecond()
+		return IntervalDiminishedSecond(), nil
 
 	case IntervalNameModifiedDiminishedSixth, IntervalNameModifiedDiminishedSixthShort:
-		return IntervalDiminishedSecond()
+		return IntervalDiminishedSecond(), nil
 
 	case IntervalNameModifiedAugmentedFifth, IntervalNameModifiedAugmentedFifthShort:
-		return IntervalDiminishedSecond()
+		return IntervalDiminishedSecond(), nil
 
 	case IntervalNameModifiedDiminishedSeventh, IntervalNameModifiedDiminishedSeventhShort:
-		return IntervalDiminishedSecond()
+		return IntervalDiminishedSecond(), nil
 
 	case IntervalNameModifiedAugmentedSixth, IntervalNameModifiedAugmentedSixthShort:
-		return IntervalDiminishedSecond()
+		return IntervalDiminishedSecond(), nil
 
 	case IntervalNameModifiedDiminishedOctave, IntervalNameModifiedDiminishedOctaveShort:
-		return IntervalDiminishedSecond()
+		return IntervalDiminishedSecond(), nil
 
 	case IntervalNameModifiedAugmentedSeventh, IntervalNameModifiedAugmentedSeventhShort:
-		return IntervalDiminishedSecond()
+		return IntervalDiminishedSecond(), nil
 	}
 
-	return nil
+	return nil, ErrIntervalUnknown
 }
 
-// MakeNoteByInterval creates new note by the given interval.
-func MakeNoteByInterval(firstNote *Note, intervalName IntervalName) *Note {
-	// TODO: check interval for nil or error
-	interval := NewIntervalByName(intervalName)
-
+// MakeNoteByIntervalName creates new note by the given interval name.
+func MakeNoteByIntervalName(firstNote *Note, intervalName IntervalName) (*Note, error) {
+	interval, err := NewIntervalByName(intervalName)
+	if err != nil {
+		return nil, err
+	}
 	newNote, _ := (<-coreBuilding(ModeTemplate{interval.HalfTones()}, firstNote))()
 
-	return newNote
+	return newNote, nil
 }
 
-// MakeDegreeByInterval creates new degree by the given interval.
-func MakeDegreeByInterval(degree *Degree, intervalName IntervalName) *Degree {
+// ErrDegreeEmpty means nil degree was given as a parameter.
+var ErrDegreeEmpty = errors.New("empty degree")
+
+// MakeDegreeByIntervalName creates new degree by the given interval name.
+func MakeDegreeByIntervalName(degree *Degree, intervalName IntervalName) (*Degree, error) {
 	if degree == nil {
-		return nil
+		return nil, ErrDegreeEmpty
 	}
-	// TODO: check interval for nil or error
-	interval := NewIntervalByName(intervalName)
+
+	interval, err := NewIntervalByName(intervalName)
+	if err != nil {
+		return nil, err
+	}
+
+	note, err := MakeNoteByIntervalName(degree.note, intervalName)
+	if err != nil {
+		return nil, err
+	}
 
 	newDegree := &Degree{
 		number:                degree.Number() + 1,
 		halfTonesFromPrime:    degree.halfTonesFromPrime + interval.HalfTones(),
 		previous:              degree,
 		next:                  nil,
-		note:                  MakeNoteByInterval(degree.note, intervalName),
+		note:                  note,
 		modalCharacteristics:  nil,
 		absoluteModalPosition: nil,
 	}
 
-	return newDegree
+	return newDegree, nil
 }

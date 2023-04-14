@@ -45,7 +45,7 @@ func (mt ModeTemplate) IterateOneRound(withOctave bool) <-chan ModeTemplateItera
 		var degreeNum DegreeNum
 		const startingDegree = 2 // 2 means we are sending data starting from the second degree
 		for i, halfTones := range mt {
-			if i == int(mt.Length()-1) && !withOctave {
+			if i > 0 && i == int(mt.Length()-1) && !withOctave {
 				break
 			}
 			halfTonesFromPrime += halfTones
