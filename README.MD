@@ -48,10 +48,10 @@ Chromatic interval means the ratio of two notes, diatonic interval means the rat
 // TODO: links to examples
 
 Q: How can I find out the set of notes in a chosen mode constructed from a given tonic?\
-A: You need to create new mode and get it's scale.
+A: You need to create new mode and get it's scale. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Mode.GenerateScale)
 
 Q: How to determine the next degree by interval?\
-A: You can do it by interval's name.
+A: You can do it by interval's name. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Mode.GenerateScale)
 
 Q: How to determine the next degree by interval?\
 A: You can do it by interval's name.
