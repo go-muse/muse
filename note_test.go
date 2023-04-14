@@ -224,3 +224,103 @@ func TestNote_AlterDown(t *testing.T) {
 		t.Errorf("AlterDown on note B## should result in Bb# got: %s", n.name)
 	}
 }
+
+func TestNote_AlterUpBy(t *testing.T) {
+	t.Run("Note_AlterUpBy: positive case 1", func(t *testing.T) {
+		n := newNote(C)
+		alteredNote := n.AlterUpBy(2)
+		expectedNote := newNote(CSHARP2)
+		if alteredNote != n || !alteredNote.IsEqualByName(expectedNote) {
+			t.Error("AlterUpBy should alter the note up by the provided value")
+		}
+	})
+
+	t.Run("Note_AlterUpBy: positive case 2", func(t *testing.T) {
+		n := newNote(CFLAT2)
+		alteredNote := n.AlterUpBy(4)
+		expectedNote := newNote(CSHARP2)
+		if alteredNote != n || !alteredNote.IsEqualByName(expectedNote) {
+			t.Error("AlterUpBy should alter the note up by the provided value")
+		}
+	})
+
+	t.Run("Note_AlterUpBy: zero times", func(t *testing.T) {
+		n := newNote(C)
+		if n.AlterUpBy(0) != n {
+			t.Error("AlterUpBy should return the same note for 0 alterations")
+		}
+	})
+
+	t.Run("Note_AlterUpBy: nil note", func(t *testing.T) {
+		var n *Note
+		if n.AlterUpBy(1) != nil {
+			t.Error("AlterUpBy should return nil for nil note")
+		}
+	})
+}
+
+func TestNote_AlterDownBy(t *testing.T) {
+	t.Run("Note_AlterDownBy: positive case 1", func(t *testing.T) {
+		n := newNote(C)
+		alteredNote := n.AlterDownBy(2)
+		expectedNote := newNote(CFLAT2)
+		if alteredNote != n || !alteredNote.IsEqualByName(expectedNote) {
+			t.Error("AlterDownBy should alter the note up by the provided value")
+		}
+	})
+
+	t.Run("Note_AlterDownBy: positive case 2", func(t *testing.T) {
+		n := newNote(CSHARP2)
+		alteredNote := n.AlterDownBy(4)
+		expectedNote := newNote(CFLAT2)
+		if alteredNote != n || !alteredNote.IsEqualByName(expectedNote) {
+			t.Error("AlterDownBy should alter the note up by the provided value")
+		}
+	})
+
+	t.Run("Note_AlterDownBy: zero times", func(t *testing.T) {
+		n := newNote(C)
+		if n.AlterDownBy(0) != n {
+			t.Error("AlterDownBy should return the same note for 0 alterations")
+		}
+	})
+
+	t.Run("Note_AlterDownBy: nil note", func(t *testing.T) {
+		var n *Note
+		if n.AlterDownBy(1) != nil {
+			t.Error("AlterDownBy should return nil for nil note")
+		}
+	})
+}
+
+func TestNote_BaseName(t *testing.T) {
+	testCases := []struct {
+		note *Note
+		want NoteName
+	}{
+		{
+			note: newNote(CSHARP2),
+			want: NoteName(C),
+		},
+		{
+			note: newNote(CSHARP),
+			want: NoteName(C),
+		},
+		{
+			note: newNote(C),
+			want: NoteName(C),
+		},
+		{
+			note: newNote(CFLAT),
+			want: NoteName(C),
+		},
+		{
+			note: newNote(CFLAT2),
+			want: NoteName(C),
+		},
+	}
+
+	for _, testCase := range testCases {
+		assert.Equal(t, testCase.want, testCase.note.BaseName(), "expected note name: %s, result: %s", testCase.want, testCase.note.BaseName())
+	}
+}
