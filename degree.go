@@ -19,6 +19,26 @@ type Degree struct {
 	absoluteModalPosition *ModalPosition       // Absolute modal position of this degree
 }
 
+// NewDegree creates a new degree with specified parameters.
+func NewDegree(
+	number DegreeNum,
+	halfTonesFromPrime HalfTones,
+	previous, next *Degree,
+	note *Note,
+	modalCharacteristics ModalCharacteristics,
+	absoluteModalPosition *ModalPosition,
+) *Degree {
+	return &Degree{
+		number:                number,
+		halfTonesFromPrime:    halfTonesFromPrime,
+		previous:              previous,
+		next:                  next,
+		note:                  note,
+		modalCharacteristics:  modalCharacteristics,
+		absoluteModalPosition: absoluteModalPosition,
+	}
+}
+
 // GetNext returns degree's number (it's number in a mode).
 func (d *Degree) Number() DegreeNum {
 	return d.number
@@ -52,6 +72,21 @@ func (d *Degree) SetPrevious(previousDegree *Degree) {
 // Note returns a pointer to the note lying on this degree.
 func (d *Degree) Note() *Note {
 	return d.note
+}
+
+// Note sets note for the current degree.
+func (d *Degree) SetNote(note *Note) {
+	d.note = note
+}
+
+// ModalCharacteristics returns modal characteristics of the note.
+func (d *Degree) ModalCharacteristics() ModalCharacteristics {
+	return d.modalCharacteristics
+}
+
+// ModalCharacteristics returns absolute modal position of the note.
+func (d *Degree) AbsoluteModalPosition() *ModalPosition {
+	return d.absoluteModalPosition
 }
 
 // GetDegreeByDegreeNum returns degree by degree number.

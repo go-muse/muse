@@ -2,5 +2,7 @@ package muse
 
 type AlterationSymbol string
 
-const AlterSymbolFlat = AlterationSymbol("b")
-const AlterSymbolSharp = AlterationSymbol("#")
+const (
+	AlterSymbolFlat  = AlterationSymbol("b")
+	AlterSymbolSharp = AlterationSymbol("#")
+)
