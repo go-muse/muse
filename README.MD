@@ -1,4 +1,4 @@
-# muse <img src="https://github.com/go-muse/muse/blob/main/muse-logo.png?raw=true" alt="muse" width="100" align="right">
+# muse <img src="https://github.com/go-muse/muse/blob/main/img/muse-logo.png?raw=true" alt="muse" width="100" align="right">
 ## Toolkit for working with musical theory concepts - modes, scales, degrees, notes etc.
 ![GitHub release (latest SemVer)](https://custom-icon-badges.demolab.com/github/v/release/go-muse/muse?logo=tag&sort=semver)
 [![codecov](https://codecov.io/gh/go-muse/muse/branch/main/graph/badge.svg?token=cVbYqHMT3o)](https://codecov.io/gh/go-muse/muse)
@@ -26,3 +26,38 @@
 - [x] Templates of intervals within an octave
 - [x] Identifying the interval between two degrees
 - [x] Acoustic and Chromatic intervals
+
+## Concept
+Definitions may differ from conventional.
+
+**Mode** is a set of degrees within octave spaced apart by a certain number of semitones.
+
+**Degree** degree is a position of a note within a mode, possessing modal characteristics. 
+
+**Note** is the representation of a musical sount. It's name represent a pitch class.
+
+**Scale** is the set of musical notes got from the mode and ordered by fundamental frequency or pitch.
+
+**Interval** is the ratio of two musical sounds in pitch. 
+Chromatic interval means the ratio of two notes, diatonic interval means the radio of two degrees.
+
+![Concept pic](/img/concept.jpg)
+
+## Musician's usecases
+
+// TODO: links to examples
+
+Q: How can I find out the set of notes in a chosen mode constructed from a given tonic?\
+A: You need to create new mode and get it's scale.
+
+Q: How to determine the next degree by interval?\
+A: You can do it by interval's name.
+
+Q: How to determine the next degree by interval?\
+A: You can do it by interval's name.
+
+Q: How to know interval by two notes?\
+A: You need to create interval from that notes.
+
+Q: How to know interval by two degrees?\
+A: You need to create interval from that degrees.
