@@ -41,7 +41,7 @@ const (
 // Modes of the Harmonic Minor scale
 
 const (
-	ModeNameAeolianRais7     = ModeName("AeolianRais7 ")    // Harmonic Minor
+	ModeNameAeolianRais7     = ModeName("AeolianRais7")     // Harmonic Minor
 	ModeNameLocrianRais6     = ModeName("LocrianRais6")     // Locrian with natural 6th
 	ModeNameIonianRais5      = ModeName("IonianRais5")      // Augmented Major
 	ModeNameUkrainianDorian  = ModeName("UkrainianDorian")  // Romanian Minor, Altered Dorian
@@ -53,7 +53,7 @@ const (
 // Modes Of The Harmonic Major scale
 
 const (
-	ModeNameIonianFlat6        = ModeName("IonianFlat6 ")       // Harmonic Major, Ethiopian mode
+	ModeNameIonianFlat6        = ModeName("IonianFlat6")        // Harmonic Major, Ethiopian mode
 	ModeNameDorianDiminished   = ModeName("DorianDiminished")   // The Dorian b5 Mode, Locrian #2 #6
 	ModeNamePhrygianDiminished = ModeName("PhrygianDiminished") // The Phrygian b4 Mode, Indian mode
 	ModeNameLydianDiminished   = ModeName("LydianDiminished")   // Lydian flat 3, Lydian Minor, Melodic Minor #4

@@ -1,5 +1,7 @@
 package muse
 
+import "sort"
+
 type ModeTemplatesStore map[ModeName]ModeTemplate
 
 func (mts ModeTemplatesStore) AddTemplate(modeName ModeName, moteTemplate ModeTemplate) {
@@ -102,4 +104,64 @@ func (mts ModeTemplatesStore) FindModeTemplatesByPattern(modeTemplate ModeTempla
 	}
 
 	return result
+}
+
+// AsSlice returns map of mode names and templates as slice of structs with ste same information.
+func (mts ModeTemplatesStore) AsSlice() ModeNamesAndTemplates {
+	mnat := make(ModeNamesAndTemplates, 0, len(mts))
+	for moteTemplateName, modeTemplate := range mts {
+		mnat = append(mnat, ModeNameAndTemplate{moteTemplateName, modeTemplate})
+	}
+
+	return mnat
+}
+
+// ModeNameAndTemplate is a struct with mode name and template.
+type ModeNameAndTemplate struct {
+	Name     ModeName
+	Template ModeTemplate
+}
+
+// ModeNamesAndTemplates is a slice of structs with mode name and template.
+type ModeNamesAndTemplates []ModeNameAndTemplate
+
+// SortByModeName sorts the slice with mode names and templates by mode name.
+func (mnat ModeNamesAndTemplates) SortByModeName(desc bool) ModeNamesAndTemplates {
+	sort.Slice(mnat, func(i, j int) bool {
+		switch desc {
+		case true:
+			return mnat[i].Name > mnat[j].Name
+		default:
+			return mnat[i].Name < mnat[j].Name
+		}
+	})
+
+	return mnat
+}
+
+// SortByTemplate sorts the slice with mode names and templates by templates.
+func (mnat ModeNamesAndTemplates) SortByModeTemplate(desc bool) ModeNamesAndTemplates {
+	sort.Slice(mnat[:], func(i, j int) bool {
+		for x := range mnat[i].Template {
+			if mnat[i].Template[x] == mnat[j].Template[x] {
+				continue
+			}
+
+			switch desc {
+			case true:
+				return mnat[i].Template[x] > mnat[j].Template[x]
+			default:
+				return mnat[i].Template[x] < mnat[j].Template[x]
+			}
+		}
+
+		switch desc {
+		case true:
+			return mnat[i].Name > mnat[j].Name
+		default:
+			return mnat[i].Name < mnat[j].Name
+		}
+	})
+
+	return mnat
 }
