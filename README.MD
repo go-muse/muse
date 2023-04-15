@@ -63,6 +63,11 @@ A: You need to create interval from that degrees. [![example](https://img.shield
 Q: How to get notes from a mode sorted by their modal positions?\
 A: You need to create a mode from the selected tonic and call sorting function. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Mode.SortByAbsoluteModalPositions)
 
+## Examples
+
+Q: How to make modes?
+A: You can make it by specifying correct names (from the muse package) [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MakeNewMode) [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MustMakeNewMode) or you can create custom mode. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MakeNewCustomMode)
+
 ---
 <font size="2">This is not very stable version.
 Public function names and parameters can be changed.
