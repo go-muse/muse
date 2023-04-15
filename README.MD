@@ -34,7 +34,7 @@ Definitions may differ from conventional.
 
 **Degree** is a position of a note within a mode, possessing modal characteristics. 
 
-**Note** is the representation of a musical sount. It's name represent a pitch class.
+**Note** is the representation of a musical sound. It's name represent a pitch class.
 
 **Scale** is the set of musical notes got from the mode and ordered by fundamental frequency or pitch.
 
@@ -44,8 +44,6 @@ Chromatic interval means the ratio of two notes, diatonic interval means the rat
 ![Concept pic](/img/concept.jpg)
 
 ## Musician's usecases
-
-// TODO: links to examples
 
 Q: How can I find out the set of notes in a chosen mode constructed from a given tonic?\
 A: You need to create new mode and get it's scale. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Mode.GenerateScale)
@@ -63,10 +61,10 @@ Q: How to know interval by two degrees?\
 A: You need to create interval from that degrees. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NewIntervalByDegrees)
 
 Q: How to get notes from a mode sorted by their modal positions?\
-A: You need to create a mode from the selected tonic and call sorting function. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Mode.SortByAbsoluteModalPositions)
+A: You need to create a mode from the selected tonic and call sorting function. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Mode.SortByAbsoluteModalPositions)nv
 
 ---
-<font size=2>This is not very stable version.
+<font size="2">This is not very stable version.
 Public function names and parameters can be changed.
 Bugs are OK.
 Feel free to contact me\
