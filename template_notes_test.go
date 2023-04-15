@@ -2,6 +2,7 @@ package muse
 
 import (
 	"testing"
+	"unsafe"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -108,4 +109,101 @@ func TestGetTemplateNotesInstance(t *testing.T) {
 		templateNotesInstance.templateNote = nil
 		assert.Nil(t, templateNotesInstance.getTemplateNote(&Note{name: C}))
 	})
+}
+
+func Test_saveTonic(t *testing.T) {
+	tni := getTemplateNotesInstance()
+	note := MustNewNote(BFLAT)
+	tn := tni.getTemplateNote(note)
+	tn.saveTonic(note)
+	assert.Equal(t, HalfTones(0), tn.halfTonesFromPrime, "expected: 0, actual: %d", tn.halfTonesFromPrime)
+	assert.True(t, tn.isTonic)
+
+	currentNote := tn
+	var halfTonesFromPrime HalfTones
+	for unsafe.Pointer(currentNote.next) != unsafe.Pointer(tn) {
+		halfTonesFromPrime++
+		currentNote = currentNote.getNext()
+		assert.Equal(t, halfTonesFromPrime, currentNote.halfTonesFromPrime, "expected: %d, actual: %d", halfTonesFromPrime, currentNote.halfTonesFromPrime)
+		assert.False(t, currentNote.isTonic)
+	}
+}
+
+func Test_getTonic(t *testing.T) {
+	scale := GetFullChromaticScale()
+	for i := range scale {
+		tni := getTemplateNotesInstance()
+		tn := tni.getTemplateNote(&scale[i])
+		tn.saveTonic(&scale[i])
+		assert.Equal(t, tn, tn.getTonic(), "expected: %v, actual: %v", tn, tn.getTonic())
+
+		currentNote := tn
+		for unsafe.Pointer(currentNote.next) != unsafe.Pointer(tn) {
+			currentNote = currentNote.getNext()
+			tonic := currentNote.getTonic()
+			assert.Equal(t, tn, tonic, "expected: %v, actual: %v", tn, tonic)
+		}
+	}
+}
+
+func Test_getPreviousUsedBaseNote(t *testing.T) {
+	scale := GetFullChromaticScale()
+	for i, note := range scale {
+		tni := getTemplateNotesInstance()
+		tn := tni.getTemplateNote(&scale[i])
+		tn.saveResultingNote(&scale[i])
+
+		currentNote := tn
+		for unsafe.Pointer(currentNote.next) != unsafe.Pointer(tn) {
+			currentNote = currentNote.getNext()
+			pbn := currentNote.getPreviousUsedBaseNote()
+			assert.Equal(t, note.baseNote(), pbn, "expected: %v, actual: %v", note.baseNote(), pbn)
+		}
+	}
+}
+
+func Test_NextBaseNote(t *testing.T) {
+	tni := getTemplateNotesInstance()
+
+	testCases := []struct {
+		tns  []*Note
+		want *Note
+	}{
+		{
+			tns:  []*Note{newNote(C), newNote(CSHARP), newNote(CFLAT)},
+			want: newNote(D),
+		},
+		{
+			tns:  []*Note{newNote(D), newNote(DSHARP), newNote(DFLAT)},
+			want: newNote(E),
+		},
+		{
+			tns:  []*Note{newNote(E), newNote(ESHARP), newNote(EFLAT)},
+			want: newNote(F),
+		},
+		{
+			tns:  []*Note{newNote(F), newNote(FSHARP), newNote(FFLAT)},
+			want: newNote(G),
+		},
+		{
+			tns:  []*Note{newNote(G), newNote(GSHARP), newNote(GFLAT)},
+			want: newNote(A),
+		},
+		{
+			tns:  []*Note{newNote(A), newNote(ASHARP), newNote(AFLAT)},
+			want: newNote(B),
+		},
+		{
+			tns:  []*Note{newNote(B), newNote(BSHARP), newNote(BFLAT)},
+			want: newNote(C),
+		},
+	}
+
+	for _, testCase := range testCases {
+		for _, tn := range testCase.tns {
+			tni.SetLastUsedBaseNote(tn)
+			nextBase := tni.NextBaseNote()
+			assert.Equal(t, testCase.want, nextBase, "expected: %+v, actual: %+v", testCase.want, nextBase)
+		}
+	}
 }

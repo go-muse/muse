@@ -86,6 +86,8 @@ func (n *Note) IsEqualByName(note *Note) bool {
 		return false
 	}
 
+	// fmt.Println(note.Name(), n.Name(), note.Name() == n.Name())
+
 	return note.Name() == n.Name()
 }
 
@@ -162,4 +164,8 @@ func (n *Note) AlterDownBy(i uint) *Note {
 
 func (n *Note) BaseName() NoteName {
 	return n.name[0:1]
+}
+
+func (n *Note) baseNote() *Note {
+	return newNote(n.name[0:1])
 }
