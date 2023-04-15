@@ -40,3 +40,36 @@ func generateDegreesWithNotes(isCycled bool, modeTemplate ModeTemplate, firstNot
 
 	return firstDegree
 }
+
+func generateModeWithNotes(mt ModeTemplate, noteNames []NoteName) *Mode {
+	if len(mt) != len(noteNames) {
+		panic("length incompatible")
+	}
+
+	if mt.Validate() != nil {
+		panic(mt.Validate())
+	}
+
+	firstDegree := NewDegree(1, 0, nil, nil, MustNewNote(noteNames[0]), nil, nil)
+	currentDegree := firstDegree
+	var halfTonesFromPrime HalfTones
+	const degreeIndexShift = 2
+	const noteNameShift = 1
+	for i, halfTone := range mt {
+		if i == len(mt)-1 {
+			break
+		}
+
+		degree := NewDegree(DegreeNum(i+degreeIndexShift), 0, nil, nil, newNote(noteNames[i+noteNameShift]), nil, nil)
+
+		halfTonesFromPrime += halfTone
+		degree.halfTonesFromPrime = halfTonesFromPrime
+
+		currentDegree.AttachNext(degree)
+		currentDegree = degree
+	}
+
+	firstDegree.AttachPrevious(currentDegree)
+
+	return &Mode{degree: firstDegree}
+}

@@ -1146,3 +1146,19 @@ func TestDegree_generateDegreesWithNotes(t *testing.T) {
 		currentDegree = currentDegree.GetNext()
 	}
 }
+
+func Test_generateModeWithNotes(t *testing.T) {
+	noteNames := []NoteName{C, D, EFLAT, F, G, AFLAT, BFLAT}
+	mt := TemplateAeolian()
+	mode := generateModeWithNotes(mt, noteNames)
+	var halfTonesFromPrime HalfTones
+	for degree := range mode.IterateOneRound(false) {
+		if degree.Number() >= 2 {
+			halfTonesFromPrime += mt[int(degree.Number())-2]
+		}
+		assert.Equal(t, noteNames[degree.Number()-1], degree.Note().Name())
+		if degree.Number() >= 2 {
+			assert.Equal(t, halfTonesFromPrime, degree.HalfTonesFromPrime(), "expected :%d, actual: %d", halfTonesFromPrime, degree.HalfTonesFromPrime())
+		}
+	}
+}

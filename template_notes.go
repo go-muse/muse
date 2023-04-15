@@ -1,5 +1,9 @@
 package muse
 
+import (
+	"unsafe"
+)
+
 // noteRelation is relation between note and it's base note.
 // It is used sto get base note by altered note or
 // to get base note from resultin note.
@@ -20,48 +24,22 @@ func (ar *noteRelation) realNote() *Note {
 
 // templateNote is a template note for the single template instance.
 type templateNote struct {
-	next          *templateNote
-	previous      *templateNote
-	isAltered     bool
-	notAltered    *Note
-	alteredNotes  []*noteRelation
-	resultingNote *noteRelation
+	isTonic            bool
+	next               *templateNote
+	previous           *templateNote
+	halfTonesFromPrime HalfTones
+	isAltered          bool
+	notAltered         *Note
+	alteredNotes       []*noteRelation
+	resultingNote      *noteRelation
 }
 
 func (tn *templateNote) getNext() *templateNote {
 	return tn.next
 }
 
-// saveResultingNote inserts the final note into the template note
-// with preserving the information about which note is the base for the saved note.
-func (tn *templateNote) saveResultingNote(note *Note) {
-	if tn.isAltered {
-		for _, ar := range tn.alteredNotes {
-			if ar.realNote().IsEqualByName(note) {
-				tn.resultingNote = &noteRelation{ar.baseNote(), note}
-			}
-		}
-	} else {
-		tn.resultingNote = &noteRelation{note, note}
-	}
-}
-
-// setNextTemplateNote function is necessary to obtain a template chain of the same length as the mode,
-// in order to correctly compare the current note with the immediately preceding one,
-// without guessing how many skips should be made, from a 12-note octave chain of a template set.
-func (tn *templateNote) setNextTemplateNote(next *templateNote) {
-	tn.next = next
-	next.previous = tn
-}
-
-// getByHalftones returns a template note that is several half steps away from the current one.
-func (tn *templateNote) getByHalftones(halfTones HalfTones) *templateNote {
-	templateNote := tn
-	for i := 0; i < int(halfTones); i++ {
-		templateNote = templateNote.getNext()
-	}
-
-	return templateNote
+func (tn *templateNote) getPrevious() *templateNote {
+	return tn.previous
 }
 
 // buildNoteByPrevious determines the final note based on a template note using the previous template note.
@@ -87,9 +65,81 @@ func (tn *templateNote) buildNoteByPrevious() *Note {
 	return nil
 }
 
+// setNextTemplateNote function is necessary to obtain a template chain of the same length as the mode,
+// in order to correctly compare the current note with the immediately preceding one,
+// without guessing how many skips should be made, from a 12-note octave chain of a template set.
+func (tn *templateNote) setNextTemplateNote(next *templateNote) {
+	tn.next = next
+	next.previous = tn
+}
+
+// saveResultingNote inserts the final note into the template note
+// with preserving the information about which note is the base for the saved note.
+func (tn *templateNote) saveResultingNote(note *Note) {
+	if tn.isAltered {
+		for _, ar := range tn.alteredNotes {
+			if ar.realNote().IsEqualByName(note) {
+				tn.resultingNote = &noteRelation{ar.baseNote(), note}
+			}
+		}
+	} else {
+		tn.resultingNote = &noteRelation{note, note}
+	}
+}
+
+func (tn *templateNote) saveTonic(note *Note) {
+	tn.saveResultingNote(note)
+	tn.isTonic = true
+	current := tn
+	for unsafe.Pointer(current.next) != unsafe.Pointer(tn) {
+		current = current.getNext()
+		current.halfTonesFromPrime = current.getPrevious().halfTonesFromPrime + 1
+	}
+}
+
+// getByHalftones returns a template note that is several half steps away from the current one.
+func (tn *templateNote) getByHalftones(halfTones HalfTones) *templateNote {
+	templateNote := tn
+	for i := 0; i < int(halfTones); i++ {
+		templateNote = templateNote.getNext()
+	}
+
+	return templateNote
+}
+
+func (tn *templateNote) getTonic() *templateNote {
+	templateNote := tn
+	for {
+		templateNote = templateNote.getNext()
+		if templateNote.isTonic {
+			break
+		}
+	}
+
+	return templateNote
+}
+
+func (tn *templateNote) getPreviousUsedBaseNote() *Note {
+	templateNote := tn
+	for {
+		templateNote = templateNote.getPrevious()
+		if templateNote.resultingNote != nil {
+			break
+		}
+	}
+
+	return templateNote.resultingNote.base
+}
+
 // templateInstance is the instance with template notes.
 type templateInstance struct {
-	*templateNote // the first note of the linked list in the template instance
+	*templateNote           // the first note of the linked list in the template instance
+	baseNote      *baseNote // last used note without alteration symbol to build the mode
+}
+
+type baseNote struct {
+	prev, next *baseNote
+	note       *Note
 }
 
 // getTemplateNote determines template note by the given Note.
@@ -118,15 +168,17 @@ func (ti *templateInstance) getTemplateNote(note *Note) *templateNote {
 
 // Equal Compares Note and template note by name.
 func (tn *templateNote) Equal(note *Note) bool {
-	if tn.isAltered {
+	if !tn.isAltered {
+		if tn.notAltered.IsEqualByName(note) {
+			return true
+		}
+	}
+
+	if tn.alteredNotes != nil {
 		for _, ar := range tn.alteredNotes {
 			if ar.realNote().IsEqualByName(note) {
 				return true
 			}
-		}
-	} else { //nolint
-		if tn.notAltered.IsEqualByName(note) {
-			return true
 		}
 	}
 
@@ -137,10 +189,9 @@ func (tn *templateNote) Equal(note *Note) bool {
 // this will be hardcoded as to what each template note contains.
 func getTemplateNotesInstance() *templateInstance {
 	templateNote12 := &templateNote{
-		next:         nil,
-		isAltered:    false,
-		notAltered:   &Note{name: B},
-		alteredNotes: nil,
+		next:       nil,
+		isAltered:  false,
+		notAltered: &Note{name: B},
 	}
 
 	templateNote11 := &templateNote{
@@ -239,5 +290,61 @@ func getTemplateNotesInstance() *templateInstance {
 	templateNote12.next = templateNote1
 	templateNote1.previous = templateNote12
 
-	return &templateInstance{templateNote1}
+	baseNote7 := &baseNote{
+		prev: nil,
+		next: nil,
+		note: newNote(B),
+	}
+	baseNote6 := &baseNote{
+		prev: nil,
+		next: baseNote7,
+		note: newNote(A),
+	}
+	baseNote5 := &baseNote{
+		prev: nil,
+		next: baseNote6,
+		note: newNote(G),
+	}
+	baseNote4 := &baseNote{
+		prev: nil,
+		next: baseNote5,
+		note: newNote(F),
+	}
+	baseNote3 := &baseNote{
+		prev: nil,
+		next: baseNote4,
+		note: newNote(E),
+	}
+	baseNote2 := &baseNote{
+		prev: nil,
+		next: baseNote3,
+		note: newNote(D),
+	}
+	baseNote1 := &baseNote{
+		prev: nil,
+		next: baseNote2,
+		note: newNote(C),
+	}
+
+	baseNote7.next = baseNote1
+
+	return &templateInstance{templateNote1, baseNote1}
+}
+
+func (ti *templateInstance) NextBaseNote() *Note {
+	ti.baseNote = ti.baseNote.next
+
+	return ti.baseNote.note
+}
+
+func (ti *templateInstance) SetLastUsedBaseNote(note *Note) {
+	currentNote := ti.baseNote
+	for unsafe.Pointer(currentNote.next) != unsafe.Pointer(ti.baseNote) {
+		currentNote = currentNote.next
+		if note.baseNote().IsEqualByName(currentNote.note) {
+			ti.baseNote = currentNote
+
+			break
+		}
+	}
 }

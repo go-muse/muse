@@ -265,7 +265,7 @@ func TestNote_AlterDownBy(t *testing.T) {
 		alteredNote := n.AlterDownBy(2)
 		expectedNote := newNote(CFLAT2)
 		if alteredNote != n || !alteredNote.IsEqualByName(expectedNote) {
-			t.Error("AlterDownBy should alter the note up by the provided value")
+			t.Errorf("AlterDownBy expected: %s, actual: %s", expectedNote.Name(), alteredNote.Name())
 		}
 	})
 
@@ -274,7 +274,7 @@ func TestNote_AlterDownBy(t *testing.T) {
 		alteredNote := n.AlterDownBy(4)
 		expectedNote := newNote(CFLAT2)
 		if alteredNote != n || !alteredNote.IsEqualByName(expectedNote) {
-			t.Error("AlterDownBy should alter the note up by the provided value")
+			t.Errorf("AlterDownBy expected: %s, actual: %s", expectedNote.Name(), alteredNote.Name())
 		}
 	})
 
@@ -300,23 +300,23 @@ func TestNote_BaseName(t *testing.T) {
 	}{
 		{
 			note: newNote(CSHARP2),
-			want: NoteName(C),
+			want: C,
 		},
 		{
 			note: newNote(CSHARP),
-			want: NoteName(C),
+			want: C,
 		},
 		{
 			note: newNote(C),
-			want: NoteName(C),
+			want: C,
 		},
 		{
 			note: newNote(CFLAT),
-			want: NoteName(C),
+			want: C,
 		},
 		{
 			note: newNote(CFLAT2),
-			want: NoteName(C),
+			want: C,
 		},
 	}
 

@@ -64,6 +64,77 @@ func coreBuilding(modeTemplate ModeTemplate, firstNote *Note) <-chan coreBuildin
 		}
 
 		// Save the first note of the mode into the template note
+		templateNote.saveTonic(firstNote)
+
+		// Set last used "base" note (clean note without alteration symbols)
+		templateNotes.SetLastUsedBaseNote(firstNote)
+
+		// Iterate through the mode template
+		for iteratorResult := range modeTemplate.IterateOneRound(false) {
+			_, halfTones, halfTonesFromPrime := iteratorResult()
+
+			// Get next template note based on mode template's step
+			nextTemplateNote := templateNote.getByHalftones(halfTones)
+
+			// Get nex base note (note after last used base note)
+			nextBaseNote := templateNotes.NextBaseNote()
+
+			// Get next template note that is base note in the template notes chain
+			nextTemplateNoteByBase := templateNotes.getTemplateNote(nextBaseNote)
+
+			// Difference between their distance from tonic gives us understanding what to do with the next "clean" note
+			diff := int8(nextTemplateNoteByBase.halfTonesFromPrime) - int8(nextTemplateNote.halfTonesFromPrime)
+
+			// Alteration of the clean note by it's distance from the clean note with the same name
+			for diff != 0 {
+				switch {
+				case diff > 0:
+					nextBaseNote.AlterDown()
+					diff--
+				case diff < 0:
+					nextBaseNote.AlterUp()
+					diff++
+				}
+			}
+
+			// Insert the next note into the current note variable, to use it at the next iteration
+			templateNote = nextTemplateNote
+
+			// send resulting note with distance from the prime note in half tones
+			c <- send(nextBaseNote, halfTonesFromPrime)
+		}
+
+		close(c)
+	}
+
+	c := make(chan coreBuildingIteratorResult)
+	go f(c)
+
+	return c
+}
+
+// isModalPositionsActual checks whether the concept of modal position makes sense for the given mode.
+func isModalPositionsActual(mt ModeTemplate) bool {
+	// TODO: another modes?
+	return mt.IsDiatonic()
+}
+
+func coreBuildingIntervals(modeTemplate ModeTemplate, firstNote *Note) <-chan coreBuildingIteratorResult {
+	send := func(note *Note, halfTones HalfTones) coreBuildingIteratorResult {
+		return func() (*Note, HalfTones) { return note, halfTones }
+	}
+
+	f := func(c chan coreBuildingIteratorResult) {
+		// Get instance with 12 template notes
+		templateNotes := getTemplateNotesInstance()
+
+		// Get the first template note based on the first note of the mode
+		templateNote := templateNotes.getTemplateNote(firstNote)
+		if templateNote == nil {
+			panic(errors.New("cant find first template note"))
+		}
+
+		// Save the first note of the mode into the template note
 		templateNote.saveResultingNote(firstNote)
 
 		// Iterate through the mode template
@@ -96,10 +167,4 @@ func coreBuilding(modeTemplate ModeTemplate, firstNote *Note) <-chan coreBuildin
 	go f(c)
 
 	return c
-}
-
-// isModalPositionsActual checks whether the concept of modal position makes sense for the given mode.
-func isModalPositionsActual(mt ModeTemplate) bool {
-	// TODO: another modes?
-	return mt.IsDiatonic()
 }
