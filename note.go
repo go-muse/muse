@@ -16,8 +16,8 @@ func newNote(name NoteName) *Note {
 	return &Note{name: name}
 }
 
-// ErrUnknownNoteName is еру error that occurs when trying to determine the name of a note if it is not known.
-var ErrUnknownNoteName = errors.New("unknown note name")
+// ErrNoteNameUnknown is еру error that occurs when trying to determine the name of a note if it is not known.
+var ErrNoteNameUnknown = errors.New("unknown note name")
 
 // NewNote creates new note with a given name validating it.
 func NewNote(noteName NoteName) (*Note, error) {
@@ -58,7 +58,7 @@ func NewNote(noteName NoteName) (*Note, error) {
 		return newNote(B), nil
 	}
 
-	return nil, errors.Wrapf(ErrUnknownNoteName, "given name: %s", noteName)
+	return nil, errors.Wrapf(ErrNoteNameUnknown, "given name: %s", noteName)
 }
 
 // MustNewNote creates new note with suppressing error in case of invalid note name.
@@ -85,8 +85,6 @@ func (n *Note) IsEqualByName(note *Note) bool {
 	if n == nil || note == nil {
 		return false
 	}
-
-	// fmt.Println(note.Name(), n.Name(), note.Name() == n.Name())
 
 	return note.Name() == n.Name()
 }

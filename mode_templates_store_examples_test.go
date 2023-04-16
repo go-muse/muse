@@ -143,6 +143,7 @@ func ExampleModeTemplatesStore_FindModeTemplatesByPattern() {
 	// Example of incomplete mode template
 	myPattern := muse.ModeTemplate{2, 1, 3, 1, 2}
 
+	// result is the same ModeTemplatesStore instance, but with resulting templates only
 	result := mts.FindModeTemplatesByPattern(myPattern).AsSlice().SortByModeTemplate(false)
 
 	for _, info := range result {

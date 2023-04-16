@@ -99,7 +99,7 @@ func (m *Mode) GetFirstDegree() *Degree {
 		return m.degree
 	}
 
-	// error?
+	// TODO: error?
 
 	return nil
 }
@@ -207,7 +207,7 @@ func (m *Mode) Equal(mode *Mode) bool {
 
 // GetIntervals returns all intervals from the mode.
 // It is possible to specify filtering options.
-func (m *Mode) GetIntervals(opts *FilteringOptions) []Interval {
+func (m *Mode) GetIntervals(opts *IntervalFilteringOptions) []Interval {
 	intervalsWithDegrees := make([]Interval, 0)
 	for degree := range m.GetFirstDegree().IterateOneRound(false) {
 		if !opts.FilterByAbsoluteModalPositionExist(degree.absoluteModalPosition.name) {

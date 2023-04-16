@@ -54,19 +54,6 @@ func TestFindModeTemplatesByPattern(t *testing.T) {
 	}
 }
 
-func generateAbstractPatterns(modeTemplate []HalfTones) [][]HalfTones {
-	var res [][]HalfTones
-	for j := len(modeTemplate); j > 0; j-- {
-		k := j
-		for i := 0; i+j <= len(modeTemplate); i++ {
-			res = append(res, modeTemplate[i:k])
-			k++
-		}
-	}
-
-	return res
-}
-
 func TestFindModeTemplatesByPatternCases(t *testing.T) {
 	mts := InitModeTemplatesStore()
 	modeTemplates := mts.FindModeTemplatesByPattern(TemplateNaturalMinor())

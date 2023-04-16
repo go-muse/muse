@@ -87,6 +87,7 @@ func (tn *templateNote) saveResultingNote(note *Note) {
 	}
 }
 
+// saveTonic  saves the first note of the constructed mode.
 func (tn *templateNote) saveTonic(note *Note) {
 	tn.saveResultingNote(note)
 	tn.isTonic = true
@@ -107,6 +108,7 @@ func (tn *templateNote) getByHalftones(halfTones HalfTones) *templateNote {
 	return templateNote
 }
 
+// getTonic returns the first note of the constructed mode.
 func (tn *templateNote) getTonic() *templateNote {
 	templateNote := tn
 	for {
@@ -137,6 +139,8 @@ type templateInstance struct {
 	baseNote      *baseNote // last used note without alteration symbol to build the mode
 }
 
+// baseNote is one of "clean" notes: [C, D, E, F, G, A, B].
+// It is involved in calculating the alteration of the constructed notes of the mode.
 type baseNote struct {
 	prev, next *baseNote
 	note       *Note
@@ -331,13 +335,15 @@ func getTemplateNotesInstance() *templateInstance {
 	return &templateInstance{templateNote1, baseNote1}
 }
 
-func (ti *templateInstance) NextBaseNote() *Note {
+// nextBaseNote sets next base note as current and returns it.
+func (ti *templateInstance) nextBaseNote() *Note {
 	ti.baseNote = ti.baseNote.next
 
 	return ti.baseNote.note
 }
 
-func (ti *templateInstance) SetLastUsedBaseNote(note *Note) {
+// setLastUsedBaseNote sets last used base note as current.
+func (ti *templateInstance) setLastUsedBaseNote(note *Note) {
 	currentNote := ti.baseNote
 	for unsafe.Pointer(currentNote.next) != unsafe.Pointer(ti.baseNote) {
 		currentNote = currentNote.next
