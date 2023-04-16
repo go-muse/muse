@@ -71,7 +71,6 @@ func ExampleMode_IterateOneRound() {
 	for degree := range iteratorForward {
 		fmt.Printf("Degree Number: %d, Half tones from prime: %d, Note: %s\n", degree.Number(), degree.HalfTonesFromPrime(), degree.Note().Name())
 	}
-
 	// Output: Degree Number: 1, Half tones from prime: 0, Note: A
 	// Degree Number: 2, Half tones from prime: 2, Note: B
 	// Degree Number: 3, Half tones from prime: 3, Note: C
