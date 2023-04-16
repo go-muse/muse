@@ -65,13 +65,13 @@ A: You need to create a mode from the selected tonic and call sorting function. 
 
 ## Examples
 
-Q: How to make modes?
+Q: How to make modes?\
 A: You can make it by specifying correct names (from the muse package) [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MakeNewMode) [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MustMakeNewMode) or you can create custom mode. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MakeNewCustomMode)
 
 ---
 <font size="2">This is not very stable version.
 Public function names and parameters can be changed.
-Bugs are OK.
+Bugs are OK.\
 Feel free to contact me\
 </font>
 [![GitHub](https://custom-icon-badges.demolab.com/badge/-email-white?logo=gmail)](mailto:igor.georgia.sx@gmail.com)

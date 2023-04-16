@@ -1,15 +1,15 @@
 package muse
 
-type GetOptFunc func(*FilteringOptions)
+type IntervalGetOptFunc func(*IntervalFilteringOptions)
 
-type FilteringOptions struct {
+type IntervalFilteringOptions struct {
 	FilterByDegreeCharacteristicName map[DegreeCharacteristicName]struct{}
 	FilterBySonance                  map[Sonance]struct{}
 	FilterByAbsoluteModalPosition    map[ModalPositionName]struct{}
 }
 
-func NewGetOptions(opts ...GetOptFunc) *FilteringOptions {
-	o := &FilteringOptions{
+func NewIntervalGetOptions(opts ...IntervalGetOptFunc) *IntervalFilteringOptions {
+	o := &IntervalFilteringOptions{
 		FilterByDegreeCharacteristicName: make(map[DegreeCharacteristicName]struct{}),
 		FilterBySonance:                  make(map[Sonance]struct{}),
 		FilterByAbsoluteModalPosition:    make(map[ModalPositionName]struct{}),
@@ -18,7 +18,7 @@ func NewGetOptions(opts ...GetOptFunc) *FilteringOptions {
 	return o.WithOpts(opts...)
 }
 
-func (o *FilteringOptions) WithOpts(opts ...GetOptFunc) *FilteringOptions {
+func (o *IntervalFilteringOptions) WithOpts(opts ...IntervalGetOptFunc) *IntervalFilteringOptions {
 	t := *o
 
 	for _, opt := range opts {
@@ -28,31 +28,31 @@ func (o *FilteringOptions) WithOpts(opts ...GetOptFunc) *FilteringOptions {
 	return &t
 }
 
-func AddFilterByDegreeCharacteristicName(dcNames []DegreeCharacteristicName) GetOptFunc {
-	return func(o *FilteringOptions) {
+func AddFilterByDegreeCharacteristicName(dcNames []DegreeCharacteristicName) IntervalGetOptFunc {
+	return func(o *IntervalFilteringOptions) {
 		for _, dcName := range dcNames {
 			o.FilterByDegreeCharacteristicName[dcName] = struct{}{}
 		}
 	}
 }
 
-func AddFilterByAbsoluteModalPosition(modalPositionNames []ModalPositionName) GetOptFunc {
-	return func(o *FilteringOptions) {
+func AddFilterByAbsoluteModalPosition(modalPositionNames []ModalPositionName) IntervalGetOptFunc {
+	return func(o *IntervalFilteringOptions) {
 		for _, modalPositionName := range modalPositionNames {
 			o.FilterByAbsoluteModalPosition[modalPositionName] = struct{}{}
 		}
 	}
 }
 
-func AddFilterBySonance(sonances []Sonance) GetOptFunc {
-	return func(o *FilteringOptions) {
+func AddFilterBySonance(sonances []Sonance) IntervalGetOptFunc {
+	return func(o *IntervalFilteringOptions) {
 		for _, sonance := range sonances {
 			o.FilterBySonance[sonance] = struct{}{}
 		}
 	}
 }
 
-func (o *FilteringOptions) FilterByDegreeCharacteristicNameExist(dcn DegreeCharacteristicName) bool {
+func (o *IntervalFilteringOptions) FilterByDegreeCharacteristicNameExist(dcn DegreeCharacteristicName) bool {
 	if _, ok := o.FilterByDegreeCharacteristicName[dcn]; ok {
 		return true
 	}
@@ -60,7 +60,7 @@ func (o *FilteringOptions) FilterByDegreeCharacteristicNameExist(dcn DegreeChara
 	return false
 }
 
-func (o *FilteringOptions) FilterBySonanceExist(s Sonance) bool {
+func (o *IntervalFilteringOptions) FilterBySonanceExist(s Sonance) bool {
 	if _, ok := o.FilterBySonance[s]; ok {
 		return true
 	}
@@ -68,7 +68,7 @@ func (o *FilteringOptions) FilterBySonanceExist(s Sonance) bool {
 	return false
 }
 
-func (o *FilteringOptions) FilterByAbsoluteModalPositionExist(s ModalPositionName) bool {
+func (o *IntervalFilteringOptions) FilterByAbsoluteModalPositionExist(s ModalPositionName) bool {
 	if _, ok := o.FilterByAbsoluteModalPosition[s]; ok {
 		return true
 	}

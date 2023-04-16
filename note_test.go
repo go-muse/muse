@@ -51,7 +51,7 @@ func TestNewNote(t *testing.T) {
 		expectedName := NoteName("Hello")
 		newNote, err := NewNote(expectedName)
 		// assert that the returned error matches the expected error
-		assert.ErrorIs(t, err, ErrUnknownNoteName)
+		assert.ErrorIs(t, err, ErrNoteNameUnknown)
 		assert.Nil(t, newNote)
 	})
 }

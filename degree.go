@@ -127,9 +127,9 @@ func (d *Degree) GetForwardDegreeByDegreeNum(forwardDegrees DegreeNum) *Degree {
 // and also provides additional functionality.
 type DegreesIterator <-chan *Degree
 
-// GetAll iterates through a sequence of degrees
+// GetAllDegrees iterates through a sequence of degrees
 // and returns them as slice.
-func (di DegreesIterator) GetAll() []*Degree {
+func (di DegreesIterator) GetAllDegrees() []*Degree {
 	if di == nil {
 		return nil
 	}

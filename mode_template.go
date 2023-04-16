@@ -101,6 +101,12 @@ func (mt ModeTemplate) IsDiatonic() bool {
 	return true
 }
 
+// IsHeptatonic checks if the mode is heptatonic or not.
+// In this case, we mean that heptatonic modes have seven degrees.
+func (mt ModeTemplate) IsHeptatonic() bool {
+	return mt.Length() == DegreesInHeptatonic
+}
+
 // RearrangeFromDegree rebuilds mode template from the specified degree number.
 func (mt ModeTemplate) RearrangeFromDegree(degree DegreeNum) ModeTemplate {
 	ltArranged := make(ModeTemplate, 0, mt.Length())

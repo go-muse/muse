@@ -201,8 +201,8 @@ func Test_NextBaseNote(t *testing.T) {
 
 	for _, testCase := range testCases {
 		for _, tn := range testCase.tns {
-			tni.SetLastUsedBaseNote(tn)
-			nextBase := tni.NextBaseNote()
+			tni.setLastUsedBaseNote(tn)
+			nextBase := tni.nextBaseNote()
 			assert.Equal(t, testCase.want, nextBase, "expected: %+v, actual: %+v", testCase.want, nextBase)
 		}
 	}

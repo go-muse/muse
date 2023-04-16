@@ -1,5 +1,7 @@
 package muse
 
+// utils is a testing helpers functions
+
 func generateDegrees(degreesAmount uint, isCycled bool) *Degree {
 	if degreesAmount < 1 {
 		return nil
@@ -72,4 +74,17 @@ func generateModeWithNotes(mt ModeTemplate, noteNames []NoteName) *Mode {
 	firstDegree.AttachPrevious(currentDegree)
 
 	return &Mode{degree: firstDegree}
+}
+
+func generateAbstractPatterns(modeTemplate []HalfTones) [][]HalfTones {
+	var res [][]HalfTones
+	for j := len(modeTemplate); j > 0; j-- {
+		k := j
+		for i := 0; i+j <= len(modeTemplate); i++ {
+			res = append(res, modeTemplate[i:k])
+			k++
+		}
+	}
+
+	return res
 }

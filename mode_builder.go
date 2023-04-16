@@ -5,8 +5,9 @@ import (
 )
 
 const (
-	DegreesInDiatonic = DegreeNum(7)
-	DegreesInTonality = DegreeNum(17)
+	DegreesInDiatonic   = DegreeNum(7)
+	DegreesInHeptatonic = DegreeNum(7)
+	DegreesInTonality   = DegreeNum(17)
 )
 
 // modeBuilder is the instance of mode builder that will receive ready mode and the first note (and possibly the method of building the mode)
@@ -67,7 +68,7 @@ func coreBuilding(modeTemplate ModeTemplate, firstNote *Note) <-chan coreBuildin
 		templateNote.saveTonic(firstNote)
 
 		// Set last used "base" note (clean note without alteration symbols)
-		templateNotes.SetLastUsedBaseNote(firstNote)
+		templateNotes.setLastUsedBaseNote(firstNote)
 
 		// Iterate through the mode template
 		for iteratorResult := range modeTemplate.IterateOneRound(false) {
@@ -77,7 +78,7 @@ func coreBuilding(modeTemplate ModeTemplate, firstNote *Note) <-chan coreBuildin
 			nextTemplateNote := templateNote.getByHalftones(halfTones)
 
 			// Get nex base note (note after last used base note)
-			nextBaseNote := templateNotes.NextBaseNote()
+			nextBaseNote := templateNotes.nextBaseNote()
 
 			// Get next template note that is base note in the template notes chain
 			nextTemplateNoteByBase := templateNotes.getTemplateNote(nextBaseNote)
@@ -116,7 +117,7 @@ func coreBuilding(modeTemplate ModeTemplate, firstNote *Note) <-chan coreBuildin
 // isModalPositionsActual checks whether the concept of modal position makes sense for the given mode.
 func isModalPositionsActual(mt ModeTemplate) bool {
 	// TODO: another modes?
-	return mt.IsDiatonic()
+	return mt.IsHeptatonic()
 }
 
 func coreBuildingIntervals(modeTemplate ModeTemplate, firstNote *Note) <-chan coreBuildingIteratorResult {
