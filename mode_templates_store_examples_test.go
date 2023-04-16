@@ -79,7 +79,7 @@ func ExampleModeNamesAndTemplates_SortByModeName() {
 
 // You can get the mode templates store as slice and sort it by mode Templates.
 // Also you can specify sorting order.
-func ExampleModeTemplatesStore_AsSlice() {
+func ExampleModeNamesAndTemplates_SortByModeTemplate() {
 	mts := muse.InitModeTemplatesStore()
 
 	slc := mts.AsSlice()

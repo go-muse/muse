@@ -63,10 +63,19 @@ A: You need to create interval from that degrees. [![example](https://img.shield
 Q: How to get notes from a mode sorted by their modal positions?\
 A: You need to create a mode from the selected tonic and call sorting function. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Mode.SortByAbsoluteModalPositions)
 
+Q: How to find a mode by pattern?\
+A: There is a storage of mode names and their templates. You can find them by specifying your template. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-ModeTemplatesStore.FindModeTemplatesByPattern) Then you can sort them by mode names [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-ModeNamesAndTemplates.SortByModeName) or by templates(patterns) [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-ModeNamesAndTemplates.SortByModeTemplate).
+
 ## Examples
 
 Q: How to make modes?\
 A: You can make it by specifying correct names (from the muse package) [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MakeNewMode) [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MustMakeNewMode) or you can create custom mode. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MakeNewCustomMode)
+
+Q: How to iterate mode?\
+A: You can iterate through degrees  [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Mode.IterateOneRound) [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-DegreesIterator.GetAllDegrees) or notes [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-DegreesIterator.GetAllNotes) of modes.
+
+Q: Are there already existing scales in the library?\
+A: Yes, ther is mode templates store [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-InitModeTemplatesStore). It contains mode names and templates.
 
 ---
 <font size="2">This is not very stable version.
