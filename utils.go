@@ -29,7 +29,7 @@ func generateDegreesWithNotes(isCycled bool, modeTemplate ModeTemplate, firstNot
 
 	firstDegree := &Degree{number: 1, note: firstNote, halfTonesFromPrime: 0}
 	currentDegree := firstDegree
-	for res := range coreBuilding(modeTemplate, firstNote) {
+	for res := range coreBuilding7degree(modeTemplate, firstNote) {
 		note, halfTonesFromPrime := res()
 		newDegree := &Degree{number: currentDegree.number + 1, note: note, halfTonesFromPrime: halfTonesFromPrime}
 		currentDegree.AttachNext(newDegree)

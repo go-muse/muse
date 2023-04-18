@@ -7,8 +7,6 @@ import (
 )
 
 func TestBuild7DegreeMode(t *testing.T) {
-	mb := newModeBuilder()
-
 	type testCase struct {
 		modeTemplate ModeTemplate
 		resultMode   *Mode
@@ -18,7 +16,7 @@ func TestBuild7DegreeMode(t *testing.T) {
 	constructTestCase := func(modeTemplate ModeTemplate, modeName ModeName, firstNote *Note, expectedNotes []NoteName) testCase {
 		return testCase{
 			modeTemplate: modeTemplate,
-			resultMode:   mb.build7DegreeMode(modeName, modeTemplate, firstNote),
+			resultMode:   newModeBuilder(modeTemplate).build(modeName, modeTemplate, firstNote),
 			controlMode:  generateModeWithNotes(modeTemplate, expectedNotes),
 		}
 	}

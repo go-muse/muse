@@ -352,7 +352,7 @@ func MakeNoteByIntervalName(firstNote *Note, intervalName IntervalName) (*Note, 
 	if err != nil {
 		return nil, err
 	}
-	newNote, _ := (<-coreBuildingIntervals(ModeTemplate{interval.HalfTones()}, firstNote))()
+	newNote, _ := (<-coreBuildingCommon(ModeTemplate{interval.HalfTones()}, firstNote))()
 
 	return newNote, nil
 }
