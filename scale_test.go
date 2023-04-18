@@ -3,6 +3,8 @@ package muse
 import (
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGenerateScale(t *testing.T) {
@@ -40,57 +42,15 @@ func TestGenerateScale(t *testing.T) {
 		firstDegree := generateDegreesWithNotes(true, TemplateDorian(), &Note{name: D})
 		m = &Mode{name: ModeNameDorian, degree: firstDegree}
 
-		exp := Scale([]Note{
-			{
-				name: D,
-			},
-			{
-				name: E,
-			},
-			{
-				name: F,
-			},
-			{
-				name: G,
-			},
-			{
-				name: A,
-			},
-			{
-				name: B,
-			},
-			{
-				name: C,
-			},
-		})
+		exp := NewScaleFromNoteNames(D, E, F, G, A, B, C)
+
 		got = m.GenerateScale(false)
 		if !reflect.DeepEqual(exp, got) {
 			t.Errorf("Unexpected results for GenerateScale; expected %v but got %v", exp, got)
 		}
 
-		exp = Scale([]Note{
-			{
-				name: C,
-			},
-			{
-				name: B,
-			},
-			{
-				name: A,
-			},
-			{
-				name: G,
-			},
-			{
-				name: F,
-			},
-			{
-				name: E,
-			},
-			{
-				name: D,
-			},
-		})
+		exp = NewScaleFromNoteNames(C, B, A, G, F, E, D)
+
 		got = m.GenerateScale(true)
 		if !reflect.DeepEqual(exp, got) {
 			t.Errorf("Unexpected results for GenerateScale; expected %v but got %v", exp, got)
@@ -132,5 +92,25 @@ func TestGetFullChromaticScale(t *testing.T) {
 
 	if !reflect.DeepEqual(actual, expected) {
 		t.Errorf("GetFullChromaticScale() returned unexpected result.\nExpected: %v\nActual: %v", expected, actual)
+	}
+}
+
+func TestGetAllPossibleNotes(t *testing.T) {
+	testCases := []struct {
+		name          string
+		alterations   uint8
+		expectedScale Scale
+	}{
+		{"No Alterations", 0, NewScaleFromNoteNames(C, D, E, F, G, A, B)},
+		{"One Alteration", 1, NewScaleFromNoteNames(C, CFLAT, CSHARP, D, DFLAT, DSHARP, E, EFLAT, ESHARP, F, FFLAT, FSHARP, G, GFLAT, GSHARP, A, AFLAT, ASHARP, B, BFLAT, BSHARP)},
+		{"Two Alterations", 2, NewScaleFromNoteNames(C, CFLAT, CFLAT2, CSHARP, CSHARP2, D, DFLAT, DFLAT2, DSHARP, DSHARP2, E, EFLAT, EFLAT2, ESHARP, ESHARP2, F, FFLAT, FFLAT2, FSHARP, FSHARP2, G, GFLAT, GFLAT2, GSHARP, GSHARP2, A, AFLAT, AFLAT2, ASHARP, ASHARP2, B, BFLAT, BFLAT2, BSHARP, BSHARP2)},
+	}
+
+	for _, testCase := range testCases {
+		tc := testCase
+		t.Run(testCase.name, func(t *testing.T) {
+			resultingScale := GetAllPossibleNotes(tc.alterations)
+			assert.ElementsMatch(t, tc.expectedScale, resultingScale)
+		})
 	}
 }
