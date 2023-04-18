@@ -3,6 +3,24 @@ package muse
 // Scale is a set of notes.
 type Scale []Note
 
+// NewScaleFromNotes creates a scale from a given notes.
+func NewScaleFromNotes(notes ...Note) Scale {
+	scale := make(Scale, 0, len(notes))
+	scale = append(scale, notes...)
+
+	return scale
+}
+
+// NewScaleFromNoteNames creates notes from the given names and then creates a scale from them.
+func NewScaleFromNoteNames(noteNames ...NoteName) Scale {
+	scale := make(Scale, 0, len(noteNames))
+	for _, noteName := range noteNames {
+		scale = append(scale, *newNote(noteName))
+	}
+
+	return scale
+}
+
 // GenerateScale generates  an ascending or descending scale.
 func (m *Mode) GenerateScale(desc bool) Scale {
 	if m == nil || m.degree == nil || m.degree.note == nil {
@@ -48,4 +66,16 @@ func GetFullChromaticScale() Scale {
 		*newNote(ASHARP),
 		*newNote(B),
 	}
+}
+
+func GetAllPossibleNotes(alterations uint8) Scale {
+	scale := NewScaleFromNoteNames(C, D, E, F, G, A, B)
+	var i uint8
+	for _, note := range scale {
+		for i = alterations; i > 0; i-- {
+			scale = append(scale, *note.Copy().AlterUpBy(i), *note.Copy().AlterDownBy(i))
+		}
+	}
+
+	return scale
 }

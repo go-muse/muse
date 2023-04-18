@@ -135,7 +135,7 @@ func (n *Note) AlterDown() *Note {
 }
 
 // AlterDown alterates the note up by the specified number of times.
-func (n *Note) AlterUpBy(i uint) *Note {
+func (n *Note) AlterUpBy(i uint8) *Note {
 	if n == nil {
 		return nil
 	}
@@ -148,7 +148,7 @@ func (n *Note) AlterUpBy(i uint) *Note {
 }
 
 // AlterDown alterates the note down by the specified number of times.
-func (n *Note) AlterDownBy(i uint) *Note {
+func (n *Note) AlterDownBy(i uint8) *Note {
 	if n == nil {
 		return nil
 	}
