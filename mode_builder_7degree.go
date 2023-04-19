@@ -1,6 +1,7 @@
 package muse
 
 import (
+	"fmt"
 	"unsafe"
 
 	"github.com/pkg/errors"
@@ -49,11 +50,12 @@ func coreBuilding7degree(modeTemplate ModeTemplate, firstNote *Note) <-chan core
 		// Get the first template note based on the first note of the mode
 		templateNote := templateNotes.getTemplateNote(firstNote)
 		if templateNote == nil {
+			fmt.Println(firstNote)
 			panic(errors.New("cant find first template note"))
 		}
 
 		// Save the first note of the mode into the template note
-		templateNote.saveTonic(firstNote)
+		templateNote.calculateHalftonesFromPrime(firstNote)
 
 		// Set last used "base" note (clean note without alteration symbols)
 		templateNotes.setLastUsedBaseNote(firstNote)
@@ -110,7 +112,7 @@ type templateNote7degree struct {
 	isAltered          bool
 	notAltered         *Note
 	alteredNotes       []*noteRelation
-	resultingNote      *noteRelation
+	allNotes           []*noteRelation
 }
 
 // templateNotes7degree is the instance with template notes.
@@ -143,19 +145,10 @@ func (ti *templateNotes7degree) getTemplateNote(note *Note) *templateNote7degree
 	return nil
 }
 
-// Equal Compares Note and template note by name.
 func (tn *templateNote7degree) equal(note *Note) bool {
-	if !tn.isAltered {
-		if tn.notAltered.IsEqualByName(note) {
+	for _, ar := range tn.allNotes {
+		if ar.realNote().IsEqualByName(note) {
 			return true
-		}
-	}
-
-	if tn.alteredNotes != nil {
-		for _, ar := range tn.alteredNotes {
-			if ar.realNote().IsEqualByName(note) {
-				return true
-			}
 		}
 	}
 
@@ -170,20 +163,6 @@ func (tn *templateNote7degree) getPrevious() *templateNote7degree {
 	return tn.previous
 }
 
-// saveResultingNote inserts the final note into the template note
-// with preserving the information about which note is the base for the saved note.
-func (tn *templateNote7degree) saveResultingNote(note *Note) {
-	if tn.isAltered {
-		for _, ar := range tn.alteredNotes {
-			if ar.realNote().IsEqualByName(note) {
-				tn.resultingNote = &noteRelation{ar.baseNote(), note}
-			}
-		}
-	} else {
-		tn.resultingNote = &noteRelation{note, note}
-	}
-}
-
 // nextBaseNote sets next base note as current and returns it.
 func (ti *templateNotes7degree) nextBaseNote() *Note {
 	ti.baseNote = ti.baseNote.next
@@ -191,9 +170,8 @@ func (ti *templateNotes7degree) nextBaseNote() *Note {
 	return ti.baseNote.note
 }
 
-// saveTonic  saves the first note of the constructed mode.
-func (tn *templateNote7degree) saveTonic(note *Note) {
-	tn.saveResultingNote(note)
+// calculateHalftonesFromPrime  saves the first note of the constructed mode.
+func (tn *templateNote7degree) calculateHalftonesFromPrime(note *Note) {
 	current := tn
 	for unsafe.Pointer(current.next) != unsafe.Pointer(tn) {
 		current = current.getNext()
@@ -231,6 +209,7 @@ func getTemplateNotes7degree() *templateNotes7degree {
 		next:       nil,
 		isAltered:  false,
 		notAltered: &Note{name: B},
+		allNotes:   []*noteRelation{{newNote(B), newNote(B)}, {newNote(A), newNote(ASHARP2)}, {newNote(C), newNote(CFLAT)}},
 	}
 
 	templateNote11 := &templateNote7degree{
@@ -238,6 +217,7 @@ func getTemplateNotes7degree() *templateNotes7degree {
 		isAltered:    true,
 		notAltered:   nil,
 		alteredNotes: []*noteRelation{{&Note{name: A}, &Note{name: ASHARP}}, {&Note{name: B}, &Note{name: BFLAT}}},
+		allNotes:     []*noteRelation{{&Note{name: A}, &Note{name: ASHARP}}, {&Note{name: B}, &Note{name: BFLAT}}, {newNote(C), newNote(CFLAT2)}},
 	}
 
 	templateNote10 := &templateNote7degree{
@@ -245,6 +225,7 @@ func getTemplateNotes7degree() *templateNotes7degree {
 		isAltered:    false,
 		notAltered:   &Note{name: A},
 		alteredNotes: nil,
+		allNotes:     []*noteRelation{{newNote(A), newNote(A)}, {newNote(B), newNote(BFLAT2)}, {newNote(G), newNote(GSHARP2)}},
 	}
 
 	templateNote9 := &templateNote7degree{
@@ -252,6 +233,7 @@ func getTemplateNotes7degree() *templateNotes7degree {
 		isAltered:    true,
 		notAltered:   nil,
 		alteredNotes: []*noteRelation{{&Note{name: G}, &Note{name: GSHARP}}, {&Note{name: A}, &Note{name: AFLAT}}},
+		allNotes:     []*noteRelation{{newNote(G), newNote(GSHARP)}, {newNote(A), newNote(AFLAT)}},
 	}
 
 	templateNote8 := &templateNote7degree{
@@ -259,6 +241,7 @@ func getTemplateNotes7degree() *templateNotes7degree {
 		isAltered:    false,
 		notAltered:   &Note{name: G},
 		alteredNotes: nil,
+		allNotes:     []*noteRelation{{newNote(G), newNote(G)}, {newNote(A), newNote(AFLAT2)}, {newNote(F), newNote(FSHARP2)}},
 	}
 
 	templateNote7 := &templateNote7degree{
@@ -266,6 +249,7 @@ func getTemplateNotes7degree() *templateNotes7degree {
 		isAltered:    true,
 		notAltered:   nil,
 		alteredNotes: []*noteRelation{{&Note{name: F}, &Note{name: FSHARP}}, {&Note{name: G}, &Note{name: GFLAT}}},
+		allNotes:     []*noteRelation{{newNote(G), newNote(GFLAT)}, {newNote(F), newNote(FSHARP)}, {newNote(E), newNote(ESHARP2)}},
 	}
 
 	templateNote6 := &templateNote7degree{
@@ -273,6 +257,7 @@ func getTemplateNotes7degree() *templateNotes7degree {
 		isAltered:    false,
 		notAltered:   &Note{name: F},
 		alteredNotes: nil,
+		allNotes:     []*noteRelation{{newNote(F), newNote(F)}, {newNote(E), newNote(ESHARP)}, {newNote(G), newNote(GFLAT2)}},
 	}
 
 	templateNote5 := &templateNote7degree{
@@ -280,6 +265,7 @@ func getTemplateNotes7degree() *templateNotes7degree {
 		isAltered:    false,
 		notAltered:   &Note{name: E},
 		alteredNotes: nil,
+		allNotes:     []*noteRelation{{newNote(E), newNote(E)}, {newNote(F), newNote(FFLAT)}, {newNote(D), newNote(DSHARP2)}},
 	}
 
 	templateNote4 := &templateNote7degree{
@@ -287,6 +273,7 @@ func getTemplateNotes7degree() *templateNotes7degree {
 		isAltered:    true,
 		notAltered:   nil,
 		alteredNotes: []*noteRelation{{&Note{name: D}, &Note{name: DSHARP}}, {&Note{name: E}, &Note{name: EFLAT}}},
+		allNotes:     []*noteRelation{{newNote(E), newNote(EFLAT)}, {newNote(D), newNote(DSHARP)}, {newNote(F), newNote(FFLAT2)}},
 	}
 
 	templateNote3 := &templateNote7degree{
@@ -294,6 +281,7 @@ func getTemplateNotes7degree() *templateNotes7degree {
 		isAltered:    false,
 		notAltered:   &Note{name: D},
 		alteredNotes: nil,
+		allNotes:     []*noteRelation{{newNote(D), newNote(D)}, {newNote(C), newNote(CSHARP2)}, {newNote(E), newNote(EFLAT2)}},
 	}
 
 	templateNote2 := &templateNote7degree{
@@ -301,6 +289,7 @@ func getTemplateNotes7degree() *templateNotes7degree {
 		isAltered:    true,
 		notAltered:   nil,
 		alteredNotes: []*noteRelation{{&Note{name: C}, &Note{name: CSHARP}}, {&Note{name: D}, &Note{name: DFLAT}}},
+		allNotes:     []*noteRelation{{newNote(D), newNote(DFLAT)}, {newNote(C), newNote(CSHARP)}, {newNote(B), newNote(BSHARP2)}},
 	}
 
 	templateNote1 := &templateNote7degree{
@@ -308,6 +297,7 @@ func getTemplateNotes7degree() *templateNotes7degree {
 		isAltered:    false,
 		notAltered:   &Note{name: C},
 		alteredNotes: nil,
+		allNotes:     []*noteRelation{{newNote(C), newNote(C)}, {newNote(B), newNote(BSHARP)}, {newNote(D), newNote(DFLAT2)}},
 	}
 
 	// set links to previous template notes
