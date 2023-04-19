@@ -3,9 +3,11 @@ package muse
 import (
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestNoteNameString(t *testing.T) {
+func TestNoteName_String(t *testing.T) {
 	expectedNoteName := "C"
 	nn := NoteName(expectedNoteName)
 
@@ -16,5 +18,53 @@ func TestNoteNameString(t *testing.T) {
 
 	if expectedNoteName != result {
 		t.Errorf("note name Stringer expected: %s actual: %s", expectedNoteName, result)
+	}
+}
+
+func TestNoteName_MakeNote(t *testing.T) {
+	var newNote Note
+	for _, note := range GetAllPossibleNotes(2) {
+		newNote = *note.Name().MustMakeNote()
+		assert.Equal(t, note, newNote, "expected note: %+v, actual note: %+v", note, newNote)
+	}
+}
+
+func TestNoteName_Validate(t *testing.T) {
+	type testCase struct {
+		noteName NoteName
+		want     bool
+	}
+
+	testCases := []testCase{
+		{noteName: "AB", want: false},
+		{noteName: "Ac", want: false},
+		{noteName: "A#b", want: false},
+		{noteName: "Ab#", want: false},
+		{noteName: "Ab#b", want: false},
+		{noteName: "Ab##", want: false},
+		{noteName: "A##b", want: false},
+		{noteName: "A#bb", want: false},
+		{noteName: "b", want: false},
+		{noteName: "bb", want: false},
+		{noteName: "bbb", want: false},
+		{noteName: "bb#", want: false},
+		{noteName: "b##", want: false},
+		{noteName: "#", want: false},
+		{noteName: "##", want: false},
+		{noteName: "##b", want: false},
+		{noteName: "#bb", want: false},
+		{noteName: "###", want: false},
+	}
+
+	for _, note := range GetAllPossibleNotes(2) {
+		testCases = append(testCases, testCase{note.Name(), true})
+	}
+
+	for _, testCase := range testCases {
+		if testCase.want {
+			assert.NoError(t, testCase.noteName.Validate(), "note name %s validation expected: true, actual: %+v", testCase.noteName, testCase.noteName.Validate())
+		} else {
+			assert.ErrorIs(t, ErrNoteNameUnknown, testCase.noteName.Validate(), "note name %s validation expected: false, actual: %+v", testCase.noteName, testCase.noteName.Validate())
+		}
 	}
 }

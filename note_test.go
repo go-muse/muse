@@ -15,22 +15,40 @@ func TestNewNote(t *testing.T) {
 	t.Run("TestNewNote: valid note name", func(t *testing.T) {
 		noteNames := []NoteName{
 			C,
-			DFLAT,
+			CFLAT,
+			CFLAT2,
 			CSHARP,
+			CSHARP2,
 			D,
-			EFLAT,
+			DFLAT,
+			DFLAT2,
 			DSHARP,
+			DSHARP2,
 			E,
+			EFLAT,
+			EFLAT2,
+			ESHARP,
+			ESHARP2,
 			F,
-			GFLAT,
+			FFLAT,
+			FFLAT2,
 			FSHARP,
+			FSHARP2,
 			G,
-			AFLAT,
+			GFLAT,
+			GFLAT2,
 			GSHARP,
+			GSHARP2,
 			A,
-			BFLAT,
+			AFLAT,
+			AFLAT2,
 			ASHARP,
+			ASHARP2,
 			B,
+			BFLAT,
+			BFLAT2,
+			BSHARP,
+			BSHARP2,
 		}
 		var newNote *Note
 		var err error
@@ -38,6 +56,7 @@ func TestNewNote(t *testing.T) {
 			// setup: create a Note with a valid name
 			newNote, err = NewNote(noteName)
 			assert.NoError(t, err)
+			assert.NotNil(t, newNote, "expected note from note name %s", noteName)
 
 			// assert that the returned name matches the expected name
 			if newNote.name != noteName {
@@ -60,22 +79,40 @@ func TestMustNewNote(t *testing.T) {
 	t.Run("TestNewNote: valid note name", func(t *testing.T) {
 		noteNames := []NoteName{
 			C,
-			DFLAT,
+			CFLAT,
+			CFLAT2,
 			CSHARP,
+			CSHARP2,
 			D,
-			EFLAT,
+			DFLAT,
+			DFLAT2,
 			DSHARP,
+			DSHARP2,
 			E,
+			EFLAT,
+			EFLAT2,
+			ESHARP,
+			ESHARP2,
 			F,
-			GFLAT,
+			FFLAT,
+			FFLAT2,
 			FSHARP,
+			FSHARP2,
 			G,
-			AFLAT,
+			GFLAT,
+			GFLAT2,
 			GSHARP,
+			GSHARP2,
 			A,
-			BFLAT,
+			AFLAT,
+			AFLAT2,
 			ASHARP,
+			ASHARP2,
 			B,
+			BFLAT,
+			BFLAT2,
+			BSHARP,
+			BSHARP2,
 		}
 		var newNote *Note
 		for _, noteName := range noteNames {
