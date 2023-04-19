@@ -22,7 +22,3 @@ func newModeBuilder(modeTemplate ModeTemplate) modeBuilder {
 		return &modeBuilderCommon{}
 	}
 }
-
-// type modeBuilder interface {
-// 	modeBuilder7degree | modeBuilderCommon
-// }

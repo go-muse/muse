@@ -27,14 +27,16 @@ func isModalPositionsActual(mt ModeTemplate) bool {
 	return mt.IsHeptatonic()
 }
 
-type coreBuildingIteratorResult func() (*Note, HalfTones)
+// coreBuildingCommonIteratorResult is the type for sending multiple variables to the iterative channel.
+type coreBuildingCommonIteratorResult func() (*Note, HalfTones)
 
-func coreBuildingCommon(modeTemplate ModeTemplate, firstNote *Note) <-chan coreBuildingIteratorResult {
-	send := func(note *Note, halfTones HalfTones) coreBuildingIteratorResult {
+// coreBuildingCommon builds notes for the mode.
+func coreBuildingCommon(modeTemplate ModeTemplate, firstNote *Note) <-chan coreBuildingCommonIteratorResult {
+	send := func(note *Note, halfTones HalfTones) coreBuildingCommonIteratorResult {
 		return func() (*Note, HalfTones) { return note, halfTones }
 	}
 
-	f := func(c chan coreBuildingIteratorResult) {
+	f := func(c chan coreBuildingCommonIteratorResult) {
 		// Get instance with 12 template notes
 		templateNotes := getTemplateNotesCommon()
 
@@ -73,7 +75,7 @@ func coreBuildingCommon(modeTemplate ModeTemplate, firstNote *Note) <-chan coreB
 		close(c)
 	}
 
-	c := make(chan coreBuildingIteratorResult)
+	c := make(chan coreBuildingCommonIteratorResult)
 	go f(c)
 
 	return c

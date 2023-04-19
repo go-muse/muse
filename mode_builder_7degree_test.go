@@ -93,3 +93,70 @@ func TestBuild7DegreeMode(t *testing.T) {
 		testingFunc(testCase.modeTemplate, testCase.resultMode, testCase.controlMode)
 	}
 }
+
+func Test_getTemplateNotes7degree(t *testing.T) {
+	templateNotesInstance := getTemplateNotes7degree()
+
+	t.Run("getTemplateNotes7degree positive cases", func(t *testing.T) {
+		testCases := GetAllPossibleNotes(2)
+		for i := range testCases {
+			firstTemplateNote := templateNotesInstance.getTemplateNote(&testCases[i])
+			assert.NotNil(t, firstTemplateNote.allNotes)
+			assert.NotNil(t, firstTemplateNote.next)
+		}
+	})
+
+	t.Run("getTemplateNotesInstance negative cases", func(t *testing.T) {
+		// not existent note
+		assert.Nil(t, templateNotesInstance.getTemplateNote(&Note{name: NoteName("HELLO!")}))
+		// impossible case
+		templateNotesInstance.templateNote7degree = nil
+		assert.Nil(t, templateNotesInstance.getTemplateNote(&Note{name: C}))
+	})
+}
+
+func Test_NextBaseNote(t *testing.T) {
+	tni := getTemplateNotes7degree()
+
+	testCases := []struct {
+		tns  []*Note
+		want *Note
+	}{
+		{
+			tns:  []*Note{newNote(C), newNote(CSHARP), newNote(CFLAT), newNote(CSHARP2), newNote(CFLAT2)},
+			want: newNote(D),
+		},
+		{
+			tns:  []*Note{newNote(D), newNote(DSHARP), newNote(DFLAT), newNote(DSHARP2), newNote(DFLAT2)},
+			want: newNote(E),
+		},
+		{
+			tns:  []*Note{newNote(E), newNote(ESHARP), newNote(EFLAT), newNote(ESHARP2), newNote(EFLAT2)},
+			want: newNote(F),
+		},
+		{
+			tns:  []*Note{newNote(F), newNote(FSHARP), newNote(FFLAT), newNote(FSHARP2), newNote(FFLAT2)},
+			want: newNote(G),
+		},
+		{
+			tns:  []*Note{newNote(G), newNote(GSHARP), newNote(GFLAT), newNote(GSHARP2), newNote(GFLAT2)},
+			want: newNote(A),
+		},
+		{
+			tns:  []*Note{newNote(A), newNote(ASHARP), newNote(AFLAT), newNote(ASHARP2), newNote(AFLAT2)},
+			want: newNote(B),
+		},
+		{
+			tns:  []*Note{newNote(B), newNote(BSHARP), newNote(BFLAT), newNote(BSHARP2), newNote(BFLAT2)},
+			want: newNote(C),
+		},
+	}
+
+	for _, testCase := range testCases {
+		for _, tn := range testCase.tns {
+			tni.setLastUsedBaseNote(tn)
+			nextBase := tni.nextBaseNote()
+			assert.Equal(t, testCase.want, nextBase, "expected: %+v, actual: %+v", testCase.want, nextBase)
+		}
+	}
+}
