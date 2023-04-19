@@ -29,6 +29,19 @@ func TestNoteName_MakeNote(t *testing.T) {
 	}
 }
 
+func TestNoteName_MustMakeNote(t *testing.T) {
+	// Test case 1: Valid note name
+	nn1 := NoteName("C")
+	note1 := C.MustMakeNote()
+	if note1 == nil {
+		t.Errorf("MustMakeNote(%s) returned nil, expected *Note", nn1)
+	}
+
+	// Test case 2: Invalid note name
+	nn2 := NoteName("X")
+	assert.Panics(t, func() { _ = nn2.MustMakeNote() }, "note name: %s", nn2) //nolint:scopelint
+}
+
 func TestNoteName_Validate(t *testing.T) {
 	type testCase struct {
 		noteName NoteName

@@ -94,7 +94,7 @@ func TestBuild7DegreeMode(t *testing.T) {
 	}
 }
 
-func Test_getTemplateNotes7degree(t *testing.T) {
+func Test_templateNotes7degree_getTemplateNote(t *testing.T) {
 	templateNotesInstance := getTemplateNotes7degree()
 
 	t.Run("getTemplateNotes7degree positive cases", func(t *testing.T) {
@@ -106,7 +106,7 @@ func Test_getTemplateNotes7degree(t *testing.T) {
 		}
 	})
 
-	t.Run("getTemplateNotesInstance negative cases", func(t *testing.T) {
+	t.Run("getTemplateNotes7degree negative cases", func(t *testing.T) {
 		// not existent note
 		assert.Nil(t, templateNotesInstance.getTemplateNote(&Note{name: NoteName("HELLO!")}))
 		// impossible case

@@ -361,3 +361,35 @@ func TestNote_BaseName(t *testing.T) {
 		assert.Equal(t, testCase.want, testCase.note.BaseName(), "expected note name: %s, result: %s", testCase.want, testCase.note.BaseName())
 	}
 }
+
+func TestNote_BaseNote(t *testing.T) {
+	testCases := []struct {
+		note *Note
+		want *Note
+	}{
+		{
+			note: newNote(CSHARP2),
+			want: C.MustMakeNote(),
+		},
+		{
+			note: newNote(CSHARP),
+			want: C.MustMakeNote(),
+		},
+		{
+			note: newNote(C),
+			want: C.MustMakeNote(),
+		},
+		{
+			note: newNote(CFLAT),
+			want: C.MustMakeNote(),
+		},
+		{
+			note: newNote(CFLAT2),
+			want: C.MustMakeNote(),
+		},
+	}
+
+	for _, testCase := range testCases {
+		assert.Equal(t, testCase.want, testCase.note.baseNote(), "expected note: %+v, result: %+v", testCase.want, testCase.note.baseNote())
+	}
+}

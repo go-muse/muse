@@ -8,15 +8,6 @@ func (nn NoteName) String() string {
 	return string(nn)
 }
 
-// MustMakeNote makes note with the current note name with panic on validation.
-func (nn NoteName) MustMakeNote() *Note {
-	if err := nn.Validate(); err != nil {
-		panic(err)
-	}
-
-	return newNote(nn)
-}
-
 // MakeNote makes note with the current note name.
 func (nn NoteName) MakeNote() (*Note, error) {
 	if err := nn.Validate(); err != nil {
@@ -24,6 +15,15 @@ func (nn NoteName) MakeNote() (*Note, error) {
 	}
 
 	return newNote(nn), nil
+}
+
+// MustMakeNote makes note with the current note name with panic on validation.
+func (nn NoteName) MustMakeNote() *Note {
+	if err := nn.Validate(); err != nil {
+		panic(err)
+	}
+
+	return newNote(nn)
 }
 
 // Validate checks note name.
