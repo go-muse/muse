@@ -21,11 +21,7 @@ func (cbc *modeBuilderCommon) build(modeName ModeName, modeTemplate ModeTemplate
 	return mode
 }
 
-// isModalPositionsActual checks whether the concept of modal position makes sense for the given mode.
-func isModalPositionsActual(mt ModeTemplate) bool {
-	// TODO: another modes?
-	return mt.IsHeptatonic()
-}
+
 
 // coreBuildingCommonIteratorResult is the type for sending multiple variables to the iterative channel.
 type coreBuildingCommonIteratorResult func() (*Note, HalfTones)

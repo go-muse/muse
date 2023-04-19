@@ -22,3 +22,9 @@ func newModeBuilder(modeTemplate ModeTemplate) modeBuilder {
 		return &modeBuilderCommon{}
 	}
 }
+
+// isModalPositionsActual checks whether the concept of modal position makes sense for the given mode.
+func isModalPositionsActual(mt ModeTemplate) bool {
+	// TODO: another modes?
+	return mt.IsHeptatonic()
+}

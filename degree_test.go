@@ -365,7 +365,7 @@ func TestDegree_GetDegrees(t *testing.T) {
 
 func TestDegree_IterateOneRound(t *testing.T) {
 	mode0, err := MakeNewCustomMode(ModeTemplate{2, 2, 2, 3, 2, 1}, "B", "Custom Mode 0")
-	assert.NoError(t, err)
+	assert.NoError(t, err, "error: %+v", err)
 	mode1, err := MakeNewCustomMode(ModeTemplate{2, 2, 2, 2, 2, 2}, "C", "Custom Mode 1")
 	assert.NoError(t, err)
 	mode2, err := MakeNewCustomMode(ModeTemplate{1, 2, 2, 2, 2, 2, 1}, "C#", "Custom Mode 2")

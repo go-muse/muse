@@ -21,44 +21,11 @@ var ErrNoteNameUnknown = errors.New("unknown note name")
 
 // NewNote creates new note with a given name validating it.
 func NewNote(noteName NoteName) (*Note, error) {
-	switch noteName {
-	case C:
-		return newNote(C), nil
-	case CSHARP:
-		return newNote(CSHARP), nil
-	case DFLAT:
-		return newNote(DFLAT), nil
-	case D:
-		return newNote(D), nil
-	case DSHARP:
-		return newNote(DSHARP), nil
-	case EFLAT:
-		return newNote(EFLAT), nil
-	case E:
-		return newNote(E), nil
-	case F:
-		return newNote(F), nil
-	case FSHARP:
-		return newNote(FSHARP), nil
-	case GFLAT:
-		return newNote(GFLAT), nil
-	case G:
-		return newNote(G), nil
-	case GSHARP:
-		return newNote(GSHARP), nil
-	case AFLAT:
-		return newNote(AFLAT), nil
-	case A:
-		return newNote(A), nil
-	case ASHARP:
-		return newNote(ASHARP), nil
-	case BFLAT:
-		return newNote(BFLAT), nil
-	case B:
-		return newNote(B), nil
+	if err := noteName.Validate(); err != nil {
+		return nil, err
 	}
 
-	return nil, errors.Wrapf(ErrNoteNameUnknown, "given name: %s", noteName)
+	return newNote(noteName), nil
 }
 
 // MustNewNote creates new note with suppressing error in case of invalid note name.
@@ -71,6 +38,7 @@ func MustNewNote(noteName NoteName) *Note {
 	return note
 }
 
+// NewNoteFromString creates a new note from the given string.
 func NewNoteFromString(s string) (*Note, error) {
 	return NewNote(NoteName(s))
 }
