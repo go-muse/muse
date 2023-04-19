@@ -36,7 +36,7 @@ func MakeNewMode(modeName ModeName, firstNoteName NoteName) (*Mode, error) {
 	}
 
 	// Mode building
-	mode := newModeBuilder().build7DegreeMode(modeName, modeTemplate, firstNote)
+	mode := newModeBuilder(modeTemplate).build(modeName, modeTemplate, firstNote)
 
 	return mode, nil
 }
@@ -62,7 +62,7 @@ func MakeNewCustomMode(modeTemplate ModeTemplate, firstNoteName string, modeName
 		return nil, errors.Wrapf(err, "failed to make first note to create custom mode by firstNoteName = %s", firstNoteName)
 	}
 
-	mode := newModeBuilder().build7DegreeMode(modeName, modeTemplate, firstNote)
+	mode := newModeBuilder(modeTemplate).build(modeName, modeTemplate, firstNote)
 
 	return mode, nil
 }

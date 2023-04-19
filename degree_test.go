@@ -1,10 +1,10 @@
 package muse
 
 import (
-	"crypto/rand"
-	"math/big"
+	"math/rand"
 	"reflect"
 	"testing"
+	"time"
 	"unsafe"
 
 	"github.com/stretchr/testify/assert"
@@ -450,16 +450,15 @@ func TestDegree_IterateOneRound(t *testing.T) {
 }
 
 func TestDegree_sortByAbsoluteModalPositions(t *testing.T) {
-	n10, err := rand.Int(rand.Reader, big.NewInt(10))
-	assert.NoError(t, err)
-	n20, err := rand.Int(rand.Reader, big.NewInt(10))
-	assert.NoError(t, err)
+	rand.NewSource(time.Now().UnixNano())
+	n10 := rand.Intn(10) - 5  //nolint:gosec
+	n20 := rand.Intn(20) - 10 //nolint:gosec
 
 	getDegrees := func() (*Degree, *Degree) {
-		firstDegree := &Degree{number: 1, absoluteModalPosition: NewModalPositionByWeight(Weight(n10.Int64() - 5))}
+		firstDegree := &Degree{number: 1, absoluteModalPosition: NewModalPositionByWeight(Weight(n10))}
 		lastDegree := firstDegree
 		for i := DegreeNum(2); i <= DegreesInTonality; i++ {
-			degree := &Degree{number: i, absoluteModalPosition: NewModalPositionByWeight(Weight(n20.Int64() - 10))}
+			degree := &Degree{number: i, absoluteModalPosition: NewModalPositionByWeight(Weight(n20))}
 			lastDegree.AttachNext(degree)
 			lastDegree = degree
 		}
