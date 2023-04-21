@@ -20,10 +20,7 @@ func (m *Mode) Name() ModeName {
 
 // A mode is usually created based on a mode template and the first note.
 func MakeNewMode(modeName ModeName, firstNoteName NoteName) (*Mode, error) {
-	firstNote, err := NewNote(firstNoteName)
-	if err != nil {
-		return nil, errors.Wrapf(err, "failed to make first note to create mode by firstNoteName = %s", firstNoteName)
-	}
+	firstNote := newNote(firstNoteName)
 
 	modeTemplate, err := GetTemplateByModeName(modeName)
 	if err != nil {
@@ -270,4 +267,15 @@ func (m *Mode) SortByAbsoluteModalPositions(asc bool) {
 	if asc {
 		m.degree = m.degree.ReverseSequence()
 	}
+}
+
+// Contains checks for the presence of the specified note in the current mode.
+func (m *Mode) Contains(note *Note) bool {
+	for degree := range m.IterateOneRound(false) {
+		if degree.note.IsEqualByName(note) {
+			return true
+		}
+	}
+
+	return false
 }

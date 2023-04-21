@@ -275,3 +275,55 @@ func TestSortByAbsoluteModalPositions(t *testing.T) {
 		}
 	})
 }
+
+func TestMode_Contains(t *testing.T) {
+	// Create a new mode
+	mode, err := MakeNewCustomMode(ModeTemplate{2, 2, 1, 2, 2, 2, 1}, "C", ModeNameNaturalMajor)
+	assert.NoError(t, err)
+
+	testCases := []struct {
+		note *Note
+		want bool
+	}{
+		{C.MustMakeNote(), true},
+		{D.MustMakeNote(), true},
+		{E.MustMakeNote(), true},
+		{F.MustMakeNote(), true},
+		{G.MustMakeNote(), true},
+		{A.MustMakeNote(), true},
+		{B.MustMakeNote(), true},
+
+		{CFLAT.MustMakeNote(), false},
+		{CFLAT2.MustMakeNote(), false},
+		{CSHARP.MustMakeNote(), false},
+		{CSHARP2.MustMakeNote(), false},
+		{DFLAT.MustMakeNote(), false},
+		{DFLAT2.MustMakeNote(), false},
+		{DSHARP.MustMakeNote(), false},
+		{DSHARP2.MustMakeNote(), false},
+		{EFLAT.MustMakeNote(), false},
+		{EFLAT2.MustMakeNote(), false},
+		{ESHARP.MustMakeNote(), false},
+		{ESHARP2.MustMakeNote(), false},
+		{FFLAT.MustMakeNote(), false},
+		{FFLAT2.MustMakeNote(), false},
+		{FSHARP.MustMakeNote(), false},
+		{FSHARP2.MustMakeNote(), false},
+		{GFLAT.MustMakeNote(), false},
+		{GFLAT2.MustMakeNote(), false},
+		{GSHARP.MustMakeNote(), false},
+		{GSHARP2.MustMakeNote(), false},
+		{AFLAT.MustMakeNote(), false},
+		{AFLAT2.MustMakeNote(), false},
+		{ASHARP.MustMakeNote(), false},
+		{ASHARP2.MustMakeNote(), false},
+		{BFLAT.MustMakeNote(), false},
+		{BFLAT2.MustMakeNote(), false},
+		{BSHARP.MustMakeNote(), false},
+		{BSHARP2.MustMakeNote(), false},
+	}
+
+	for _, testCase := range testCases {
+		assert.Equal(t, testCase.want, mode.Contains(testCase.note), "expected note in mode: %f, actual: %f", testCase.want, mode.Contains(testCase.note))
+	}
+}

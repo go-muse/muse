@@ -106,6 +106,14 @@ func (mts ModeTemplatesStore) FindModeTemplatesByPattern(modeTemplate ModeTempla
 	return result
 }
 
+func (mts ModeTemplatesStore) Contains(modeName ModeName) bool {
+	if _, ok := mts[modeName]; ok {
+		return true
+	}
+
+	return false
+}
+
 // AsSlice returns map of mode names and templates as slice of structs with ste same information.
 func (mts ModeTemplatesStore) AsSlice() ModeNamesAndTemplates {
 	mnat := make(ModeNamesAndTemplates, 0, len(mts))
@@ -118,8 +126,8 @@ func (mts ModeTemplatesStore) AsSlice() ModeNamesAndTemplates {
 
 // ModeNameAndTemplate is a struct with mode name and template.
 type ModeNameAndTemplate struct {
-	Name     ModeName
-	Template ModeTemplate
+	ModeName     ModeName
+	ModeTemplate ModeTemplate
 }
 
 // ModeNamesAndTemplates is a slice of structs with mode name and template.
@@ -130,9 +138,9 @@ func (mnat ModeNamesAndTemplates) SortByModeName(desc bool) ModeNamesAndTemplate
 	sort.Slice(mnat, func(i, j int) bool {
 		switch desc {
 		case true:
-			return mnat[i].Name > mnat[j].Name
+			return mnat[i].ModeName > mnat[j].ModeName
 		default:
-			return mnat[i].Name < mnat[j].Name
+			return mnat[i].ModeName < mnat[j].ModeName
 		}
 	})
 
@@ -142,26 +150,133 @@ func (mnat ModeNamesAndTemplates) SortByModeName(desc bool) ModeNamesAndTemplate
 // SortByTemplate sorts the slice with mode names and templates by templates.
 func (mnat ModeNamesAndTemplates) SortByModeTemplate(desc bool) ModeNamesAndTemplates {
 	sort.Slice(mnat[:], func(i, j int) bool {
-		for x := range mnat[i].Template {
-			if mnat[i].Template[x] == mnat[j].Template[x] {
+		for x := range mnat[i].ModeTemplate {
+			if mnat[i].ModeTemplate[x] == mnat[j].ModeTemplate[x] {
 				continue
 			}
 
 			switch desc {
 			case true:
-				return mnat[i].Template[x] > mnat[j].Template[x]
+				return mnat[i].ModeTemplate[x] > mnat[j].ModeTemplate[x]
 			default:
-				return mnat[i].Template[x] < mnat[j].Template[x]
+				return mnat[i].ModeTemplate[x] < mnat[j].ModeTemplate[x]
 			}
 		}
 
 		switch desc {
 		case true:
-			return mnat[i].Name > mnat[j].Name
+			return mnat[i].ModeName > mnat[j].ModeName
 		default:
-			return mnat[i].Name < mnat[j].Name
+			return mnat[i].ModeName < mnat[j].ModeName
 		}
 	})
 
 	return mnat
+}
+
+type ModeTemplateWithPrime struct {
+	*ModeNameAndTemplate
+	PrimeNote *Note
+}
+
+type ModeTemplatesWithPrime []ModeTemplateWithPrime
+
+func (mtswp ModeTemplatesWithPrime) Contains(modeName ModeName) bool {
+	for _, mtwp := range mtswp {
+		if mtwp.ModeName == modeName {
+			return true
+		}
+	}
+
+	return false
+}
+
+// FindModeTemplatesByNotes searches for modes in the storage
+// that correspond to the given set of notes and returns a new storage with the found modes.
+func (mts ModeTemplatesStore) FindModeTemplatesByNotes(notes []*Note) ModeTemplatesWithPrime {
+	result := make(ModeTemplatesWithPrime, 0)
+	var mode *Mode
+	for modeName, modeTemplate := range mts {
+		allNotes := GetAllPossibleNotes(1)
+		for _, firstNote := range allNotes {
+			mode = MustMakeNewMode(modeName, firstNote.Name())
+			for _, note := range notes {
+				if !mode.Contains(note) {
+					goto Next
+				}
+			}
+
+			result = append(result, ModeTemplateWithPrime{
+				ModeNameAndTemplate: &ModeNameAndTemplate{
+					ModeName:     modeName,
+					ModeTemplate: modeTemplate,
+				},
+				PrimeNote: firstNote.Copy(),
+			})
+		Next:
+		}
+	}
+
+	return result
+}
+
+// SortByModeName sorts the slice with mode names and templates with prime notes by mode name.
+func (mtswp ModeTemplatesWithPrime) SortByModeName(desc bool) ModeTemplatesWithPrime {
+	sort.Slice(mtswp, func(i, j int) bool {
+		switch desc {
+		case true:
+			return mtswp[i].ModeName > mtswp[j].ModeName
+		default:
+			return mtswp[i].ModeName < mtswp[j].ModeName
+		}
+	})
+
+	return mtswp
+}
+
+// SortByTemplate sorts the slice with mode names and templates with prime notes by templates.
+func (mtswp ModeTemplatesWithPrime) SortByModeTemplate(desc bool) ModeTemplatesWithPrime {
+	sort.Slice(mtswp[:], func(i, j int) bool {
+		for x := range mtswp[i].ModeTemplate {
+			if mtswp[i].ModeTemplate[x] == mtswp[j].ModeTemplate[x] {
+				continue
+			}
+
+			switch desc {
+			case true:
+				return mtswp[i].ModeTemplate[x] > mtswp[j].ModeTemplate[x]
+			default:
+				return mtswp[i].ModeTemplate[x] < mtswp[j].ModeTemplate[x]
+			}
+		}
+
+		switch desc {
+		case true:
+			return mtswp[i].ModeName > mtswp[j].ModeName
+		default:
+			return mtswp[i].ModeName < mtswp[j].ModeName
+		}
+	})
+
+	return mtswp
+}
+
+// SortByPrimeNote sorts the slice with mode names and templates with prime notes by Prime note name.
+func (mtswp ModeTemplatesWithPrime) SortByPrimeNote(desc bool) ModeTemplatesWithPrime {
+	sort.Slice(mtswp, func(i, j int) bool {
+		switch desc {
+		case true:
+			if !mtswp[i].PrimeNote.IsEqualByName(mtswp[j].PrimeNote) {
+				return mtswp[i].PrimeNote.Name() > mtswp[j].PrimeNote.Name()
+			}
+			return mtswp[i].ModeName > mtswp[j].ModeName
+		default:
+			if !mtswp[i].PrimeNote.IsEqualByName(mtswp[j].PrimeNote) {
+				return mtswp[i].PrimeNote.Name() < mtswp[j].PrimeNote.Name()
+			}
+			return mtswp[i].ModeName < mtswp[j].ModeName
+		}
+	})
+
+	return mtswp
 }

@@ -1,6 +1,8 @@
 package muse
 
-import "github.com/pkg/errors"
+import (
+	"github.com/pkg/errors"
+)
 
 type modeBuilderCommon struct{}
 
@@ -20,8 +22,6 @@ func (cbc *modeBuilderCommon) build(modeName ModeName, modeTemplate ModeTemplate
 
 	return mode
 }
-
-
 
 // coreBuildingCommonIteratorResult is the type for sending multiple variables to the iterative channel.
 type coreBuildingCommonIteratorResult func() (*Note, HalfTones)

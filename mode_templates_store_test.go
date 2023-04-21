@@ -28,11 +28,10 @@ func TestModeTemplatesStore(t *testing.T) {
 
 func TestFindModeTemplatesByPattern(t *testing.T) {
 	mts := make(ModeTemplatesStore)
-	commonModeName := ModeName("custom abstract mode template")
 
 	for i := 1; i < 18; i++ {
 		customModeTemplate := make(ModeTemplate, i+1)
-		customModeName := ModeName(fmt.Sprintf("%s %d", commonModeName, i))
+		customModeName := ModeName(fmt.Sprintf("%s %d", "custom abstract mode template", i))
 		for j := 0; j <= i; j++ {
 			customModeTemplate[j] = HalfTones(j)
 		}
@@ -78,5 +77,29 @@ func TestFindModeTemplatesByPatternCases(t *testing.T) {
 	}
 	if _, ok := modeTemplates[ModeNameNaturalMinor]; !ok {
 		assert.Failf(t, "absent result", "expected mode name: %s", ModeNameNaturalMinor)
+	}
+}
+
+func TestFindModeTemplatesByNotes(t *testing.T) {
+	testCases := []struct {
+		notes         []*Note
+		expectedModes []ModeName
+	}{
+		{
+			notes:         newNotesFromNoteNames(C, D, E, F, G, A, B),
+			expectedModes: []ModeName{ModeNameAeolian, ModeNameIonian, ModeNamePhrygian, ModeNameLocrian, ModeNameDorian, ModeNameLydian, ModeNameMixoLydian, ModeNameNaturalMajor, ModeNameNaturalMinor},
+		},
+	}
+
+	mts := InitModeTemplatesStore()
+	for _, testCase := range testCases {
+		var result ModeTemplatesWithPrime
+		assert.NotPanics(t, func() { result = mts.FindModeTemplatesByNotes(testCase.notes) }, "testCase.notes: %+v", testCase.notes) //nolint:scopelint
+
+		for _, modeName := range testCase.expectedModes {
+			assert.True(t, result.Contains(modeName), "expected modename: %s", modeName)
+		}
+
+		assert.Equal(t, len(result), len(testCase.expectedModes))
 	}
 }
