@@ -16,16 +16,18 @@
 - [ ] Chords
 
 ### Modes:
-- [x] Templates of most commonly used modes
-- [x] Creating a mode based on formula and tonic
+- [x] Templates* of most commonly used modes
+- [x] Creating a mode based on mode template and tonic
 - [x] Calculation of modal positions of degrees in seven-degree modes
-- [x] Finding modes from an incoming set of degres
+- [x] Finding modes from an incoming set of degrees or notes
 ### Scales:
 - [x] Generating scales
 ### Intervals:
 - [x] Templates of intervals within an octave
 - [x] Identifying the interval between two degrees
 - [x] Acoustic and Chromatic intervals
+
+\* In this context, mode templates are a set of intervals that determine the arrangement of degrees in a mode.
 
 ## Concept
 Definitions may differ from conventional.
@@ -78,7 +80,7 @@ Q: How to iterate mode?\
 A: You can iterate through degrees  [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Mode.IterateOneRound) [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-DegreesIterator.GetAllDegrees) or notes [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-DegreesIterator.GetAllNotes) of modes.
 
 Q: Are there already existing scales in the library?\
-A: Yes, ther is mode templates store [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-InitModeTemplatesStore). It contains mode names and templates.
+A: Yes, there is mode templates store [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-InitModeTemplatesStore). It contains mode names and templates.
 
 ---
 <font size="2">This is not very stable version.
