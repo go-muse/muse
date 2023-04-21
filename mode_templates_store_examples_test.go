@@ -27,7 +27,7 @@ func ExampleModeNamesAndTemplates_SortByModeName() {
 	slc.SortByModeName(false)
 
 	for _, info := range slc {
-		fmt.Println(info.Name, info.Template)
+		fmt.Println(info.ModeName, info.ModeTemplate)
 	}
 	// Output: Aeolian [2 1 2 2 1 2 2]
 	// AeolianLydian [2 1 2 1 2 2 2]
@@ -86,7 +86,7 @@ func ExampleModeNamesAndTemplates_SortByModeTemplate() {
 	slc.SortByModeTemplate(false)
 
 	for _, info := range slc {
-		fmt.Println(info.Template, info.Name)
+		fmt.Println(info.ModeTemplate, info.ModeName)
 	}
 	// Output: [1 1 3 1 2 1 3] LocrianDoubleFlat3DoubleFlat7
 	// [1 2 1 2 2 1 3] UltraLocrian
@@ -147,7 +147,7 @@ func ExampleModeTemplatesStore_FindModeTemplatesByPattern() {
 	result := mts.FindModeTemplatesByPattern(myPattern).AsSlice().SortByModeTemplate(false)
 
 	for _, info := range result {
-		fmt.Println(info.Template, info.Name)
+		fmt.Println(info.ModeTemplate, info.ModeName)
 	}
 	// Output: [1 2 1 3 1 2 2] PhrygianDiminished
 	// [1 2 2 1 3 1 2] LocrianRais6
@@ -155,4 +155,41 @@ func ExampleModeTemplatesStore_FindModeTemplatesByPattern() {
 	// [2 1 3 1 2 1 2] UkrainianDorian
 	// [2 1 3 1 2 2 1] LydianDiminished
 	// [2 2 1 3 1 2 1] IonianRais5
+}
+
+// In the mode templates store, it is possible to find mode templates that correspond to a given set of notes.
+func ExampleModeTemplatesStore_FindModeTemplatesByNotes() {
+	mts := muse.InitModeTemplatesStore()
+
+	notes := []*muse.Note{
+		muse.C.MustMakeNote(),
+		muse.D.MustMakeNote(),
+		muse.E.MustMakeNote(),
+		muse.F.MustMakeNote(),
+		muse.G.MustMakeNote(),
+		muse.A.MustMakeNote(),
+		muse.B.MustMakeNote(),
+		muse.C.MustMakeNote(), // duplicates are ok
+		muse.C.MustMakeNote(), // duplicates are ok
+	}
+
+	result := mts.FindModeTemplatesByNotes(notes).SortByPrimeNote(false)
+
+	for _, r := range result {
+		fmt.Printf("mode name: %s, mode template: %+v, prime note: %+v, scale: %+v\n",
+			r.ModeName,
+			r.ModeTemplate,
+			r.PrimeNote.Name(),
+			muse.MustMakeNewMode(r.ModeName, r.PrimeNote.Name()).GenerateScale(false),
+		)
+	}
+	// Output: mode name: Aeolian, mode template: [2 1 2 2 1 2 2], prime note: A, scale: [{name:A} {name:B} {name:C} {name:D} {name:E} {name:F} {name:G}]
+	// mode name: NaturalMinor, mode template: [2 1 2 2 1 2 2], prime note: A, scale: [{name:A} {name:B} {name:C} {name:D} {name:E} {name:F} {name:G}]
+	// mode name: Locrian, mode template: [1 2 2 1 2 2 2], prime note: B, scale: [{name:B} {name:C} {name:D} {name:E} {name:F} {name:G} {name:A}]
+	// mode name: Ionian, mode template: [2 2 1 2 2 2 1], prime note: C, scale: [{name:C} {name:D} {name:E} {name:F} {name:G} {name:A} {name:B}]
+	// mode name: NaturalMajor, mode template: [2 2 1 2 2 2 1], prime note: C, scale: [{name:C} {name:D} {name:E} {name:F} {name:G} {name:A} {name:B}]
+	// mode name: Dorian, mode template: [2 1 2 2 2 1 2], prime note: D, scale: [{name:D} {name:E} {name:F} {name:G} {name:A} {name:B} {name:C}]
+	// mode name: Phrygian, mode template: [1 2 2 2 1 2 2], prime note: E, scale: [{name:E} {name:F} {name:G} {name:A} {name:B} {name:C} {name:D}]
+	// mode name: Lydian, mode template: [2 2 2 1 2 2 1], prime note: F, scale: [{name:F} {name:G} {name:A} {name:B} {name:C} {name:D} {name:E}]
+	// mode name: MixoLydian, mode template: [2 2 1 2 2 1 2], prime note: G, scale: [{name:G} {name:A} {name:B} {name:C} {name:D} {name:E} {name:F}]
 }

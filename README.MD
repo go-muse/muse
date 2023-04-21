@@ -64,7 +64,10 @@ Q: How to get notes from a mode sorted by their modal positions?\
 A: You need to create a mode from the selected tonic and call sorting function. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Mode.SortByAbsoluteModalPositions)
 
 Q: How to find a mode by pattern?\
-A: There is a storage of mode names and their templates. You can find them by specifying your template. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-ModeTemplatesStore.FindModeTemplatesByPattern) Then you can sort them by mode names [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-ModeNamesAndTemplates.SortByModeName) or by templates(patterns) [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-ModeNamesAndTemplates.SortByModeTemplate).
+A: There is the storage of mode names and their templates. You can find them by specifying your template. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-ModeTemplatesStore.FindModeTemplatesByPattern) Then you can sort them by mode names [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-ModeNamesAndTemplates.SortByModeName) or by templates(patterns) [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-ModeNamesAndTemplates.SortByModeTemplate).
+
+Q: How can I find a mode based on a given set of notes?\
+A: You can find them in the storage of mode names and their templates by specifying your set of notes. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-ModeTemplatesStore.FindModeTemplatesByNotes).
 
 ## Examples
 

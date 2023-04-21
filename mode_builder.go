@@ -19,7 +19,8 @@ func newModeBuilder(modeTemplate ModeTemplate) modeBuilder {
 	case DegreesInHeptatonic:
 		return &modeBuilder7degree{}
 	default:
-		return &modeBuilderCommon{}
+		// TODO: return &modeBuilderCommon{}
+		return &modeBuilder7degree{}
 	}
 }
 

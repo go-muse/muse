@@ -88,3 +88,12 @@ func generateAbstractPatterns(modeTemplate []HalfTones) [][]HalfTones {
 
 	return res
 }
+
+func newNotesFromNoteNames(noteNames ...NoteName) []*Note {
+	notes := make([]*Note, 0, len(noteNames))
+	for _, noteName := range noteNames {
+		notes = append(notes, newNote(noteName))
+	}
+
+	return notes
+}
