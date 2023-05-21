@@ -183,13 +183,13 @@ func ExampleModeTemplatesStore_FindModeTemplatesByNotes() {
 			muse.MustMakeNewMode(r.ModeName, r.PrimeNote.Name()).GenerateScale(false),
 		)
 	}
-	// Output: mode name: Aeolian, mode template: [2 1 2 2 1 2 2], prime note: A, scale: [{name:A} {name:B} {name:C} {name:D} {name:E} {name:F} {name:G}]
-	// mode name: NaturalMinor, mode template: [2 1 2 2 1 2 2], prime note: A, scale: [{name:A} {name:B} {name:C} {name:D} {name:E} {name:F} {name:G}]
-	// mode name: Locrian, mode template: [1 2 2 1 2 2 2], prime note: B, scale: [{name:B} {name:C} {name:D} {name:E} {name:F} {name:G} {name:A}]
-	// mode name: Ionian, mode template: [2 2 1 2 2 2 1], prime note: C, scale: [{name:C} {name:D} {name:E} {name:F} {name:G} {name:A} {name:B}]
-	// mode name: NaturalMajor, mode template: [2 2 1 2 2 2 1], prime note: C, scale: [{name:C} {name:D} {name:E} {name:F} {name:G} {name:A} {name:B}]
-	// mode name: Dorian, mode template: [2 1 2 2 2 1 2], prime note: D, scale: [{name:D} {name:E} {name:F} {name:G} {name:A} {name:B} {name:C}]
-	// mode name: Phrygian, mode template: [1 2 2 2 1 2 2], prime note: E, scale: [{name:E} {name:F} {name:G} {name:A} {name:B} {name:C} {name:D}]
-	// mode name: Lydian, mode template: [2 2 2 1 2 2 1], prime note: F, scale: [{name:F} {name:G} {name:A} {name:B} {name:C} {name:D} {name:E}]
-	// mode name: MixoLydian, mode template: [2 2 1 2 2 1 2], prime note: G, scale: [{name:G} {name:A} {name:B} {name:C} {name:D} {name:E} {name:F}]
+	// Output: mode name: Aeolian, mode template: [2 1 2 2 1 2 2], prime note: A, scale: [A B C D E F G]
+	// mode name: NaturalMinor, mode template: [2 1 2 2 1 2 2], prime note: A, scale: [A B C D E F G]
+	// mode name: Locrian, mode template: [1 2 2 1 2 2 2], prime note: B, scale: [B C D E F G A]
+	// mode name: Ionian, mode template: [2 2 1 2 2 2 1], prime note: C, scale: [C D E F G A B]
+	// mode name: NaturalMajor, mode template: [2 2 1 2 2 2 1], prime note: C, scale: [C D E F G A B]
+	// mode name: Dorian, mode template: [2 1 2 2 2 1 2], prime note: D, scale: [D E F G A B C]
+	// mode name: Phrygian, mode template: [1 2 2 2 1 2 2], prime note: E, scale: [E F G A B C D]
+	// mode name: Lydian, mode template: [2 2 2 1 2 2 1], prime note: F, scale: [F G A B C D E]
+	// mode name: MixoLydian, mode template: [2 2 1 2 2 1 2], prime note: G, scale: [G A B C D E F]
 }

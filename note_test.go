@@ -54,7 +54,7 @@ func TestNewNote(t *testing.T) {
 		var err error
 		for _, noteName := range noteNames {
 			// setup: create a Note with a valid name
-			newNote, err = NewNote(noteName)
+			newNote, err = NewNote(noteName, OctaveNumberDefault)
 			assert.NoError(t, err)
 			assert.NotNil(t, newNote, "expected note from note name %s", noteName)
 
@@ -68,7 +68,7 @@ func TestNewNote(t *testing.T) {
 	t.Run("TestNewNote: invalid note name", func(t *testing.T) {
 		// setup: create a Note with invalid name
 		expectedName := NoteName("Hello")
-		newNote, err := NewNote(expectedName)
+		newNote, err := NewNote(expectedName, OctaveNumberDefault)
 		// assert that the returned error matches the expected error
 		assert.ErrorIs(t, err, ErrNoteNameUnknown)
 		assert.Nil(t, newNote)
@@ -117,7 +117,7 @@ func TestMustNewNote(t *testing.T) {
 		var newNote *Note
 		for _, noteName := range noteNames {
 			// assert that the function works without panic
-			assert.NotPanics(t, func() { newNote = MustNewNote(noteName) }) //nolint:scopelint
+			assert.NotPanics(t, func() { newNote = MustNewNote(noteName, OctaveNumberDefault) }) //nolint:scopelint
 
 			// assert that the returned name matches the expected name
 			if newNote.name != noteName {
@@ -130,7 +130,7 @@ func TestMustNewNote(t *testing.T) {
 		// setup: create a Note with invalid name
 		expectedName := NoteName("Hello")
 		// assert that the function works without panic
-		assert.Panics(t, func() { _ = MustNewNote(expectedName) })
+		assert.Panics(t, func() { _ = MustNewNote(expectedName, OctaveNumberDefault) })
 	})
 }
 
@@ -190,6 +190,11 @@ func TestNoteCopy(t *testing.T) {
 	// Test the notes have the same name
 	if note1.Name() != note2.Name() {
 		t.Error("Expected new note with same name, but got different names")
+	}
+
+	// Test the notes have the same octave
+	if note1.Octave() != note2.Octave() {
+		t.Error("Expected new note with same octave, but got different octaves")
 	}
 
 	// Test nil input returns nil
@@ -392,4 +397,26 @@ func TestNote_BaseNote(t *testing.T) {
 	for _, testCase := range testCases {
 		assert.Equal(t, testCase.want, testCase.note.baseNote(), "expected note: %+v, result: %+v", testCase.want, testCase.note.baseNote())
 	}
+}
+
+func TestNoteSetOctave(t *testing.T) {
+	expectedOctave := MustNewOctave(OctaveNumberDefault)
+
+	t.Run("TestNoteSetOctave: setting octave to the note without octave", func(t *testing.T) {
+		// create a note without octave
+		note1 := newNote(C)
+		// set the octave no the note
+		note1.SetOctave(expectedOctave)
+		// check that they are the same
+		assert.True(t, expectedOctave.IsEqual(note1.Octave()))
+	})
+
+	t.Run("TestNoteSetOctave: setting octave to the note that already has an octave", func(t *testing.T) {
+		// create a note with an octave
+		note1 := newNoteWithOctave(C, MustNewOctave(OctaveNumber9))
+		// set new octave no the note
+		note1.SetOctave(expectedOctave)
+		// check that they are the same
+		assert.True(t, expectedOctave.IsEqual(note1.Octave()))
+	})
 }

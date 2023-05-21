@@ -660,7 +660,7 @@ func TestDegree_Equal(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.degree1.Equal(testCase.degree2), "test number: %d, expected: %+v, actual: %+v", testCase.testNumber, testCase.degree1, testCase.degree2)
+		assert.Equal(t, testCase.want, testCase.degree1.IsEqual(testCase.degree2), "test number: %d, expected: %+v, actual: %+v", testCase.testNumber, testCase.degree1, testCase.degree2)
 	}
 }
 
@@ -696,7 +696,7 @@ func TestDegree_Copy(t *testing.T) {
 		halfTonesFromPrime:    2,
 		previous:              &Degree{},
 		next:                  &Degree{},
-		note:                  MustNewNote(C),
+		note:                  MustNewNote(C, OctaveNumber1),
 		modalCharacteristics:  ModalCharacteristics{},
 		absoluteModalPosition: &ModalPosition{name: ModalPositionNameHigh, weight: -5},
 	}
@@ -737,7 +737,7 @@ func TestDegree_CopyCut(t *testing.T) {
 		halfTonesFromPrime:    2,
 		previous:              &Degree{},
 		next:                  &Degree{},
-		note:                  MustNewNote(C),
+		note:                  MustNewNote(C, OctaveNumber0),
 		modalCharacteristics:  ModalCharacteristics{},
 		absoluteModalPosition: &ModalPosition{name: ModalPositionNameHigh, weight: -5},
 	}

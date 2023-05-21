@@ -194,7 +194,7 @@ func (m *Mode) Equal(mode *Mode) bool {
 
 	d1chan := m.degree.IterateOneRound(false)
 	for d2 := range m.degree.IterateOneRound(false) {
-		if !(<-d1chan).Equal(d2) {
+		if !(<-d1chan).IsEqual(d2) {
 			return false
 		}
 	}
@@ -278,4 +278,21 @@ func (m *Mode) Contains(note *Note) bool {
 	}
 
 	return false
+}
+
+// IsEqual compares the modes.
+func (m *Mode) IsEqual(mode *Mode) bool {
+	if m == nil || mode == nil {
+		return false
+	}
+
+	for degree1 := range m.IterateOneRound(false) {
+		for degree2 := range mode.IterateOneRound(false) {
+			if !degree1.IsEqual(degree2) {
+				return false
+			}
+		}
+	}
+
+	return true
 }

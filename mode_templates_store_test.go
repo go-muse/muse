@@ -21,7 +21,7 @@ func TestModeTemplatesStore(t *testing.T) {
 			modeCustom, err = MakeNewCustomMode(modeTemplate, note.Name().String(), modeName)
 			assert.NoError(t, err)
 			assert.Equal(t, modeTemplate.Length(), modeCustom.Length())
-			assert.Equal(t, modeNormal, modeCustom)
+			assert.True(t, modeNormal.Equal(modeCustom))
 		}
 	}
 }

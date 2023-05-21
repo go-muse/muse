@@ -52,7 +52,7 @@ func generateModeWithNotes(mt ModeTemplate, noteNames []NoteName) *Mode {
 		panic(mt.Validate())
 	}
 
-	firstDegree := NewDegree(1, 0, nil, nil, MustNewNote(noteNames[0]), nil, nil)
+	firstDegree := NewDegree(1, 0, nil, nil, MustNewNote(noteNames[0], OctaveNumberDefault), nil, nil)
 	currentDegree := firstDegree
 	var halfTonesFromPrime HalfTones
 	const degreeIndexShift = 2

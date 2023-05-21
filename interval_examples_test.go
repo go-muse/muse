@@ -42,9 +42,9 @@ func ExampleNewIntervalByHalfTonesAndDegrees() {
 // Interval can be calculated between diatonic degrees.
 func ExampleNewIntervalByDegrees() {
 	// For example, degree1 is a second degree in a mode, and in contains note "D"
-	degree1 := muse.NewDegree(2, 2, nil, nil, muse.MustNewNote(muse.D), nil, nil)
+	degree1 := muse.NewDegree(2, 2, nil, nil, muse.MustNewNote(muse.D, muse.OctaveNumber0), nil, nil)
 	// degree2 is the fourth degree in a mode, and it contains note "F"
-	degree2 := muse.NewDegree(4, 5, nil, nil, muse.MustNewNote(muse.F), nil, nil)
+	degree2 := muse.NewDegree(4, 5, nil, nil, muse.MustNewNote(muse.F, muse.OctaveNumber0), nil, nil)
 
 	interval, err := muse.NewIntervalByDegrees(degree1, degree2)
 	if err != nil {
@@ -69,7 +69,7 @@ func ExampleNewIntervalByName() {
 // Making note by existing note and known interval.
 func ExampleMakeNoteByIntervalName() {
 	// The note from which we will make the second note by the interval.
-	firstNote := muse.MustNewNote(muse.C)
+	firstNote := muse.MustNewNote(muse.C, muse.OctaveNumberDefault)
 
 	// Needed interval
 	interval, err := muse.NewIntervalChromatic(6) // six halftones means tritone interval
@@ -100,7 +100,7 @@ func ExampleMakeNoteByIntervalName() {
 
 // Making degree by existing degree and known interval.
 func ExampleMakeDegreeByIntervalName() {
-	firstDegree := muse.NewDegree(1, 0, nil, nil, muse.MustNewNote(muse.C), nil, nil)
+	firstDegree := muse.NewDegree(1, 0, nil, nil, muse.MustNewNote(muse.C, muse.OctaveNumber1), nil, nil)
 
 	secondDegree, err := muse.MakeDegreeByIntervalName(firstDegree, muse.IntervalNameTritone)
 	if err != nil {

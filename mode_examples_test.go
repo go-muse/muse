@@ -16,7 +16,7 @@ func ExampleMakeNewMode() {
 	ultraLocrianScale := mode.GenerateScale(false)
 
 	fmt.Println(ultraLocrianScale)
-	// Output: [{C} {Db} {Eb} {Fb} {Gb} {Ab} {Bbb}]
+	// Output: [C Db Eb Fb Gb Ab Bbb]
 }
 
 // Creating mode with a mode's name from muse and note's name from muse name guarantees the absence of errors,
@@ -27,7 +27,7 @@ func ExampleMustMakeNewMode() {
 	superLocrianScale := mode.GenerateScale(false)
 
 	fmt.Println(superLocrianScale)
-	// Output: [{C} {Db} {Eb} {Fb} {Gb} {Ab} {Bb}]
+	// Output: [C Db Eb Fb Gb Ab Bb]
 }
 
 // You can create your custom mode with own mode template.
@@ -41,7 +41,7 @@ func ExampleMakeNewCustomMode() {
 	}
 
 	fmt.Println(customMode.GenerateScale(false))
-	// Output: [{C} {Db} {Eb} {F} {Gb} {Ab} {Bb}]
+	// Output: [C Db Eb F Gb Ab Bb]
 }
 
 // Getting from a mode it's notes from degrees, sorted by absolute modal positions.
@@ -55,8 +55,8 @@ func ExampleMode_SortByAbsoluteModalPositions() {
 	notes := mode.IterateOneRound(false).GetAllNotes()
 
 	fmt.Printf("The Dorian scale with tonal centre 'B' is: %v\nSorted by Modal Positions: %v\n", dorianScale, notes)
-	// Output: The Dorian scale with tonal centre 'B' is: [{B} {C#} {D} {E} {F#} {G#} {A}]
-	// Sorted by Modal Positions: [{G#} {C#} {F#} {B} {E} {A} {D}]
+	// Output: The Dorian scale with tonal centre 'B' is: [B C# D E F# G# A]
+	// Sorted by Modal Positions: [G# C# F# B E A D]
 }
 
 // There is a possibility to iterate one cycle through the degrees of the mode.
@@ -92,8 +92,8 @@ func ExampleDegreesIterator_GetAllNotes() {
 	iteratorBackward := mode.IterateOneRound(true)
 
 	fmt.Printf("%+v\n%+v", iteratorForward.GetAllNotes(), iteratorBackward.GetAllNotes())
-	// Output: [{name:A} {name:B} {name:C} {name:D} {name:E} {name:F} {name:G}]
-	// [{name:A} {name:G} {name:F} {name:E} {name:D} {name:C} {name:B}]
+	// Output: [A B C D E F G]
+	// [A G F E D C B]
 }
 
 // There is a possibility to iterate one cycle through the degrees of the mode.
