@@ -178,6 +178,110 @@ func TestNoteIsEqualByName(t *testing.T) {
 	}
 }
 
+func TestNoteIsEqualByOctave(t *testing.T) {
+	testCases := []struct {
+		note1, note2 *Note
+		want         bool
+	}{
+		{
+			note1: &Note{name: C, octave: MustNewOctave(OctaveNumber0)},
+			note2: &Note{name: C, octave: MustNewOctave(OctaveNumber0)},
+			want:  true,
+		},
+		{
+			note1: &Note{name: C, octave: MustNewOctave(OctaveNumber0)},
+			note2: &Note{name: D, octave: MustNewOctave(OctaveNumber0)},
+			want:  true,
+		},
+		{
+			note1: &Note{name: C, octave: MustNewOctave(OctaveNumber0)},
+			note2: &Note{name: C, octave: MustNewOctave(OctaveNumber1)},
+			want:  false,
+		},
+		{
+			note1: &Note{name: C, octave: MustNewOctave(OctaveNumber0)},
+			note2: &Note{name: D, octave: MustNewOctave(OctaveNumber1)},
+			want:  false,
+		},
+		{
+			note1: &Note{name: C, octave: nil},
+			note2: &Note{name: C, octave: MustNewOctave(OctaveNumber1)},
+			want:  false,
+		},
+		{
+			note1: &Note{name: C, octave: nil},
+			note2: &Note{name: D, octave: MustNewOctave(OctaveNumber1)},
+			want:  false,
+		},
+		{
+			note1: &Note{name: C},
+			note2: &Note{name: D},
+			want:  false,
+		},
+		{
+			note1: &Note{name: C},
+			note2: nil,
+			want:  false,
+		},
+		{
+			note1: nil,
+			note2: nil,
+			want:  false,
+		},
+	}
+
+	for _, testCase := range testCases {
+		assert.Equal(t, testCase.want, testCase.note1.IsEqualByOctave(testCase.note2))
+	}
+}
+
+func TestNoteIsEqual(t *testing.T) {
+	testCases := []struct {
+		note1, note2 *Note
+		want         bool
+	}{
+		{
+			note1: &Note{name: C, octave: MustNewOctave(OctaveNumber0)},
+			note2: &Note{name: C, octave: MustNewOctave(OctaveNumber0)},
+			want:  true,
+		},
+		{
+			note1: &Note{name: C, octave: MustNewOctave(OctaveNumber0)},
+			note2: &Note{name: D, octave: MustNewOctave(OctaveNumber0)},
+			want:  false,
+		},
+		{
+			note1: &Note{name: C, octave: MustNewOctave(OctaveNumber0)},
+			note2: &Note{name: C, octave: MustNewOctave(OctaveNumber1)},
+			want:  false,
+		},
+		{
+			note1: &Note{name: C, octave: nil},
+			note2: &Note{name: C, octave: MustNewOctave(OctaveNumber1)},
+			want:  false,
+		},
+		{
+			note1: &Note{name: C, octave: nil},
+			note2: &Note{name: C, octave: nil},
+			want:  false,
+		},
+		{
+			note1: &Note{name: C},
+			note2: nil,
+			want:  false,
+		},
+		{
+			note1: nil,
+			note2: nil,
+			want:  false,
+		},
+	}
+
+	for _, testCase := range testCases {
+		assert.Equal(t, testCase.want, testCase.note1.IsEqual(testCase.note2))
+	}
+}
+
 func TestNoteCopy(t *testing.T) {
 	note1 := &Note{name: C}
 	note2 := note1.Copy()
