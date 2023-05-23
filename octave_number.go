@@ -6,18 +6,19 @@ import "github.com/pkg/errors"
 type OctaveNumber int8
 
 const (
-	OctaveNumberMinus1  = OctaveNumber(-1)
-	OctaveNumberDefault = OctaveNumber(0)
-	OctaveNumber0       = OctaveNumber(0)
-	OctaveNumber1       = OctaveNumber(1)
-	OctaveNumber2       = OctaveNumber(2)
-	OctaveNumber3       = OctaveNumber(3)
-	OctaveNumber4       = OctaveNumber(4)
-	OctaveNumber5       = OctaveNumber(5)
-	OctaveNumber6       = OctaveNumber(6)
-	OctaveNumber7       = OctaveNumber(7)
-	OctaveNumber8       = OctaveNumber(8)
-	OctaveNumber9       = OctaveNumber(9)
+	OctaveNumberMinus1 = OctaveNumber(-1) // Octave name is SubSubContraOctave
+	OctaveNumber0      = OctaveNumber(0)  // Octave name is SubContraOctave
+	OctaveNumber1      = OctaveNumber(1)  // Octave name is ContraOctave
+	OctaveNumber2      = OctaveNumber(2)  // Octave name is GreatOctave
+	OctaveNumber3      = OctaveNumber(3)  // Octave name is SmallOctave
+	OctaveNumber4      = OctaveNumber(4)  // Octave name is FirstOctave
+	OctaveNumber5      = OctaveNumber(5)  // Octave name is SecondOctave
+	OctaveNumber6      = OctaveNumber(6)  // Octave name is ThirdOctave
+	OctaveNumber7      = OctaveNumber(7)  // Octave name is FourthOctave
+	OctaveNumber8      = OctaveNumber(8)  // Octave name is FifthOctave
+	OctaveNumber9      = OctaveNumber(9)  // Octave name is SixthOctave
+
+	OctaveNumberDefault = OctaveNumber(0) // Octave name is SubContraOctave
 )
 
 // ErrOctaveNumberUnknown is the error that occurs when octave number is outside of [-1; 9].
