@@ -20,7 +20,7 @@ func TestChromaticIntervalHalfTonesMethod(t *testing.T) {
 }
 
 func TestMakeNoteByIntervalName(t *testing.T) {
-	firstNote := MustNewNote(C)
+	firstNote := MustNewNoteWithoutOctave(C)
 	note, err := MakeNoteByIntervalName(firstNote, IntervalNameTritone)
 	assert.NoError(t, err)
 	assert.NotNil(t, note)
@@ -28,7 +28,7 @@ func TestMakeNoteByIntervalName(t *testing.T) {
 }
 
 func TestMakeDegreeByIntervalName(t *testing.T) {
-	firstDegree := NewDegree(1, 0, nil, nil, MustNewNote(C), nil, nil)
+	firstDegree := NewDegree(1, 0, nil, nil, MustNewNoteWithoutOctave(C), nil, nil)
 	interval, err := NewIntervalChromatic(6)
 	assert.NoError(t, err)
 	secondDegree, err := MakeDegreeByIntervalName(firstDegree, interval.Name())

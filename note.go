@@ -8,29 +8,51 @@ import (
 )
 
 type Note struct {
-	name NoteName
+	name   NoteName
+	octave *Octave
+}
+
+type Notes []Note
+
+func (ns Notes) String() string {
+	noteNames := make([]NoteName, len(ns))
+	for i, note := range ns {
+		noteNames[i] = note.Name()
+	}
+
+	return fmt.Sprintf("%v", noteNames)
 }
 
 // newNote creates new note with a given name without any restrictions.
 func newNote(name NoteName) *Note {
-	return &Note{name: name}
+	return &Note{name: name, octave: nil}
 }
 
-// ErrNoteNameUnknown is еру error that occurs when trying to determine the name of a note if it is not known.
+// newNote creates new note with a given name and octave without any restrictions.
+func newNoteWithOctave(name NoteName, octave *Octave) *Note {
+	return &Note{name: name, octave: octave}
+}
+
+// ErrNoteNameUnknown is the error that occurs when trying to determine the name of a note if it is not known.
 var ErrNoteNameUnknown = errors.New("unknown note name")
 
 // NewNote creates new note with a given name validating it.
-func NewNote(noteName NoteName) (*Note, error) {
+func NewNote(noteName NoteName, octaveNumber OctaveNumber) (*Note, error) {
 	if err := noteName.Validate(); err != nil {
 		return nil, err
 	}
 
-	return newNote(noteName), nil
+	octave, err := NewOctave(octaveNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	return newNoteWithOctave(noteName, octave), nil
 }
 
-// MustNewNote creates new note with suppressing error in case of invalid note name.
-func MustNewNote(noteName NoteName) *Note {
-	note, err := NewNote(noteName)
+// MustNewNote creates new note with panic in case of invalid note name or octave.
+func MustNewNote(noteName NoteName, octaveNumber OctaveNumber) *Note {
+	note, err := NewNote(noteName, octaveNumber)
 	if err != nil {
 		panic(err)
 	}
@@ -38,14 +60,28 @@ func MustNewNote(noteName NoteName) *Note {
 	return note
 }
 
-// NewNoteFromString creates a new note from the given string.
+// MustNewNote creates new note with panic in case of invalid note name or octave.
+func MustNewNoteWithoutOctave(noteName NoteName) *Note {
+	if err := noteName.Validate(); err != nil {
+		panic(err)
+	}
+
+	return newNote(noteName)
+}
+
+// NewNoteFromString creates a new note from the given string. It has default octave number.
 func NewNoteFromString(s string) (*Note, error) {
-	return NewNote(NoteName(s))
+	return NewNote(NoteName(s), OctaveNumberDefault)
 }
 
 // Name returns name of the note.
 func (n *Note) Name() NoteName {
 	return n.name
+}
+
+// Name returns octave of the note.
+func (n *Note) Octave() *Octave {
+	return n.octave
 }
 
 // IsEqualByName compares notes by name.
@@ -57,6 +93,28 @@ func (n *Note) IsEqualByName(note *Note) bool {
 	return note.Name() == n.Name()
 }
 
+// IsEqualByName compares notes by name.
+func (n *Note) IsEqualByOctave(note *Note) bool {
+	if n == nil || note == nil {
+		return false
+	}
+
+	return note.Octave().IsEqual(n.octave)
+}
+
+// IsEqualByName compares notes by all parameters.
+func (n *Note) IsEqual(note *Note) bool {
+	if n == nil || note == nil {
+		return false
+	}
+
+	if !note.IsEqualByName(n) || !note.IsEqualByOctave(n) {
+		return false
+	}
+
+	return true
+}
+
 // Copy creates full copy of the current Note.
 // The method returns a pointer to the new Note containing the same attribute values
 // as the original Note that the function was called on.
@@ -65,7 +123,7 @@ func (n *Note) Copy() *Note {
 		return nil
 	}
 
-	return &Note{name: n.Name()}
+	return &Note{name: n.Name(), octave: n.octave}
 }
 
 // AlterUp alterates the note upwards.
@@ -128,10 +186,18 @@ func (n *Note) AlterDownBy(i uint8) *Note {
 	return n
 }
 
+// BaseName returns note name without alteration symbols.
 func (n *Note) BaseName() NoteName {
 	return n.name[0:1]
 }
 
 func (n *Note) baseNote() *Note {
-	return newNote(n.name[0:1])
+	return newNoteWithOctave(n.name[0:1], n.octave)
+}
+
+// SetOctave sets the specified octave to the note and returns the note.
+func (n *Note) SetOctave(octave *Octave) *Note {
+	n.octave = octave
+
+	return n
 }

@@ -182,8 +182,8 @@ func (m *Mode) IterateOneRound(left bool) DegreesIterator {
 	return m.degree.IterateOneRound(left)
 }
 
-// Equal compares modes.
-func (m *Mode) Equal(mode *Mode) bool {
+// IsEqual compares modes.
+func (m *Mode) IsEqual(mode *Mode) bool {
 	if m == nil || mode == nil {
 		return false
 	}
@@ -191,10 +191,9 @@ func (m *Mode) Equal(mode *Mode) bool {
 	if m.name != mode.name || m.Length() != mode.Length() {
 		return false
 	}
-
 	d1chan := m.degree.IterateOneRound(false)
-	for d2 := range m.degree.IterateOneRound(false) {
-		if !(<-d1chan).Equal(d2) {
+	for d2 := range mode.degree.IterateOneRound(false) {
+		if !(<-d1chan).IsEqual(d2) {
 			return false
 		}
 	}

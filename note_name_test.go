@@ -31,10 +31,8 @@ func TestNoteName_MakeNote(t *testing.T) {
 
 func TestNoteName_MustMakeNote(t *testing.T) {
 	// Test case 1: Valid note name
-	nn1 := NoteName("C")
-	note1 := C.MustMakeNote()
-	if note1 == nil {
-		t.Errorf("MustMakeNote(%s) returned nil, expected *Note", nn1)
+	if C.MustMakeNote() == nil {
+		t.Errorf("MustMakeNote(%s) returned nil, expected *Note", NoteName("C"))
 	}
 
 	// Test case 2: Invalid note name

@@ -43,17 +43,17 @@ func TestMakeNewMode(t *testing.T) {
 
 		firstDegree := mode.GetFirstDegree()
 
-		firstNote, err := NewNote(tonalCenter)
+		firstNote, err := NewNote(tonalCenter, OctaveNumberDefault)
 		assert.NoError(t, err)
 		assert.True(t, firstDegree.note.IsEqualByName(firstNote))
 
 		naturalMinorFromC := []*Note{
-			MustNewNote(D),
-			MustNewNote(EFLAT),
-			MustNewNote(F),
-			MustNewNote(G),
-			MustNewNote(AFLAT),
-			MustNewNote(BFLAT),
+			MustNewNoteWithoutOctave(D),
+			MustNewNoteWithoutOctave(EFLAT),
+			MustNewNoteWithoutOctave(F),
+			MustNewNoteWithoutOctave(G),
+			MustNewNoteWithoutOctave(AFLAT),
+			MustNewNoteWithoutOctave(BFLAT),
 		}
 
 		for _, note := range naturalMinorFromC {
@@ -73,17 +73,17 @@ func TestMakeNewMode(t *testing.T) {
 		firstDegree := mode.GetFirstDegree()
 		assert.NotNil(t, mode)
 
-		firstNote, err := NewNote(tonalCenter)
+		firstNote, err := NewNote(tonalCenter, OctaveNumberDefault)
 		assert.NoError(t, err)
 		assert.True(t, firstDegree.note.IsEqualByName(firstNote))
 
 		naturalMajorFromC := []*Note{
-			MustNewNote(D),
-			MustNewNote(E),
-			MustNewNote(F),
-			MustNewNote(G),
-			MustNewNote(A),
-			MustNewNote(B),
+			MustNewNoteWithoutOctave(D),
+			MustNewNoteWithoutOctave(E),
+			MustNewNoteWithoutOctave(F),
+			MustNewNoteWithoutOctave(G),
+			MustNewNoteWithoutOctave(A),
+			MustNewNoteWithoutOctave(B),
 		}
 
 		for _, note := range naturalMajorFromC {
@@ -103,17 +103,17 @@ func TestMakeNewMode(t *testing.T) {
 		firstDegree := mode.GetFirstDegree()
 		assert.NotNil(t, mode)
 
-		firstNote, err := NewNote(tonalCenter)
+		firstNote, err := NewNote(tonalCenter, OctaveNumberDefault)
 		assert.NoError(t, err)
 		assert.True(t, firstDegree.note.IsEqualByName(firstNote))
 
 		naturalMajorFromB := []*Note{
-			MustNewNote(CSHARP),
-			MustNewNote(DSHARP),
-			MustNewNote(E),
-			MustNewNote(FSHARP),
-			MustNewNote(GSHARP),
-			MustNewNote(ASHARP),
+			MustNewNoteWithoutOctave(CSHARP),
+			MustNewNoteWithoutOctave(DSHARP),
+			MustNewNoteWithoutOctave(E),
+			MustNewNoteWithoutOctave(FSHARP),
+			MustNewNoteWithoutOctave(GSHARP),
+			MustNewNoteWithoutOctave(ASHARP),
 		}
 
 		for _, note := range naturalMajorFromB {
@@ -326,4 +326,62 @@ func TestMode_Contains(t *testing.T) {
 	for _, testCase := range testCases {
 		assert.Equal(t, testCase.want, mode.Contains(testCase.note), "expected note in mode: %f, actual: %f", testCase.want, mode.Contains(testCase.note))
 	}
+}
+
+func TestMode_IsEqual(t *testing.T) {
+	type testCase struct {
+		mode1, mode2 *Mode
+	}
+
+	t.Run("TestMode_IsEqual testing equal modes", func(t *testing.T) {
+		testCases := []testCase{
+			// same mode, different tonics
+			{MustMakeNewMode(ModeNameAeolian, C), MustMakeNewMode(ModeNameAeolian, C)},
+			{MustMakeNewMode(ModeNameAeolian, D), MustMakeNewMode(ModeNameAeolian, D)},
+			{MustMakeNewMode(ModeNameAeolian, E), MustMakeNewMode(ModeNameAeolian, E)},
+			{MustMakeNewMode(ModeNameAeolian, F), MustMakeNewMode(ModeNameAeolian, F)},
+			{MustMakeNewMode(ModeNameAeolian, G), MustMakeNewMode(ModeNameAeolian, G)},
+			{MustMakeNewMode(ModeNameAeolian, A), MustMakeNewMode(ModeNameAeolian, A)},
+			{MustMakeNewMode(ModeNameAeolian, B), MustMakeNewMode(ModeNameAeolian, B)},
+
+			// same tonics, different modes
+			{MustMakeNewMode(ModeNameIonian, C), MustMakeNewMode(ModeNameIonian, C)},
+			{MustMakeNewMode(ModeNameAeolian, C), MustMakeNewMode(ModeNameAeolian, C)},
+			{MustMakeNewMode(ModeNameLydian, C), MustMakeNewMode(ModeNameLydian, C)},
+			{MustMakeNewMode(ModeNameDorian, C), MustMakeNewMode(ModeNameDorian, C)},
+			{MustMakeNewMode(ModeNamePhrygian, C), MustMakeNewMode(ModeNamePhrygian, C)},
+			{MustMakeNewMode(ModeNameLocrian, C), MustMakeNewMode(ModeNameLocrian, C)},
+			{MustMakeNewMode(ModeNameMixoLydian, C), MustMakeNewMode(ModeNameMixoLydian, C)},
+		}
+
+		for _, testCase := range testCases {
+			assert.True(t, testCase.mode1.IsEqual(testCase.mode2))
+		}
+	})
+
+	t.Run("TestMode_IsEqual testing unequal modes", func(t *testing.T) {
+		testCases := []testCase{
+			// same mode, unequal tonics
+			{MustMakeNewMode(ModeNameAeolian, C), MustMakeNewMode(ModeNameAeolian, D)},
+			{MustMakeNewMode(ModeNameAeolian, D), MustMakeNewMode(ModeNameAeolian, E)},
+			{MustMakeNewMode(ModeNameAeolian, E), MustMakeNewMode(ModeNameAeolian, F)},
+			{MustMakeNewMode(ModeNameAeolian, F), MustMakeNewMode(ModeNameAeolian, G)},
+			{MustMakeNewMode(ModeNameAeolian, G), MustMakeNewMode(ModeNameAeolian, A)},
+			{MustMakeNewMode(ModeNameAeolian, A), MustMakeNewMode(ModeNameAeolian, B)},
+			{MustMakeNewMode(ModeNameAeolian, B), MustMakeNewMode(ModeNameAeolian, C)},
+
+			// same tonics, unequal modes
+			{MustMakeNewMode(ModeNameIonian, C), MustMakeNewMode(ModeNameAeolian, C)},
+			{MustMakeNewMode(ModeNameAeolian, C), MustMakeNewMode(ModeNameLydian, C)},
+			{MustMakeNewMode(ModeNameLydian, C), MustMakeNewMode(ModeNameDorian, C)},
+			{MustMakeNewMode(ModeNameDorian, C), MustMakeNewMode(ModeNamePhrygian, C)},
+			{MustMakeNewMode(ModeNamePhrygian, C), MustMakeNewMode(ModeNameLocrian, C)},
+			{MustMakeNewMode(ModeNameLocrian, C), MustMakeNewMode(ModeNameMixoLydian, C)},
+			{MustMakeNewMode(ModeNameMixoLydian, C), MustMakeNewMode(ModeNameIonian, C)},
+		}
+
+		for _, testCase := range testCases {
+			assert.False(t, testCase.mode1.IsEqual(testCase.mode2), "mode1: %+v, mode2: %+v", testCase.mode1, testCase.mode2)
+		}
+	})
 }

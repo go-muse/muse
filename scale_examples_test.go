@@ -14,5 +14,5 @@ func ExampleMode_GenerateScale() {
 	scale := mode.GenerateScale(false)
 
 	fmt.Println(scale)
-	// Output: [{Eb} {F} {G} {A} {Bb} {C} {Db}]
+	// Output: [Eb F G A Bb C Db]
 }

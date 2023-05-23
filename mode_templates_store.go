@@ -269,11 +269,13 @@ func (mtswp ModeTemplatesWithPrime) SortByPrimeNote(desc bool) ModeTemplatesWith
 			if !mtswp[i].PrimeNote.IsEqualByName(mtswp[j].PrimeNote) {
 				return mtswp[i].PrimeNote.Name() > mtswp[j].PrimeNote.Name()
 			}
+
 			return mtswp[i].ModeName > mtswp[j].ModeName
 		default:
 			if !mtswp[i].PrimeNote.IsEqualByName(mtswp[j].PrimeNote) {
 				return mtswp[i].PrimeNote.Name() < mtswp[j].PrimeNote.Name()
 			}
+
 			return mtswp[i].ModeName < mtswp[j].ModeName
 		}
 	})

@@ -146,12 +146,12 @@ func (di DegreesIterator) GetAllDegrees() []*Degree {
 
 // GetAllNotes iterates through a sequence of degrees
 // and returns their notes as slice.
-func (di DegreesIterator) GetAllNotes() []Note {
+func (di DegreesIterator) GetAllNotes() Notes {
 	if di == nil {
 		return nil
 	}
 
-	notes := make([]Note, 0)
+	notes := make(Notes, 0)
 	for {
 		degree, ok := <-di
 		if !ok {
@@ -264,8 +264,8 @@ func (d *Degree) String() string {
 	return degreeString
 }
 
-// Equal compares degrees by degree number and by contained notes.
-func (d *Degree) Equal(degree *Degree) bool {
+// IsEqual compares degrees by degree number and by contained notes.
+func (d *Degree) IsEqual(degree *Degree) bool {
 	if d == nil || degree == nil {
 		return false
 	}
