@@ -140,3 +140,33 @@ func TestOctaveSetToNote(t *testing.T) {
 		assert.True(t, expectedOctave.IsEqual(note1.Octave()))
 	})
 }
+
+func TestOctaveValidate(t *testing.T) {
+	testCases := []struct {
+		octave *Octave
+		want   error
+	}{
+		{octave: &Octave{number: -5, name: ""}, want: ErrOctaveNumberUnknown},
+		{octave: &Octave{number: -4, name: ""}, want: ErrOctaveNumberUnknown},
+		{octave: &Octave{number: -3, name: ""}, want: ErrOctaveNumberUnknown},
+		{octave: &Octave{number: -2, name: ""}, want: ErrOctaveNumberUnknown},
+		{octave: &Octave{number: -1, name: ""}, want: nil},
+		{octave: &Octave{number: 0, name: ""}, want: nil},
+		{octave: &Octave{number: 1, name: ""}, want: nil},
+		{octave: &Octave{number: 2, name: ""}, want: nil},
+		{octave: &Octave{number: 3, name: ""}, want: nil},
+		{octave: &Octave{number: 4, name: ""}, want: nil},
+		{octave: &Octave{number: 5, name: ""}, want: nil},
+		{octave: &Octave{number: 6, name: ""}, want: nil},
+		{octave: &Octave{number: 7, name: ""}, want: nil},
+		{octave: &Octave{number: 8, name: ""}, want: nil},
+		{octave: &Octave{number: 9, name: ""}, want: nil},
+		{octave: &Octave{number: 10, name: ""}, want: ErrOctaveNumberUnknown},
+		{octave: &Octave{number: 11, name: ""}, want: ErrOctaveNumberUnknown},
+		{octave: &Octave{number: 12, name: ""}, want: ErrOctaveNumberUnknown},
+	}
+
+	for _, testCase := range testCases {
+		assert.ErrorIs(t, testCase.octave.Validate(), testCase.want)
+	}
+}

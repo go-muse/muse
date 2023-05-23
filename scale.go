@@ -23,7 +23,7 @@ func NewScaleFromNoteNames(noteNames ...NoteName) Scale {
 	return scale
 }
 
-// GenerateScale generates  an ascending or descending scale.
+// GenerateScale generates an ascending or descending scale.
 func (m *Mode) GenerateScale(desc bool) Scale {
 	if m == nil || m.degree == nil || m.degree.note == nil {
 		return nil
