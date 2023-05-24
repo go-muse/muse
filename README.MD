@@ -13,6 +13,7 @@
 ### Notes:
 - [x] Comparison
 - [x] Octaves
+- [ ] Durations
 - [ ] MIDI numbering
 - [ ] Chords
 
@@ -84,7 +85,7 @@ Q: Are there already existing scales in the library?\
 A: Yes, there is mode templates store [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-InitModeTemplatesStore). It contains mode names and templates.
 
 Q: How to specify an octave to a note?\
-A: You can create an octave [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Octave) and set it no your note [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Octave.SetToNote) [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.SetOctave).
+A: You can create an octave [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Octave) and set it to your note [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Octave.SetToNote) [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.SetOctave).
 
 ---
 <font size="2">This is not very stable version.
