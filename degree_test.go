@@ -507,6 +507,7 @@ func TestDegree_sortByAbsoluteModalPositions(t *testing.T) {
 
 func TestDegree_String(t *testing.T) {
 	testCases := []*Degree{
+		nil,
 		{
 			number:                0,
 			halfTonesFromPrime:    0,

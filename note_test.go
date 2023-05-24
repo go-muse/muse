@@ -73,6 +73,15 @@ func TestNewNote(t *testing.T) {
 		assert.ErrorIs(t, err, ErrNoteNameUnknown)
 		assert.Nil(t, newNote)
 	})
+
+	t.Run("TestNewNote: invalid octave number", func(t *testing.T) {
+		// setup: create a Note with invalid octave number
+		expectedName := C
+		newNote, err := NewNote(expectedName, 15)
+		// assert that the returned error matches the expected error
+		assert.ErrorIs(t, err, ErrOctaveNumberUnknown)
+		assert.Nil(t, newNote)
+	})
 }
 
 func TestMustNewNote(t *testing.T) {
