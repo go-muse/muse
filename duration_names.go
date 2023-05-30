@@ -18,6 +18,7 @@ const (
 	DurationNamesFiveHundredTwelfth   = DurationName("FiveHundredTwelfth")
 )
 
+//nolint:gomnd
 func (dn DurationName) getValue() int8 {
 	switch dn {
 	case DurationNameLarge:

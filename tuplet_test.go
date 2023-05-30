@@ -94,6 +94,7 @@ func TestTupletSetDuplet(t *testing.T) {
 		assert.Equal(t, expectedTuplet, testCase.SetDuplet())
 	}
 }
+
 func TestTupletRemoveTuplet(t *testing.T) {
 	testCases := []struct {
 		*Tuplet

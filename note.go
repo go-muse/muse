@@ -198,6 +198,33 @@ func (n *Note) BaseName() NoteName {
 	return n.name[0:1]
 }
 
+// GetAlterationShift returns information about alteration of the note (up or down). Sign means direction of alteration.
+func (n *Note) GetAlterationShift() int8 {
+	var shift int8
+
+	if len(n.name) <= 1 {
+		return 0
+	}
+
+	if strings.HasSuffix(n.name.String(), string(AlterSymbolSharp)) {
+		for i := len(n.name[1:]); i > 0; i-- {
+			shift++
+		}
+
+		return shift
+	}
+
+	if strings.HasSuffix(n.name.String(), string(AlterSymbolFlat)) {
+		for i := len(n.name[1:]); i > 0; i-- {
+			shift--
+		}
+
+		return shift
+	}
+
+	return shift
+}
+
 func (n *Note) baseNote() *Note {
 	return newNoteWithOctave(n.name[0:1], n.octave)
 }

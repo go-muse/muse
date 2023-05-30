@@ -32,6 +32,8 @@ func (t *Tuplet) Set(n, m uint8) *Tuplet {
 }
 
 // SetTriplet sets the setting that three such notes will last as long as two notes of the same duration outside the tuplet.
+//
+//nolint:gomnd
 func (t *Tuplet) SetTriplet() *Tuplet {
 	n := uint8(3)
 	m := uint8(2)
@@ -49,6 +51,8 @@ func (t *Tuplet) SetTriplet() *Tuplet {
 }
 
 // SetDuplet sets the setting that two such notes will last as long as three notes of the same duration outside the tuplet.
+//
+//nolint:gomnd
 func (t *Tuplet) SetDuplet() *Tuplet {
 	n := uint8(2)
 	m := uint8(3)

@@ -4,6 +4,10 @@ import (
 	"github.com/pkg/errors"
 )
 
+const (
+	NotesInOctave = 12
+)
+
 // Octave is pair of number and name.
 type Octave struct {
 	number OctaveNumber
