@@ -2,6 +2,7 @@ package muse
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -532,4 +533,124 @@ func TestNoteSetOctave(t *testing.T) {
 		// check that they are the same
 		assert.True(t, expectedOctave.IsEqual(note1.Octave()))
 	})
+}
+
+func TestNoteSetDuration(t *testing.T) {
+	testCases := []struct {
+		note *Note
+		want *Duration
+	}{
+		{
+			note: newNote(C),
+			want: NewDuration(DurationNameEighth),
+		},
+		{
+			note: newNote(C).SetDuration(&Duration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}),
+			want: NewDuration(DurationNameEighth),
+		},
+		{
+			note: newNote(C).SetDuration(NewDuration(DurationNameDoubleWhole)),
+			want: NewDuration(DurationNameEighth),
+		},
+		{
+			note: &Note{name: C, duration: &Duration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}},
+			want: NewDuration(DurationNameEighth),
+		},
+	}
+
+	for _, testCase := range testCases {
+		assert.Equal(t, testCase.want, testCase.note.SetDuration(testCase.want).duration)
+	}
+}
+
+func TestNoteGetDuration(t *testing.T) {
+	testCases := []struct {
+		note *Note
+		want *Duration
+	}{
+		{
+			note: newNote(C),
+			want: nil,
+		},
+		{
+			note: newNote(C).SetDuration(&Duration{name: DurationNameEighth, dots: 0, tuplet: nil}),
+			want: NewDuration(DurationNameEighth),
+		},
+		{
+			note: newNote(C).SetDuration(NewDuration(DurationNameEighth)),
+			want: NewDuration(DurationNameEighth),
+		},
+	}
+
+	for _, testCase := range testCases {
+		assert.Equal(t, testCase.want, testCase.note.GetDuration(testCase.want))
+	}
+}
+
+func TestNoteSetCustomDuration(t *testing.T) {
+	testCases := []struct {
+		note *Note
+		want time.Duration
+	}{
+		{
+			note: newNote(C),
+			want: time.Second,
+		},
+		{
+			note: newNote(C).SetDuration(&Duration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}),
+			want: time.Second,
+		},
+		{
+			note: newNote(C).SetDuration(NewDuration(DurationNameDoubleWhole)),
+			want: time.Second,
+		},
+		{
+			note: &Note{name: C, duration: &Duration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}},
+			want: time.Second,
+		},
+	}
+
+	for _, testCase := range testCases {
+		assert.Equal(t, testCase.want, testCase.note.SetCustomDuration(testCase.want).customDuration)
+	}
+}
+
+func TestNoteGetCustomDuration(t *testing.T) {
+	testCases := []struct {
+		note *Note
+		want time.Duration
+	}{
+		{
+			note: newNote(C),
+			want: time.Duration(0),
+		},
+		{
+			note: newNote(C).SetDuration(&Duration{name: DurationNameEighth, dots: 0, tuplet: nil}),
+			want: time.Duration(0),
+		},
+		{
+			note: newNote(C).SetDuration(NewDuration(DurationNameEighth)),
+			want: time.Duration(0),
+		},
+		{
+			note: &Note{name: C, duration: &Duration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}},
+			want: time.Duration(0),
+		},
+		{
+			note: newNote(C).SetDuration(&Duration{name: DurationNameEighth, dots: 0, tuplet: nil}).SetCustomDuration(time.Second),
+			want: time.Second,
+		},
+		{
+			note: newNote(C).SetDuration(NewDuration(DurationNameEighth)).SetCustomDuration(time.Second),
+			want: time.Second,
+		},
+		{
+			note: &Note{name: C, duration: &Duration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}, customDuration: time.Second},
+			want: time.Second,
+		},
+	}
+
+	for _, testCase := range testCases {
+		assert.Equal(t, testCase.want, testCase.note.GetCustomDuration())
+	}
 }
