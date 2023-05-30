@@ -654,3 +654,26 @@ func TestNoteGetCustomDuration(t *testing.T) {
 		assert.Equal(t, testCase.want, testCase.note.GetCustomDuration())
 	}
 }
+
+func TestNoteGetAlterationShift(t *testing.T) {
+	baseNotes := GetAllPossibleNotes(0)
+
+	type testCase struct {
+		note *Note
+		want int8
+	}
+
+	var testCases []testCase
+
+	for _, note := range baseNotes {
+		for i := int8(1); i <= 3; i++ {
+			testCases = append(testCases, testCase{note.Copy(), 0})
+			testCases = append(testCases, testCase{note.Copy().AlterUpBy(uint8(i)), i})
+			testCases = append(testCases, testCase{note.Copy().AlterDownBy(uint8(i)), -i})
+		}
+	}
+
+	for _, testCase := range testCases {
+		assert.Equal(t, testCase.want, testCase.note.GetAlterationShift(), testCase.note)
+	}
+}
