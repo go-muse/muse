@@ -216,8 +216,8 @@ func (n *Note) SetDuration(duration *Duration) *Note {
 	return n
 }
 
-// GetDuration returnds duration of the note.
-func (n *Note) GetDuration(duration *Duration) *Duration {
+// GetDuration returns duration of the note.
+func (n *Note) GetDuration() *Duration {
 	return n.duration
 }
 

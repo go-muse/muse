@@ -583,7 +583,7 @@ func TestNoteGetDuration(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.GetDuration(testCase.want))
+		assert.Equal(t, testCase.want, testCase.note.GetDuration())
 	}
 }
 
