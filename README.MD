@@ -13,9 +13,10 @@
 ### Notes:
 - [x] Comparison
 - [x] Octaves
-- [ ] Durations
+- [x] Durations
 - [ ] MIDI numbering
 - [ ] Chords
+- [ ] Tracks(Melodies)
 
 ### Modes:
 - [x] Templates* of most commonly used modes
@@ -86,6 +87,9 @@ A: Yes, there is mode templates store [![example](https://img.shields.io/badge/e
 
 Q: How to specify an octave to a note?\
 A: You can create an octave [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Octave) and set it to your note [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Octave.SetToNote) [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.SetOctave).
+
+Q: How to set a note's duration?\
+A: There are two types of durations. The first type is a "musical" duration, based on the [note value](https://en.wikipedia.org/wiki/Note_value) [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NewDuration). Eventually, knowing the bpm, unit, and time signature, you'll be able to get the time duration of the note [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Duration.TimeDuration), [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.TimeDuration). Also, you can set your time.Duration [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.SetCustomDuration). These types are separate values and do not affect each other.
 
 ---
 <font size="2">This is not very stable version.

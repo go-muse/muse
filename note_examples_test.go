@@ -2,6 +2,7 @@ package muse_test
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/go-muse/muse"
 )
@@ -44,4 +45,42 @@ func ExampleNote_SetOctave() {
 
 	fmt.Println(note.Octave().Name())
 	// Output: FirstOctave
+}
+
+// Setting and Getting duration.
+func ExampleNote_SetDuration() {
+	// half note duration
+	duration := muse.NewDuration(muse.DurationNameHalf)
+
+	// creating note and setting duration
+	note := muse.MustNewNote(muse.C, muse.OctaveNumber3).SetDuration(duration)
+
+	fmt.Println(note.GetDuration().Name())
+	// Output: Half
+}
+
+// Getting note's time.Duration from note's duration.
+func ExampleNote_TimeDuration() {
+	// musical settings
+	bpm := uint64(80)
+	unit := &muse.Fraction{1, 2}
+	timeSignature := &muse.Fraction{4, 4}
+
+	// half note duration
+	duration := muse.NewDuration(muse.DurationNameHalf)
+
+	// creating note and setting duration
+	note := muse.MustNewNote(muse.C, muse.OctaveNumber3).SetDuration(duration)
+
+	fmt.Println(note.TimeDuration(bpm, unit, timeSignature))
+	// Output: 750ms
+}
+
+// Setting and Getting custom duration.
+func ExampleNote_SetCustomDuration() {
+	// creating note and setting custom duration
+	note := muse.MustNewNote(muse.C, muse.OctaveNumber3).SetCustomDuration(time.Second)
+
+	fmt.Println(note.GetCustomDuration())
+	// Output: 1s
 }

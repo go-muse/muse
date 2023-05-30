@@ -3,17 +3,24 @@ package muse
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/pkg/errors"
 )
 
+// Note is the representation of a musical sound.
+// Each note has a name (i.e., pitch class) and is characterized by octave and duration.
 type Note struct {
-	name   NoteName
-	octave *Octave
+	name           NoteName
+	octave         *Octave
+	customDuration time.Duration
+	duration       *Duration
 }
 
+// Notes is slice of Note.
 type Notes []Note
 
+// String is stringer for Note.
 func (ns Notes) String() string {
 	noteNames := make([]NoteName, len(ns))
 	for i, note := range ns {
@@ -200,4 +207,33 @@ func (n *Note) SetOctave(octave *Octave) *Note {
 	n.octave = octave
 
 	return n
+}
+
+// SetDuration sets duration to the note and returns the note.
+func (n *Note) SetDuration(duration *Duration) *Note {
+	n.duration = duration
+
+	return n
+}
+
+// GetDuration returns duration of the note.
+func (n *Note) GetDuration() *Duration {
+	return n.duration
+}
+
+// TimeDuration returns time.Duration of the note based on bpm rate, unit and time signature.
+func (n *Note) TimeDuration(bpm uint64, unit, timeSignature *Fraction) time.Duration {
+	return n.duration.TimeDuration(bpm, unit, timeSignature)
+}
+
+// SetCustomDuration sets custom duration to the note and returns the note.
+func (n *Note) SetCustomDuration(d time.Duration) *Note {
+	n.customDuration = d
+
+	return n
+}
+
+// GetCustomDuration returns custom duration of the note.
+func (n *Note) GetCustomDuration() time.Duration {
+	return n.customDuration
 }
