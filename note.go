@@ -11,10 +11,9 @@ import (
 // Note is the representation of a musical sound.
 // Each note has a name (i.e., pitch class) and is characterized by octave and duration.
 type Note struct {
-	name           NoteName
-	octave         *Octave
-	customDuration time.Duration
-	duration       *Duration
+	name     NoteName
+	octave   *Octave
+	duration *Duration
 }
 
 // Notes is slice of Note.
@@ -245,8 +244,8 @@ func (n *Note) SetOctave(octave *Octave) *Note {
 }
 
 // SetDuration sets duration to the note and returns the note.
-func (n *Note) SetDuration(duration *Duration) *Note {
-	n.duration = duration
+func (n *Note) SetDuration(duration Duration) *Note {
+	n.duration = &duration
 
 	return n
 }
@@ -261,14 +260,29 @@ func (n *Note) TimeDuration(bpm uint64, unit, timeSignature *Fraction) time.Dura
 	return n.duration.TimeDuration(bpm, unit, timeSignature)
 }
 
-// SetCustomDuration sets custom duration to the note and returns the note.
-func (n *Note) SetCustomDuration(d time.Duration) *Note {
-	n.customDuration = d
+// SetAbsoluteDuration sets custom duration to the note and returns the note.
+func (n *Note) SetAbsoluteDuration(d time.Duration) *Note {
+	if n == nil {
+		return n
+	}
+
+	if n.duration == nil {
+		n.duration = &Duration{
+			absoluteDuration: 0,
+			relativeDuration: relativeDuration{},
+		}
+	}
+
+	n.duration.absoluteDuration = d
 
 	return n
 }
 
-// GetCustomDuration returns custom duration of the note.
-func (n *Note) GetCustomDuration() time.Duration {
-	return n.customDuration
+// GetAbsoluteDuration returns custom duration of the note.
+func (n *Note) GetAbsoluteDuration() time.Duration {
+	if n != nil && n.duration != nil {
+		return n.duration.absoluteDuration
+	}
+
+	return 0
 }

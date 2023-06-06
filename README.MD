@@ -16,8 +16,12 @@
 - [x] Octaves
 - [x] Durations
 - [x] MIDI numbering
-- [ ] Chords
-- [ ] Tracks(Melodies)
+
+### Tracks(Melodies):
+- [ ] ?
+### Chords:
+- [x] Adding and removing Notes
+- [x] Setting the same duration for all the chord's notes
 
 ### Modes:
 - [x] Templates* of most commonly used modes
@@ -46,6 +50,8 @@ Definitions may differ from conventional.
 
 **Interval** is the ratio of two musical sounds in pitch. 
 Chromatic interval means the ratio of two notes, diatonic interval means the ratio of two degrees.
+
+**Chord** Chord is a set of notes of the same duration.
 
 ![Concept pic](/img/concept.jpg)
 
@@ -90,10 +96,13 @@ Q: How to specify an octave to a note?\
 A: You can create an octave [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Octave) and set it to your note [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Octave.SetToNote) [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.SetOctave).
 
 Q: How to set a note's duration?\
-A: There are two types of durations. The first type is a "musical" duration, based on the [note value](https://en.wikipedia.org/wiki/Note_value) [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NewDuration). Eventually, knowing the bpm, unit, and time signature, you'll be able to get the time duration of the note [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Duration.TimeDuration), [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.TimeDuration). Also, you can set your time.Duration [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.SetCustomDuration). These types are separate values and do not affect each other.
+A: There are two types of durations. The first type is a relative duration, based on the [note value](https://en.wikipedia.org/wiki/Note_value) [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NewDuration). Eventually, knowing the bpm, unit, and time signature, you'll be able to get the absolute time duration of the note [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Duration.TimeDuration), [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.TimeDuration). The second type is absolute duration. You can set your time.Duration as absolute duration [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.SetAbsoluteDuration). These types are separate values and do not affect each other.
 
 Q: How to know MIDI number of a note?\
 A: For this, you need to assign an octave to the note then call the method to get the midi number [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.MIDINumber). Also, you can create a note from known midi number [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NewNoteFromMIDINumber).
+
+Q: How to use chords?\
+A: Chord is a set of notes with the same duration  [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NewChord). You can add your notes to the chord, their durations will be set to chord's duration automatically [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Chord.AddNotes).
 
 ---
 <font size="2">This is not very stable version.

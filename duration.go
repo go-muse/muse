@@ -6,8 +6,14 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-// Duration is a set of characteristics determining how long a note sounds.
+// Duration is a combination of two concepts - AbsoluteDuration and MusicalDuration.
 type Duration struct {
+	absoluteDuration time.Duration
+	relativeDuration
+}
+
+// relativeDuration is a set of characteristics determining how long a note sounds.
+type relativeDuration struct {
 	name   DurationName
 	dots   uint8
 	tuplet *Tuplet
@@ -22,18 +28,25 @@ type Fraction struct {
 // minute is amount of nanoseconds in minute.
 const minute = int64(60000000000)
 
-// NewDuration creates new Duration by the given duration name.
+// NewDuration creates new Duration by the given relative duration name.
 func NewDuration(durationName DurationName) *Duration {
 	return &Duration{
-		name:   durationName,
-		dots:   0,
-		tuplet: nil,
+		0,
+		relativeDuration{
+			name:   durationName,
+			dots:   0,
+			tuplet: nil,
+		},
 	}
 }
 
 // Name returns the duration's name.
 func (d *Duration) Name() DurationName {
-	return d.name
+	if d == nil {
+		return ""
+	}
+
+	return d.relativeDuration.name
 }
 
 // Name returns amount od the dots.
