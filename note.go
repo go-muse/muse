@@ -83,12 +83,20 @@ func NewNoteFromString(s string) (*Note, error) {
 
 // Name returns name of the note.
 func (n *Note) Name() NoteName {
-	return n.name
+	if n != nil {
+		return n.name
+	}
+
+	return ""
 }
 
 // Name returns octave of the note.
 func (n *Note) Octave() *Octave {
-	return n.octave
+	if n != nil {
+		return n.octave
+	}
+
+	return nil
 }
 
 // IsEqualByName compares notes by name.
