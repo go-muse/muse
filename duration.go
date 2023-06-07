@@ -49,7 +49,7 @@ func (d *Duration) Name() DurationName {
 	return d.relativeDuration.name
 }
 
-// Name returns amount od the dots.
+// Dots returns amount of the dots.
 func (d *Duration) Dots() uint8 {
 	if d == nil {
 		return 0
@@ -209,6 +209,7 @@ func (d *Duration) GetPartOfBar(timeSignature *Fraction) decimal.Decimal {
 	return result
 }
 
+// Tuplet returns tuplet from the duration.
 func (d *Duration) Tuplet() *Tuplet {
 	if d == nil {
 		return nil
