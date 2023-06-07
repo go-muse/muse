@@ -14,12 +14,12 @@ func ExampleNewDuration() {
 	// creating note and setting duration
 	note := muse.MustNewNote(muse.C, muse.OctaveNumber3).SetDuration(*duration)
 
-	fmt.Println(note.GetDuration().Name())
+	fmt.Println(note.Duration().Name())
 	// Output: Half
 }
 
 // Getting time.Duration from duration.
-func ExampleDuration_TimeDuration() {
+func ExampleDuration_GetTimeDuration() {
 	// musical settings
 	bpm := uint64(120)
 	unit := &muse.Fraction{1, 2}
@@ -28,6 +28,6 @@ func ExampleDuration_TimeDuration() {
 	// half note duration
 	duration := muse.NewDuration(muse.DurationNameHalf)
 
-	fmt.Println(duration.TimeDuration(bpm, unit, timeSignature))
+	fmt.Println(duration.GetTimeDuration(bpm, unit, timeSignature))
 	// Output: 500ms
 }

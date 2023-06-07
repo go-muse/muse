@@ -1,5 +1,7 @@
 package muse
 
+import "math"
+
 type DurationName string
 
 const (
@@ -50,4 +52,9 @@ func (dn DurationName) getValue() int8 {
 	default:
 		return 0
 	}
+}
+
+// GetValue returns float value that represents note's duration as part of a bar.
+func (dn DurationName) GetValue() float64 {
+	return math.Pow(2, float64(dn.getValue()))
 }

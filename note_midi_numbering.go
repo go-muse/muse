@@ -34,7 +34,7 @@ func (n *Note) getBaseNoteNumberWithinOctave() int8 {
 	case D:
 		return 2
 	case E:
-		return 3
+		return 4
 	case F:
 		return 5
 	case G:

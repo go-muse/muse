@@ -95,6 +95,54 @@ func TestNoteMIDINumber(t *testing.T) {
 				want: 1,
 			},
 			{
+				note: newNoteWithOctave(C, MustNewOctave(4)),
+				want: 60,
+			},
+			{
+				note: newNoteWithOctave(CSHARP, MustNewOctave(4)),
+				want: 61,
+			},
+			{
+				note: newNoteWithOctave(D, MustNewOctave(4)),
+				want: 62,
+			},
+			{
+				note: newNoteWithOctave(DSHARP, MustNewOctave(4)),
+				want: 63,
+			},
+			{
+				note: newNoteWithOctave(E, MustNewOctave(4)),
+				want: 64,
+			},
+			{
+				note: newNoteWithOctave(F, MustNewOctave(4)),
+				want: 65,
+			},
+			{
+				note: newNoteWithOctave(FSHARP, MustNewOctave(4)),
+				want: 66,
+			},
+			{
+				note: newNoteWithOctave(G, MustNewOctave(4)),
+				want: 67,
+			},
+			{
+				note: newNoteWithOctave(GSHARP, MustNewOctave(4)),
+				want: 68,
+			},
+			{
+				note: newNoteWithOctave(A, MustNewOctave(4)),
+				want: 69,
+			},
+			{
+				note: newNoteWithOctave(ASHARP, MustNewOctave(4)),
+				want: 70,
+			},
+			{
+				note: newNoteWithOctave(B, MustNewOctave(4)),
+				want: 71,
+			},
+			{
 				note: newNoteWithOctave(G, MustNewOctave(9)),
 				want: 127,
 			},

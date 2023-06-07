@@ -214,14 +214,14 @@ func TestChord_GetNotes(t *testing.T) {
 			duration: duration,
 		}
 
-		notes := chord.GetNotes()
+		notes := chord.Notes()
 		assert.Equal(t, len(chord.notes), len(notes))
 		assert.Equal(t, chord.notes, notes)
 	})
 
 	t.Run("Chord_AddNotes: getting from nil chord", func(t *testing.T) {
 		var chord *Chord
-		assert.Nil(t, chord.GetNotes())
+		assert.Nil(t, chord.Notes())
 	})
 }
 

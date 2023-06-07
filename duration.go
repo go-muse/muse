@@ -51,11 +51,19 @@ func (d *Duration) Name() DurationName {
 
 // Name returns amount od the dots.
 func (d *Duration) Dots() uint8 {
+	if d == nil {
+		return 0
+	}
+
 	return d.dots
 }
 
 // AddDot increments amount of the dots and returns the duration.
 func (d *Duration) AddDot() *Duration {
+	if d == nil {
+		return d
+	}
+
 	d.dots++
 
 	return d
@@ -63,6 +71,10 @@ func (d *Duration) AddDot() *Duration {
 
 // SetDots sets amount of the dots and returns the duration.
 func (d *Duration) SetDots(n uint8) *Duration {
+	if d == nil {
+		return d
+	}
+
 	d.dots = n
 
 	return d
@@ -70,6 +82,10 @@ func (d *Duration) SetDots(n uint8) *Duration {
 
 // RemoveDot decrements amount of the dots and returns the duration.
 func (d *Duration) RemoveDot() *Duration {
+	if d == nil {
+		return d
+	}
+
 	d.dots--
 
 	return d
@@ -77,6 +93,10 @@ func (d *Duration) RemoveDot() *Duration {
 
 // RemoveDots removes all dots and returns the duration.
 func (d *Duration) RemoveDots() *Duration {
+	if d == nil {
+		return d
+	}
+
 	d.dots = 0
 
 	return d
@@ -84,6 +104,10 @@ func (d *Duration) RemoveDots() *Duration {
 
 // SetTuplet sets the given tuplet for the duration and returns the duration.
 func (d *Duration) SetTuplet(t *Tuplet) *Duration {
+	if d == nil {
+		return d
+	}
+
 	d.tuplet = t
 
 	return d
@@ -91,6 +115,10 @@ func (d *Duration) SetTuplet(t *Tuplet) *Duration {
 
 // SetTuplet sets the tuplet from the duration and returns the duration.
 func (d *Duration) RemoveTuplet() *Duration {
+	if d == nil {
+		return d
+	}
+
 	d.tuplet = nil
 
 	return d
@@ -100,6 +128,10 @@ func (d *Duration) RemoveTuplet() *Duration {
 //
 //nolint:gomnd
 func (d *Duration) SetTupletDuplet() *Duration {
+	if d == nil {
+		return d
+	}
+
 	if d.tuplet != nil {
 		d.tuplet.SetDuplet()
 	} else {
@@ -113,6 +145,10 @@ func (d *Duration) SetTupletDuplet() *Duration {
 //
 //nolint:gomnd
 func (d *Duration) SetTupletTriplet() *Duration {
+	if d == nil {
+		return d
+	}
+
 	if d.tuplet != nil {
 		d.tuplet.SetTriplet()
 	} else {
@@ -122,8 +158,8 @@ func (d *Duration) SetTupletTriplet() *Duration {
 	return d
 }
 
-// TimeDuration calculates and returns time.Duration of the current duration.
-func (d *Duration) TimeDuration(bpm uint64, unit, timeSignature *Fraction) time.Duration {
+// GetTimeDuration calculates and returns time.Duration of the current duration.
+func (d *Duration) GetTimeDuration(bpm uint64, unit, timeSignature *Fraction) time.Duration {
 	const baseValue = 2
 	noteDurationDecimal := decimal.NewFromInt(baseValue).Pow(decimal.NewFromInt(int64(d.name.getValue())))
 	bpmDecimal := decimal.NewFromInt(int64(bpm))
@@ -146,4 +182,37 @@ func (d *Duration) TimeDuration(bpm uint64, unit, timeSignature *Fraction) time.
 	}
 
 	return time.Duration(result.BigInt().Int64())
+}
+
+// GetPartOfBar returns duration as part of a bar.
+func (d *Duration) GetPartOfBar(timeSignature *Fraction) decimal.Decimal {
+	if d == nil {
+		return decimal.Zero
+	}
+
+	const baseValue = 2
+	noteDurationDecimal := decimal.NewFromInt(baseValue).Pow(decimal.NewFromInt(int64(d.name.getValue())))
+	timeSignatureDecimal := decimal.NewFromInt(int64(timeSignature.Numerator)).Div(decimal.NewFromInt(int64(timeSignature.Denominator)))
+
+	result := timeSignatureDecimal.Div(noteDurationDecimal)
+
+	base := result
+	for i := int64(1); i <= int64(d.dots); i++ {
+		add := base.Div(decimal.NewFromInt(baseValue).Pow(decimal.NewFromInt(i)))
+		result = result.Add(add)
+	}
+
+	if d.tuplet != nil {
+		result = result.Mul(decimal.NewFromInt(int64(d.tuplet.n))).Div(decimal.NewFromInt(int64(d.tuplet.m)))
+	}
+
+	return result
+}
+
+func (d *Duration) Tuplet() *Tuplet {
+	if d == nil {
+		return nil
+	}
+
+	return d.relativeDuration.tuplet
 }

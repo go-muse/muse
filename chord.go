@@ -78,8 +78,8 @@ func (c *Chord) AddNotes(notes ...Note) *Chord {
 	return c
 }
 
-// GetNotes returns all notes of the chord.
-func (c *Chord) GetNotes() Notes {
+// Notes returns all notes of the chord.
+func (c *Chord) Notes() Notes {
 	if c == nil {
 		return nil
 	}

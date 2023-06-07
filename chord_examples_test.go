@@ -81,8 +81,8 @@ func ExampleChord_SetDuration() {
 	chord.SetDuration(*duration)
 
 	var resultStr string
-	for _, chordNote := range chord.GetNotes() {
-		resultStr += fmt.Sprintf("note: %s duration: %s\n", chordNote.Name(), chordNote.GetDuration().Name())
+	for _, chordNote := range chord.Notes() {
+		resultStr += fmt.Sprintf("note: %s duration: %s\n", chordNote.Name(), chordNote.Duration().Name())
 	}
 
 	fmt.Println(resultStr)
@@ -106,7 +106,7 @@ func ExampleChord_SetAbsoluteDuration() {
 	chord.SetAbsoluteDuration(time.Second)
 
 	var resultStr string
-	for _, chordNote := range chord.GetNotes() {
+	for _, chordNote := range chord.Notes() {
 		resultStr += fmt.Sprintf("note: %s custom duration: %s\n", chordNote.Name(), chordNote.GetAbsoluteDuration())
 	}
 

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	"github.com/shopspring/decimal"
 )
 
 // Note is the representation of a musical sound.
@@ -137,7 +138,7 @@ func (n *Note) Copy() *Note {
 		return nil
 	}
 
-	return &Note{name: n.Name(), octave: n.octave}
+	return &Note{name: n.Name(), octave: n.octave, duration: n.duration}
 }
 
 // AlterUp alterates the note upwards.
@@ -245,19 +246,27 @@ func (n *Note) SetOctave(octave *Octave) *Note {
 
 // SetDuration sets duration to the note and returns the note.
 func (n *Note) SetDuration(duration Duration) *Note {
+	if n == nil {
+		return nil
+	}
+
 	n.duration = &duration
 
 	return n
 }
 
-// GetDuration returns duration of the note.
-func (n *Note) GetDuration() *Duration {
+// Duration returns duration of the note.
+func (n *Note) Duration() *Duration {
+	if n == nil {
+		return nil
+	}
+
 	return n.duration
 }
 
 // TimeDuration returns time.Duration of the note based on bpm rate, unit and time signature.
 func (n *Note) TimeDuration(bpm uint64, unit, timeSignature *Fraction) time.Duration {
-	return n.duration.TimeDuration(bpm, unit, timeSignature)
+	return n.duration.GetTimeDuration(bpm, unit, timeSignature)
 }
 
 // SetAbsoluteDuration sets custom duration to the note and returns the note.
@@ -280,9 +289,18 @@ func (n *Note) SetAbsoluteDuration(d time.Duration) *Note {
 
 // GetAbsoluteDuration returns custom duration of the note.
 func (n *Note) GetAbsoluteDuration() time.Duration {
-	if n != nil && n.duration != nil {
-		return n.duration.absoluteDuration
+	if n == nil || n.duration == nil {
+		return 0
 	}
 
-	return 0
+	return n.duration.absoluteDuration
+}
+
+// GetPartOfBar returns duration value in decimal.
+func (n *Note) GetPartOfBar(timeSignature *Fraction) decimal.Decimal {
+	if n == nil || n.duration == nil {
+		return decimal.Zero
+	}
+
+	return n.duration.GetPartOfBar(timeSignature)
 }
