@@ -66,7 +66,11 @@ func (o *Octave) IsEqual(octave *Octave) bool {
 
 // Name returns the name of the octave.
 func (o *Octave) Name() OctaveName {
-	return o.name
+	if o != nil {
+		return o.name
+	}
+
+	return ""
 }
 
 // Number returns the number of the octave.

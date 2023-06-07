@@ -39,6 +39,14 @@ func TestNoteMIDINumber(t *testing.T) {
 	t.Run("TestMIDINumber: corner cases", func(t *testing.T) {
 		testCases := []testCase{
 			{
+				note: nil,
+				want: 0,
+			},
+			{
+				note: MustNewNoteWithoutOctave(C),
+				want: 0,
+			},
+			{
 				note: newNoteWithOctave(C, MustNewOctave(-1)),
 				want: 0,
 			},

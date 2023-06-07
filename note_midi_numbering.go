@@ -49,7 +49,11 @@ func (n *Note) getBaseNoteNumberWithinOctave() int8 {
 }
 
 func (n *Note) getNoteNumberWithinOctave() int8 {
-	return n.getBaseNoteNumberWithinOctave() + n.GetAlterationShift()
+	if n != nil {
+		return n.getBaseNoteNumberWithinOctave() + n.GetAlterationShift()
+	}
+
+	return 0
 }
 
 // ErrMIDINumberUnknown appears when midi number is outside [0; 127].
