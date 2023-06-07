@@ -17,8 +17,9 @@
 - [x] Durations
 - [x] MIDI numbering
 
-### Tracks(Melodies):
-- [ ] ?
+### Tracks:
+- [x] Adding notes as events
+- [x] Note timing calculation
 ### Chords:
 - [x] Adding and removing Notes
 - [x] Setting the same duration for all the chord's notes

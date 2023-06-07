@@ -55,7 +55,7 @@ func ExampleNote_SetDuration() {
 	// creating note and setting duration
 	note := muse.MustNewNote(muse.C, muse.OctaveNumber3).SetDuration(*duration)
 
-	fmt.Println(note.GetDuration().Name())
+	fmt.Println(note.Duration().Name())
 	// Output: Half
 }
 

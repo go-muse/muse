@@ -293,7 +293,7 @@ func TestNoteIsEqual(t *testing.T) {
 }
 
 func TestNoteCopy(t *testing.T) {
-	note1 := &Note{name: C}
+	note1 := &Note{name: C, octave: &Octave{-1, "custom"}, duration: &Duration{absoluteDuration: 0, relativeDuration: relativeDuration{"custom", 1, nil}}}
 	note2 := note1.Copy()
 
 	// Test the pointer address is not the same
@@ -583,7 +583,7 @@ func TestNoteGetDuration(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.GetDuration())
+		assert.Equal(t, testCase.want, testCase.note.Duration())
 	}
 }
 
