@@ -545,21 +545,21 @@ func TestNoteSetDuration(t *testing.T) {
 			want: NewDuration(DurationNameEighth),
 		},
 		{
-			note: newNote(C).SetDuration(&Duration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}),
+			note: newNote(C).SetDuration(Duration{0, relativeDuration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}}),
 			want: NewDuration(DurationNameEighth),
 		},
 		{
-			note: newNote(C).SetDuration(NewDuration(DurationNameDoubleWhole)),
+			note: newNote(C).SetDuration(*NewDuration(DurationNameDoubleWhole)),
 			want: NewDuration(DurationNameEighth),
 		},
 		{
-			note: &Note{name: C, duration: &Duration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}},
+			note: &Note{name: C, duration: &Duration{0, relativeDuration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}}},
 			want: NewDuration(DurationNameEighth),
 		},
 	}
 
 	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.SetDuration(testCase.want).duration)
+		assert.Equal(t, testCase.want, testCase.note.SetDuration(*testCase.want).duration)
 	}
 }
 
@@ -573,11 +573,11 @@ func TestNoteGetDuration(t *testing.T) {
 			want: nil,
 		},
 		{
-			note: newNote(C).SetDuration(&Duration{name: DurationNameEighth, dots: 0, tuplet: nil}),
+			note: newNote(C).SetDuration(Duration{0, relativeDuration{name: DurationNameEighth, dots: 0, tuplet: nil}}),
 			want: NewDuration(DurationNameEighth),
 		},
 		{
-			note: newNote(C).SetDuration(NewDuration(DurationNameEighth)),
+			note: newNote(C).SetDuration(*NewDuration(DurationNameEighth)),
 			want: NewDuration(DurationNameEighth),
 		},
 	}
@@ -587,7 +587,7 @@ func TestNoteGetDuration(t *testing.T) {
 	}
 }
 
-func TestNoteSetCustomDuration(t *testing.T) {
+func TestNoteSetAbsoluteDuration(t *testing.T) {
 	testCases := []struct {
 		note *Note
 		want time.Duration
@@ -597,25 +597,25 @@ func TestNoteSetCustomDuration(t *testing.T) {
 			want: time.Second,
 		},
 		{
-			note: newNote(C).SetDuration(&Duration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}),
+			note: newNote(D).SetDuration(Duration{0, relativeDuration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}}),
 			want: time.Second,
 		},
 		{
-			note: newNote(C).SetDuration(NewDuration(DurationNameDoubleWhole)),
+			note: newNote(E).SetDuration(*NewDuration(DurationNameDoubleWhole)),
 			want: time.Second,
 		},
 		{
-			note: &Note{name: C, duration: &Duration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}},
+			note: &Note{name: F, duration: &Duration{0, relativeDuration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}}},
 			want: time.Second,
 		},
 	}
 
 	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.SetCustomDuration(testCase.want).customDuration)
+		assert.Equal(t, testCase.want, testCase.note.SetAbsoluteDuration(testCase.want).duration.absoluteDuration)
 	}
 }
 
-func TestNoteGetCustomDuration(t *testing.T) {
+func TestNoteGetAbsoluteDuration(t *testing.T) {
 	testCases := []struct {
 		note *Note
 		want time.Duration
@@ -625,33 +625,33 @@ func TestNoteGetCustomDuration(t *testing.T) {
 			want: time.Duration(0),
 		},
 		{
-			note: newNote(C).SetDuration(&Duration{name: DurationNameEighth, dots: 0, tuplet: nil}),
+			note: newNote(C).SetDuration(Duration{0, relativeDuration{name: DurationNameEighth, dots: 0, tuplet: nil}}),
 			want: time.Duration(0),
 		},
 		{
-			note: newNote(C).SetDuration(NewDuration(DurationNameEighth)),
+			note: newNote(C).SetDuration(*NewDuration(DurationNameEighth)),
 			want: time.Duration(0),
 		},
 		{
-			note: &Note{name: C, duration: &Duration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}},
+			note: &Note{name: C, duration: &Duration{0, relativeDuration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}}},
 			want: time.Duration(0),
 		},
 		{
-			note: newNote(C).SetDuration(&Duration{name: DurationNameEighth, dots: 0, tuplet: nil}).SetCustomDuration(time.Second),
+			note: newNote(C).SetDuration(Duration{0, relativeDuration{name: DurationNameEighth, dots: 0, tuplet: nil}}).SetAbsoluteDuration(time.Second),
 			want: time.Second,
 		},
 		{
-			note: newNote(C).SetDuration(NewDuration(DurationNameEighth)).SetCustomDuration(time.Second),
+			note: newNote(C).SetDuration(*NewDuration(DurationNameEighth)).SetAbsoluteDuration(time.Second),
 			want: time.Second,
 		},
 		{
-			note: &Note{name: C, duration: &Duration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}, customDuration: time.Second},
+			note: &Note{name: C, duration: &Duration{time.Second, relativeDuration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}}},
 			want: time.Second,
 		},
 	}
 
 	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.GetCustomDuration())
+		assert.Equal(t, testCase.want, testCase.note.GetAbsoluteDuration())
 	}
 }
 

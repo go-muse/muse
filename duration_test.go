@@ -12,9 +12,9 @@ func TestNewDuration(t *testing.T) {
 		name DurationName
 		want *Duration
 	}{
-		{name: DurationNameLarge, want: &Duration{name: DurationNameLarge, dots: 0, tuplet: nil}},
-		{name: DurationNameLong, want: &Duration{name: DurationNameLong, dots: 0, tuplet: nil}},
-		{name: DurationNameDoubleWhole, want: &Duration{name: DurationNameDoubleWhole, dots: 0, tuplet: nil}},
+		{name: DurationNameLarge, want: &Duration{0, relativeDuration{name: DurationNameLarge, dots: 0, tuplet: nil}}},
+		{name: DurationNameLong, want: &Duration{0, relativeDuration{name: DurationNameLong, dots: 0, tuplet: nil}}},
+		{name: DurationNameDoubleWhole, want: &Duration{0, relativeDuration{name: DurationNameDoubleWhole, dots: 0, tuplet: nil}}},
 	}
 
 	for _, testCase := range testCases {

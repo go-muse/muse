@@ -53,7 +53,7 @@ func ExampleNote_SetDuration() {
 	duration := muse.NewDuration(muse.DurationNameHalf)
 
 	// creating note and setting duration
-	note := muse.MustNewNote(muse.C, muse.OctaveNumber3).SetDuration(duration)
+	note := muse.MustNewNote(muse.C, muse.OctaveNumber3).SetDuration(*duration)
 
 	fmt.Println(note.GetDuration().Name())
 	// Output: Half
@@ -70,17 +70,17 @@ func ExampleNote_TimeDuration() {
 	duration := muse.NewDuration(muse.DurationNameHalf)
 
 	// creating note and setting duration
-	note := muse.MustNewNote(muse.C, muse.OctaveNumber3).SetDuration(duration)
+	note := muse.MustNewNote(muse.C, muse.OctaveNumber3).SetDuration(*duration)
 
 	fmt.Println(note.TimeDuration(bpm, unit, timeSignature))
 	// Output: 750ms
 }
 
 // Setting and Getting custom duration.
-func ExampleNote_SetCustomDuration() {
+func ExampleNote_SetAbsoluteDuration() {
 	// creating note and setting custom duration
-	note := muse.MustNewNote(muse.C, muse.OctaveNumber3).SetCustomDuration(time.Second)
+	note := muse.MustNewNote(muse.C, muse.OctaveNumber3).SetAbsoluteDuration(time.Second)
 
-	fmt.Println(note.GetCustomDuration())
+	fmt.Println(note.GetAbsoluteDuration())
 	// Output: 1s
 }
