@@ -144,3 +144,62 @@ func (c *Chord) GetDuration() *Duration {
 
 	return c.duration
 }
+
+// Empty removes all the notes from the chord.
+func (c *Chord) Empty() *Chord {
+	if c == nil {
+		return nil
+	}
+
+	c.notes = nil
+
+	return c
+}
+
+// RemoveNote removes a note from the chord that is similar to the specified by it's name and octave.
+func (c *Chord) RemoveNote(note Note) *Chord {
+	if c == nil {
+		return nil
+	}
+
+	for i, chordNote := range c.notes {
+		if chordNote.IsEqual(&note) {
+			c.notes = append(c.notes[:i], c.notes[i+1:]...)
+		}
+	}
+
+	return c
+}
+
+// RemoveNotes removes notes from the chord that are similar to the specified by it's name and octave.
+func (c *Chord) RemoveNotes(notes Notes) *Chord {
+	if c == nil {
+		return nil
+	}
+
+	for _, note := range notes {
+		for i, chordNote := range c.notes {
+			if chordNote.IsEqual(&note) {
+				c.notes = append(c.notes[:i], c.notes[i+1:]...)
+				break
+			}
+		}
+	}
+
+	return c
+}
+
+// Exists checks if a note exists in the chord.
+func (c *Chord) Exists(note Note) bool {
+	if c == nil {
+		return false
+	}
+
+	for _, chordNote := range c.notes {
+		if chordNote.IsEqual(&note) {
+			return true
+		}
+	}
+
+	return false
+}

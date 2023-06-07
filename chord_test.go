@@ -319,3 +319,110 @@ func TestChord_GetAbsoluteDuration(t *testing.T) {
 		assert.Zero(t, chord.GetAbsoluteDuration())
 	})
 }
+
+func TestChord_Empty(t *testing.T) {
+	t.Run("Chord_Empty: clearing the chord", func(t *testing.T) {
+		chord := NewChordEmpty().AddNotes(
+			Note{C, MustNewOctave(1), nil},
+			Note{E, MustNewOctave(2), nil},
+			Note{G, MustNewOctave(3), nil},
+		)
+
+		assert.Equal(t, 0, len(chord.Empty().notes))
+	})
+
+	t.Run("Chord_Empty: clearing the nil chord", func(t *testing.T) {
+		var chord *Chord
+		assert.Nil(t, chord.Empty())
+	})
+}
+
+func TestChord_RemoveNote(t *testing.T) {
+	t.Run("Chord_RemoveNote: remove from the chord", func(t *testing.T) {
+		testCases := Notes{
+			Note{C, MustNewOctave(1), nil},
+			Note{D, MustNewOctave(2), nil},
+			Note{E, MustNewOctave(3), nil},
+			Note{F, MustNewOctave(4), nil},
+			Note{G, MustNewOctave(5), nil},
+		}
+
+		chord := NewChordEmpty().AddNotes(testCases...)
+		assert.Equal(t, testCases, chord.notes)
+
+		length := len(testCases)
+		for i := 0; i < length; i++ {
+			chord.RemoveNote(testCases[0])
+			testCases = testCases[1:]
+			assert.Equal(t, testCases, chord.notes)
+		}
+	})
+
+	t.Run("Chord_RemoveNote: remove from the nil chord", func(t *testing.T) {
+		var chord *Chord
+		assert.Nil(t, chord.RemoveNote(Note{C, MustNewOctave(1), nil}))
+	})
+}
+
+func TestChord_RemoveNotes(t *testing.T) {
+	t.Run("Chord_RemoveNotes: remove from the chord", func(t *testing.T) {
+		testCases := Notes{
+			Note{C, MustNewOctave(1), nil},
+			Note{D, MustNewOctave(2), nil},
+			Note{E, MustNewOctave(3), nil},
+			Note{F, MustNewOctave(4), nil},
+			Note{G, MustNewOctave(5), nil},
+		}
+
+		chord := NewChordEmpty().AddNotes(testCases...)
+		assert.Equal(t, testCases, chord.notes)
+
+		chord.RemoveNotes(Notes{testCases[1], testCases[3]})
+		testCases = append(testCases[0:1], testCases[2:]...)
+		testCases = append(testCases[0:2], testCases[3:]...)
+		assert.Equal(t, testCases, chord.notes)
+	})
+
+	t.Run("Chord_RemoveNotes: remove from the nil chord", func(t *testing.T) {
+		var chord *Chord
+		assert.Nil(t, chord.RemoveNotes(Notes{}))
+	})
+}
+
+func TestChord_Exists(t *testing.T) {
+	t.Run("Chord_Exists: remove from the chord", func(t *testing.T) {
+		testCases := Notes{
+			Note{C, MustNewOctave(1), nil},
+			Note{D, MustNewOctave(2), nil},
+			Note{E, MustNewOctave(3), nil},
+			Note{F, MustNewOctave(4), nil},
+			Note{G, MustNewOctave(5), nil},
+		}
+
+		chord := NewChordEmpty().AddNotes(testCases...)
+		for _, testCase := range testCases {
+			assert.True(t, chord.Exists(testCase))
+		}
+
+		testCasesNotExist := Notes{
+			Note{C, MustNewOctave(2), nil},
+			Note{D, MustNewOctave(1), nil},
+			Note{E, MustNewOctave(1), nil},
+			Note{CFLAT, MustNewOctave(1), nil},
+			Note{DSHARP, MustNewOctave(2), nil},
+			Note{EFLAT2, MustNewOctave(3), nil},
+			Note{FSHARP2, MustNewOctave(4), nil},
+			Note{A, MustNewOctave(5), nil},
+			Note{B, MustNewOctave(5), nil},
+		}
+
+		for _, testCase := range testCasesNotExist {
+			assert.False(t, chord.Exists(testCase))
+		}
+	})
+
+	t.Run("Chord_Exists: remove from the nil chord", func(t *testing.T) {
+		var chord *Chord
+		assert.False(t, chord.Exists(Note{C, MustNewOctave(1), nil}))
+	})
+}
