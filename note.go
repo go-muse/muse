@@ -266,6 +266,10 @@ func (n *Note) Duration() *Duration {
 
 // TimeDuration returns time.Duration of the note based on bpm rate, unit and time signature.
 func (n *Note) TimeDuration(bpm uint64, unit, timeSignature *Fraction) time.Duration {
+	if n == nil || n.duration == nil {
+		return 0
+	}
+
 	return n.duration.GetTimeDuration(bpm, unit, timeSignature)
 }
 

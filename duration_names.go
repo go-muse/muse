@@ -55,6 +55,8 @@ func (dn DurationName) getValue() int8 {
 }
 
 // GetValue returns float value that represents note's duration as part of a bar.
+//
+//nolint:gomnd
 func (dn DurationName) GetValue() float64 {
-	return math.Pow(2, float64(dn.getValue()))
+	return math.Pow(2, float64(dn.getValue())) // 2 means base to get real note value
 }
