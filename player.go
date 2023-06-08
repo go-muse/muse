@@ -51,6 +51,14 @@ func (p *PlayEvent) Time() time.Duration {
 	return p.time
 }
 
+func (p *PlayEvent) EventType() EventType {
+	if p == nil {
+		return ""
+	}
+
+	return p.eventType
+}
+
 func (t *Track) Player() Player {
 	playEvents := make(PlayEvents, 0, len(t.events)*2) //nolint:gomnd // 2 means start+end player events
 
