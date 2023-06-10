@@ -71,7 +71,7 @@ func TestChord_AddNote(t *testing.T) {
 			note *Note
 		}{
 			{&Note{C, MustNewOctave(1), nil}},
-			{&Note{E, MustNewOctave(2), NewDuration(DurationNameHalf)}},
+			{&Note{E, MustNewOctave(2), NewDurationWithRelativeValue(DurationNameHalf)}},
 			{&Note{G, MustNewOctave(3), &Duration{
 				absoluteDuration: time.Hour,
 				relativeDuration: relativeDuration{name: "custom 2", dots: 0, tuplet: &Tuplet{n: 3, m: 2}},
@@ -103,7 +103,7 @@ func TestChord_AddNote(t *testing.T) {
 			note *Note
 		}{
 			{&Note{C, MustNewOctave(1), nil}},
-			{&Note{E, MustNewOctave(2), NewDuration(DurationNameHalf)}},
+			{&Note{E, MustNewOctave(2), NewDurationWithRelativeValue(DurationNameHalf)}},
 			{&Note{G, MustNewOctave(3), &Duration{
 				absoluteDuration: time.Hour,
 				relativeDuration: relativeDuration{name: "custom 2", dots: 0, tuplet: &Tuplet{n: 3, m: 2}},
@@ -147,7 +147,7 @@ func TestChord_AddNotes(t *testing.T) {
 
 		testCases := Notes{
 			Note{C, MustNewOctave(1), nil},
-			Note{E, MustNewOctave(2), NewDuration(DurationNameHalf)},
+			Note{E, MustNewOctave(2), NewDurationWithRelativeValue(DurationNameHalf)},
 			Note{G, MustNewOctave(3), &Duration{
 				absoluteDuration: time.Hour,
 				relativeDuration: relativeDuration{name: "custom 2", dots: 0, tuplet: &Tuplet{n: 3, m: 2}},
@@ -175,7 +175,7 @@ func TestChord_AddNotes(t *testing.T) {
 
 		testCases := Notes{
 			Note{C, MustNewOctave(1), nil},
-			Note{E, MustNewOctave(2), NewDuration(DurationNameHalf)},
+			Note{E, MustNewOctave(2), NewDurationWithRelativeValue(DurationNameHalf)},
 			Note{G, MustNewOctave(3), &Duration{
 				absoluteDuration: time.Hour,
 				relativeDuration: relativeDuration{name: "custom 2", dots: 0, tuplet: &Tuplet{n: 3, m: 2}},
@@ -204,7 +204,7 @@ func TestChord_AddNotes(t *testing.T) {
 
 func TestChord_GetNotes(t *testing.T) {
 	t.Run("Chord_AddNotes: get notes", func(t *testing.T) {
-		duration := NewDuration(DurationNameHalf)
+		duration := NewDurationWithRelativeValue(DurationNameHalf)
 		chord := &Chord{
 			notes: Notes{
 				Note{C, MustNewOctave(1), duration},
@@ -227,7 +227,7 @@ func TestChord_GetNotes(t *testing.T) {
 
 func TestChord_SetDuration(t *testing.T) {
 	t.Run("Chord_SetDuration: set duration to the chord", func(t *testing.T) {
-		duration := NewDuration(DurationNameHalf)
+		duration := NewDurationWithRelativeValue(DurationNameHalf)
 		chord := &Chord{
 			notes: Notes{
 				Note{C, MustNewOctave(1), duration},
@@ -237,7 +237,7 @@ func TestChord_SetDuration(t *testing.T) {
 			duration: duration,
 		}
 
-		newDuration := NewDuration(DurationNameWhole)
+		newDuration := NewDurationWithRelativeValue(DurationNameWhole)
 		chord.SetDuration(*newDuration)
 		assert.Equal(t, newDuration, chord.duration, "expected chord duration: %+v, actual chord duration: %+v", newDuration, chord.duration)
 
@@ -248,13 +248,13 @@ func TestChord_SetDuration(t *testing.T) {
 
 	t.Run("Chord_SetDuration: set duration to the nil chord", func(t *testing.T) {
 		var chord *Chord
-		assert.Nil(t, chord.SetDuration(*NewDuration(DurationNameLong)))
+		assert.Nil(t, chord.SetDuration(*NewDurationWithRelativeValue(DurationNameLong)))
 	})
 }
 
 func TestChord_GetDuration(t *testing.T) {
 	t.Run("Chord_GetDuration: getting duration from the chord", func(t *testing.T) {
-		duration := NewDuration(DurationNameHalf)
+		duration := NewDurationWithRelativeValue(DurationNameHalf)
 		chord := NewChord(
 			*duration,
 			Note{C, MustNewOctave(1), duration},
@@ -273,7 +273,7 @@ func TestChord_GetDuration(t *testing.T) {
 
 func TestChord_SetAbsoluteDuration(t *testing.T) {
 	t.Run("Chord_SetAbsoluteDuration: set custom duration to the chord", func(t *testing.T) {
-		duration := NewDuration(DurationNameHalf)
+		duration := NewDurationWithRelativeValue(DurationNameHalf)
 		chord := &Chord{
 			notes: Notes{
 				Note{C, MustNewOctave(1), duration},
@@ -300,7 +300,7 @@ func TestChord_SetAbsoluteDuration(t *testing.T) {
 
 func TestChord_GetAbsoluteDuration(t *testing.T) {
 	t.Run("Chord_GetAbsoluteDuration: getting custom duration from the chord", func(t *testing.T) {
-		duration := NewDuration(DurationNameHalf)
+		duration := NewDurationWithRelativeValue(DurationNameHalf)
 		chord := NewChord(
 			*duration,
 			Note{C, MustNewOctave(1), duration},

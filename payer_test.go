@@ -7,18 +7,44 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestPlayEvent_Time(t *testing.T) {
+	timeVal := 1 * time.Second
+	playEvent := &PlayEvent{time: timeVal}
+
+	assert.Equal(t, timeVal, playEvent.Time(), "they should be equal")
+
+	playEvent = &PlayEvent{}
+	assert.Equal(t, time.Duration(0), playEvent.Time(), "it should be 0")
+
+	playEvent = nil
+	assert.Equal(t, time.Duration(0), playEvent.Time(), "it should be 0")
+}
+
+func TestPlayEvent_EventType(t *testing.T) {
+	eventType := PlayEventType("Test")
+	playEvent := &PlayEvent{eventType: eventType}
+
+	assert.Equal(t, eventType, playEvent.EventType(), "they should be equal")
+
+	playEvent = &PlayEvent{}
+	assert.Equal(t, PlayEventType(""), playEvent.EventType(), "it should be empty")
+
+	playEvent = nil
+	assert.Equal(t, PlayEventType(""), playEvent.EventType(), "it should be empty")
+}
+
 func TestPlayer_Add(t *testing.T) {
 	type (
 		args struct {
 			*Event
-			eventType EventType
+			eventType PlayEventType
 			time      time.Duration
-			PlayEvents
+			playEvents
 		}
 
 		testCase struct {
 			args args
-			want PlayEvents
+			want playEvents
 		}
 	)
 
@@ -28,7 +54,7 @@ func TestPlayer_Add(t *testing.T) {
 				Event:     &Event{},
 				eventType: EventTypeStart,
 				time:      time.Duration(5),
-				PlayEvents: []*PlayEvent{
+				playEvents: []*PlayEvent{
 					{Event: &Event{}, time: 3},
 					{Event: &Event{}, time: 4},
 					{Event: &Event{}, time: 6},
@@ -46,7 +72,7 @@ func TestPlayer_Add(t *testing.T) {
 				Event:     &Event{},
 				eventType: EventTypeStart,
 				time:      time.Duration(5),
-				PlayEvents: []*PlayEvent{
+				playEvents: []*PlayEvent{
 					{Event: &Event{}, time: 1},
 					{Event: &Event{}, time: 2},
 					{Event: &Event{}, time: 4},
@@ -64,7 +90,7 @@ func TestPlayer_Add(t *testing.T) {
 				Event:     &Event{},
 				eventType: EventTypeStart,
 				time:      time.Duration(1),
-				PlayEvents: []*PlayEvent{
+				playEvents: []*PlayEvent{
 					{Event: &Event{}, time: 3},
 					{Event: &Event{}, time: 4},
 					{Event: &Event{}, time: 6},
@@ -82,7 +108,7 @@ func TestPlayer_Add(t *testing.T) {
 				Event:      &Event{},
 				eventType:  EventTypeStart,
 				time:       time.Duration(1),
-				PlayEvents: []*PlayEvent{},
+				playEvents: []*PlayEvent{},
 			},
 			want: []*PlayEvent{
 				{Event: &Event{}, time: 1, eventType: EventTypeStart},
@@ -93,7 +119,7 @@ func TestPlayer_Add(t *testing.T) {
 				Event:     &Event{},
 				eventType: EventTypeStart,
 				time:      time.Duration(1),
-				PlayEvents: []*PlayEvent{
+				playEvents: []*PlayEvent{
 					{Event: &Event{}, time: 1, eventType: EventTypeEnd},
 					{Event: &Event{}, time: 1, eventType: EventTypeEnd},
 				},
@@ -109,7 +135,7 @@ func TestPlayer_Add(t *testing.T) {
 				Event:     &Event{},
 				eventType: EventTypeStart,
 				time:      time.Duration(1),
-				PlayEvents: []*PlayEvent{
+				playEvents: []*PlayEvent{
 					{Event: &Event{}, time: 1, eventType: EventTypeEnd},
 				},
 			},
@@ -121,13 +147,13 @@ func TestPlayer_Add(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		result := testCase.args.PlayEvents.Add(testCase.args.Event, testCase.args.eventType, testCase.args.time)
+		result := testCase.args.playEvents.Add(testCase.args.Event, testCase.args.eventType, testCase.args.time)
 		assert.Equal(t, testCase.want, result)
 	}
 }
 
 func TestTrack_Play(t *testing.T) {
-	track := NewTrack(120, Fraction{1, 2}, Fraction{4, 4})
+	track := NewTrack(TrackSettings{120, Fraction{1, 2}, Fraction{4, 4}})
 
 	track.events = []*Event{
 		{

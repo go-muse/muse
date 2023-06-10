@@ -37,7 +37,7 @@ func TestNoteName_MustMakeNote(t *testing.T) {
 
 	// Test case 2: Invalid note name
 	nn2 := NoteName("X")
-	assert.Panics(t, func() { _ = nn2.MustMakeNote() }, "note name: %s", nn2) //nolint:scopelint
+	assert.Panics(t, func() { _ = nn2.MustMakeNote() }, "note name: %s", nn2)
 }
 
 func TestNoteName_Validate(t *testing.T) {

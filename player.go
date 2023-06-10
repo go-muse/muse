@@ -4,18 +4,21 @@ import (
 	"time"
 )
 
+// Player is iterable ordered by time set of events of the Track.
 type Player <-chan *PlayEvent
 
-type PlayEvents []*PlayEvent
+type playEvents []*PlayEvent
 
-type EventType string
+// PlayEventType is the event type - start or end of the Event.
+type PlayEventType string
 
 const (
-	EventTypeStart = EventType("start")
-	EventTypeEnd   = EventType("end")
+	EventTypeStart = PlayEventType("start")
+	EventTypeEnd   = PlayEventType("end")
 )
 
-func (pes *PlayEvents) Add(event *Event, eventType EventType, time time.Duration) PlayEvents {
+// Add adds an event to the slice while maintaining the sort order by event time.
+func (pes *playEvents) Add(event *Event, eventType PlayEventType, time time.Duration) playEvents {
 	playEvent := &PlayEvent{
 		Event:     event,
 		eventType: eventType,
@@ -37,12 +40,14 @@ func (pes *PlayEvents) Add(event *Event, eventType EventType, time time.Duration
 	return *pes
 }
 
+// PlayEvent signifies the start or end of an Event at the moment of time.
 type PlayEvent struct {
 	*Event
-	eventType EventType
+	eventType PlayEventType
 	time      time.Duration
 }
 
+// Time returns duratoin al time of occurrence of the play event.
 func (p *PlayEvent) Time() time.Duration {
 	if p == nil {
 		return 0
@@ -51,7 +56,8 @@ func (p *PlayEvent) Time() time.Duration {
 	return p.time
 }
 
-func (p *PlayEvent) EventType() EventType {
+// EventType returns type of the event.
+func (p *PlayEvent) EventType() PlayEventType {
 	if p == nil {
 		return ""
 	}
@@ -59,23 +65,24 @@ func (p *PlayEvent) EventType() EventType {
 	return p.eventType
 }
 
+// Player returns channel with events ordered by time.
 func (t *Track) Player() Player {
-	playEvents := make(PlayEvents, 0, len(t.events)*2) //nolint:gomnd // 2 means start+end player events
+	pes := make(playEvents, 0, len(t.events)*2) //nolint:gomnd // 2 means start+end player events
 
 	for _, event := range t.events {
-		playEvents.Add(event, EventTypeStart, event.startTime)
-		playEvents.Add(event, EventTypeEnd, t.GetEnd(event))
+		pes.Add(event, EventTypeStart, event.startTime)
+		pes.Add(event, EventTypeEnd, t.GetEnd(event))
 	}
 
 	c := make(chan *PlayEvent)
 
-	go func(ch chan *PlayEvent, playEvents PlayEvents) {
+	go func(ch chan *PlayEvent, pes playEvents) {
 		defer close(ch)
 
-		for _, playEvent := range playEvents {
+		for _, playEvent := range pes {
 			ch <- playEvent
 		}
-	}(c, playEvents)
+	}(c, pes)
 
 	return c
 }

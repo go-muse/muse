@@ -265,12 +265,12 @@ func (n *Note) Duration() *Duration {
 }
 
 // TimeDuration returns time.Duration of the note based on bpm rate, unit and time signature.
-func (n *Note) TimeDuration(bpm uint64, unit, timeSignature *Fraction) time.Duration {
+func (n *Note) TimeDuration(trackSettings TrackSettings) time.Duration {
 	if n == nil || n.duration == nil {
 		return 0
 	}
 
-	return n.duration.GetTimeDuration(bpm, unit, timeSignature)
+	return n.duration.GetTimeDuration(trackSettings)
 }
 
 // SetAbsoluteDuration sets custom duration to the note and returns the note.
@@ -300,11 +300,20 @@ func (n *Note) GetAbsoluteDuration() time.Duration {
 	return n.duration.absoluteDuration
 }
 
-// GetPartOfBar returns duration value in decimal.
-func (n *Note) GetPartOfBar(timeSignature *Fraction) decimal.Decimal {
+// GetPartOfBarByRelative returns duration value in decimal.
+func (n *Note) GetPartOfBarByRelative(timeSignature *Fraction) decimal.Decimal {
 	if n == nil || n.duration == nil {
 		return decimal.Zero
 	}
 
-	return n.duration.GetPartOfBar(timeSignature)
+	return n.duration.GetPartOfBarByRelative(timeSignature)
+}
+
+// GetPartOfBarByAbsolute returns duration value in decimal.
+func (n *Note) GetPartOfBarByAbsolute(trackSettings TrackSettings) decimal.Decimal {
+	if n == nil || n.duration == nil {
+		return decimal.Zero
+	}
+
+	return n.duration.GetPartOfBarByAbsolute(trackSettings)
 }

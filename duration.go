@@ -26,10 +26,13 @@ type Fraction struct {
 }
 
 // minute is amount of nanoseconds in minute.
-const minute = int64(60000000000)
+const (
+	secondsInMinute = int64(60)
+	minute          = int64(1000000000) * secondsInMinute
+)
 
-// NewDuration creates new Duration by the given relative duration name.
-func NewDuration(durationName DurationName) *Duration {
+// NewDurationWithRelativeValue creates new Duration by the given relative duration name.
+func NewDurationWithRelativeValue(durationName DurationName) *Duration {
 	return &Duration{
 		0,
 		relativeDuration{
@@ -37,6 +40,14 @@ func NewDuration(durationName DurationName) *Duration {
 			dots:   0,
 			tuplet: nil,
 		},
+	}
+}
+
+// NewDurationWithAbsoluteValue creates new Duration by the given time.Duration.
+func NewDurationWithAbsoluteValue(absoluteDuration time.Duration) *Duration {
+	return &Duration{
+		absoluteDuration,
+		relativeDuration{},
 	}
 }
 
@@ -159,25 +170,21 @@ func (d *Duration) SetTupletTriplet() *Duration {
 }
 
 // GetAmountOfBars calculates and returns amount of bars within one minute.
-func (d *Duration) GetAmountOfBars(bpm uint64, unit, timeSignature *Fraction) decimal.Decimal {
-	if d == nil {
-		return decimal.Zero
-	}
-
-	bpmDecimal := decimal.NewFromInt(int64(bpm))
-	unitDecimal := decimal.NewFromInt(int64(unit.Numerator)).Div(decimal.NewFromInt(int64(unit.Denominator)))
-	timeSignatureDecimal := decimal.NewFromInt(int64(timeSignature.Numerator)).Div(decimal.NewFromInt(int64(timeSignature.Denominator)))
+func GetAmountOfBars(trackSettings TrackSettings) decimal.Decimal {
+	bpmDecimal := decimal.NewFromInt(int64(trackSettings.BPM))
+	unitDecimal := decimal.NewFromInt(int64(trackSettings.Unit.Numerator)).Div(decimal.NewFromInt(int64(trackSettings.Unit.Denominator)))
+	timeSignatureDecimal := decimal.NewFromInt(int64(trackSettings.TimeSignature.Numerator)).Div(decimal.NewFromInt(int64(trackSettings.TimeSignature.Denominator)))
 
 	return bpmDecimal.Mul(unitDecimal).Div(timeSignatureDecimal)
 }
 
 // GetTimeDuration calculates and returns time.Duration of the current duration.
-func (d *Duration) GetTimeDuration(bpm uint64, unit, timeSignature *Fraction) time.Duration {
+func (d *Duration) GetTimeDuration(trackSettings TrackSettings) time.Duration {
 	if d == nil {
 		return 0
 	}
 
-	amountOfBars := d.GetAmountOfBars(bpm, unit, timeSignature)
+	amountOfBars := GetAmountOfBars(trackSettings)
 
 	const baseValue = 2
 	noteDurationDecimal := decimal.NewFromInt(baseValue).Pow(decimal.NewFromInt(int64(d.name.getValue())))
@@ -198,8 +205,8 @@ func (d *Duration) GetTimeDuration(bpm uint64, unit, timeSignature *Fraction) ti
 	return time.Duration(result.BigInt().Int64())
 }
 
-// GetPartOfBar returns duration as part of a bar.
-func (d *Duration) GetPartOfBar(timeSignature *Fraction) decimal.Decimal {
+// GetPartOfBar returns duration as part of a bar by relative duration.
+func (d *Duration) GetPartOfBarByRelative(timeSignature *Fraction) decimal.Decimal {
 	if d == nil {
 		return decimal.Zero
 	}
@@ -219,6 +226,20 @@ func (d *Duration) GetPartOfBar(timeSignature *Fraction) decimal.Decimal {
 	if d.tuplet != nil {
 		result = result.Mul(decimal.NewFromInt(int64(d.tuplet.n))).Div(decimal.NewFromInt(int64(d.tuplet.m)))
 	}
+
+	return result
+}
+
+// GetPartOfBarByAbsolute returns duration as part of a bar by absolute duration.
+func (d *Duration) GetPartOfBarByAbsolute(trackSettings TrackSettings) decimal.Decimal {
+	if d == nil {
+		return decimal.Zero
+	}
+
+	amountofBars := GetAmountOfBars(trackSettings)
+	secondsInBar := decimal.NewFromInt(int64(time.Duration(secondsInMinute) * time.Second)).Div(amountofBars)
+
+	result := secondsInBar.Div(decimal.NewFromFloat(float64(d.absoluteDuration)))
 
 	return result
 }

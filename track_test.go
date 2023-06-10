@@ -8,24 +8,28 @@ import (
 )
 
 func TestNewTrack(t *testing.T) {
-	bpm := uint64(120)
-	unit := Fraction{1, 4}
-	timeSignature := Fraction{4, 4}
+	trackSettings := &TrackSettings{
+		BPM:           uint64(120),
+		Unit:          Fraction{1, 4},
+		TimeSignature: Fraction{4, 4},
+	}
 
-	track := NewTrack(bpm, unit, timeSignature)
+	track := NewTrack(*trackSettings)
 
-	assert.Equal(t, bpm, track.trackSettings.bpm, "they should be equal")
-	assert.Equal(t, unit, track.trackSettings.unit, "they should be equal")
-	assert.Equal(t, timeSignature, track.trackSettings.timeSignature, "they should be equal")
+	assert.Equal(t, trackSettings.BPM, track.TrackSettings.BPM, "they should be equal")
+	assert.Equal(t, trackSettings.Unit, track.TrackSettings.Unit, "they should be equal")
+	assert.Equal(t, trackSettings.TimeSignature, track.TrackSettings.TimeSignature, "they should be equal")
 	assert.Empty(t, track.events, "track events should be empty")
 }
 
 func TestTrack_AddNote(t *testing.T) {
-	bpm := uint64(120)
-	unit := Fraction{1, 4}
-	timeSignature := Fraction{4, 4}
+	trackSettings := &TrackSettings{
+		BPM:           uint64(120),
+		Unit:          Fraction{1, 4},
+		TimeSignature: Fraction{4, 4},
+	}
 
-	track := NewTrack(bpm, unit, timeSignature)
+	track := NewTrack(*trackSettings)
 
 	note := MustNewNote(C, 4)
 	startTime := time.Second
@@ -43,11 +47,13 @@ func TestTrack_AddNote(t *testing.T) {
 }
 
 func TestTrack_AddNotes(t *testing.T) {
-	bpm := uint64(120)
-	unit := Fraction{1, 4}
-	timeSignature := Fraction{4, 4}
+	trackSettings := &TrackSettings{
+		BPM:           uint64(120),
+		Unit:          Fraction{1, 4},
+		TimeSignature: Fraction{4, 4},
+	}
 
-	track := NewTrack(bpm, unit, timeSignature)
+	track := NewTrack(*trackSettings)
 
 	notes := Notes{
 		*MustNewNote(C, 4),
@@ -68,17 +74,19 @@ func TestTrack_AddNotes(t *testing.T) {
 }
 
 func TestTrack_AddChord(t *testing.T) {
-	bpm := uint64(120)
-	unit := Fraction{1, 4}
-	timeSignature := Fraction{4, 4}
+	trackSettings := &TrackSettings{
+		BPM:           uint64(120),
+		Unit:          Fraction{1, 4},
+		TimeSignature: Fraction{4, 4},
+	}
 
-	track := NewTrack(bpm, unit, timeSignature)
+	track := NewTrack(*trackSettings)
 
 	chordNotes := Notes{
 		*MustNewNote(C, 4),
 		*MustNewNote(D, 4),
 	}
-	chord := NewChord(*NewDuration(DurationNameWhole), chordNotes...)
+	chord := NewChord(*NewDurationWithRelativeValue(DurationNameWhole), chordNotes...)
 
 	startTime := time.Second
 	isAbsolute := true
@@ -95,11 +103,13 @@ func TestTrack_AddChord(t *testing.T) {
 }
 
 func TestTrack_AddEvent(t *testing.T) {
-	bpm := uint64(120)
-	unit := Fraction{1, 4}
-	timeSignature := Fraction{4, 4}
+	trackSettings := &TrackSettings{
+		BPM:           uint64(120),
+		Unit:          Fraction{1, 4},
+		TimeSignature: Fraction{4, 4},
+	}
 
-	track := NewTrack(bpm, unit, timeSignature)
+	track := NewTrack(*trackSettings)
 
 	event := &Event{
 		note:       MustNewNote(C, 4),
@@ -116,11 +126,13 @@ func TestTrack_AddEvent(t *testing.T) {
 }
 
 func TestTrack_Events(t *testing.T) {
-	bpm := uint64(120)
-	unit := Fraction{1, 4}
-	timeSignature := Fraction{4, 4}
+	trackSettings := &TrackSettings{
+		BPM:           uint64(120),
+		Unit:          Fraction{1, 4},
+		TimeSignature: Fraction{4, 4},
+	}
 
-	track := NewTrack(bpm, unit, timeSignature)
+	track := NewTrack(*trackSettings)
 
 	event := &Event{
 		note:       MustNewNote(C, 4),
@@ -137,11 +149,13 @@ func TestTrack_Events(t *testing.T) {
 }
 
 func TestTrack_AddNoteToTheEnd(t *testing.T) {
-	bpm := uint64(120)
-	unit := Fraction{1, 4}
-	timeSignature := Fraction{4, 4}
+	trackSettings := &TrackSettings{
+		BPM:           uint64(120),
+		Unit:          Fraction{1, 4},
+		TimeSignature: Fraction{4, 4},
+	}
 
-	track := NewTrack(bpm, unit, timeSignature)
+	track := NewTrack(*trackSettings)
 
 	event1 := &Event{
 		note:       MustNewNote(C, 4).SetAbsoluteDuration(time.Second),
@@ -150,7 +164,7 @@ func TestTrack_AddNoteToTheEnd(t *testing.T) {
 	}
 
 	event2 := &Event{
-		note:       MustNewNote(C, 4).SetDuration(*NewDuration(DurationNameWhole)),
+		note:       MustNewNote(C, 4).SetDuration(*NewDurationWithRelativeValue(DurationNameWhole)),
 		startTime:  2 * time.Second,
 		isAbsolute: true,
 	}
@@ -158,7 +172,7 @@ func TestTrack_AddNoteToTheEnd(t *testing.T) {
 	track.AddEvent(event1)
 	track.AddEvent(event2)
 
-	noteToEnd := MustNewNote(C, 4).SetDuration(*NewDuration(DurationNameWhole))
+	noteToEnd := MustNewNote(C, 4).SetDuration(*NewDurationWithRelativeValue(DurationNameWhole))
 	track.AddNoteToTheEnd(noteToEnd, true)
 
 	assert.Equal(t, 3, len(track.Events()), "they should be equal")
@@ -188,10 +202,10 @@ func TestTrack_FindLastNotes(t *testing.T) {
 				{startTime: 5, note: &Note{duration: &Duration{absoluteDuration: 1}}, isAbsolute: true}, // 6
 				{startTime: 0, note: &Note{duration: &Duration{absoluteDuration: 0}}, isAbsolute: true}, // 6
 			},
-			trackSettings: trackSettings{
-				bpm:           120,
-				unit:          Fraction{1, 2},
-				timeSignature: Fraction{4, 4},
+			TrackSettings: TrackSettings{
+				BPM:           120,
+				Unit:          Fraction{1, 2},
+				TimeSignature: Fraction{4, 4},
 			},
 		}
 
@@ -220,10 +234,10 @@ func TestTrack_FindLastNotes(t *testing.T) {
 				{startTime: 5, note: &Note{duration: &Duration{absoluteDuration: 1}}, isAbsolute: true}, // 6
 				{startTime: 0, note: &Note{duration: &Duration{absoluteDuration: 0}}, isAbsolute: true}, // 6
 			},
-			trackSettings: trackSettings{
-				bpm:           120,
-				unit:          Fraction{1, 2},
-				timeSignature: Fraction{4, 4},
+			TrackSettings: TrackSettings{
+				BPM:           120,
+				Unit:          Fraction{1, 2},
+				TimeSignature: Fraction{4, 4},
 			},
 		}
 
@@ -245,10 +259,10 @@ func TestTrack_FindLastNotes(t *testing.T) {
 				{startTime: time.Second, note: &Note{duration: &Duration{relativeDuration: relativeDuration{dots: 2, tuplet: &Tuplet{n: 2, m: 3}}}}, isAbsolute: false},            // 2.1(6)s
 				{startTime: time.Second * 2, note: &Note{duration: &Duration{relativeDuration: relativeDuration{dots: 0, tuplet: nil}}}, isAbsolute: false},                        // 3s (1 is default without proper duration name)
 			},
-			trackSettings: trackSettings{
-				bpm:           120,
-				unit:          Fraction{1, 2},
-				timeSignature: Fraction{4, 4},
+			TrackSettings: TrackSettings{
+				BPM:           120,
+				Unit:          Fraction{1, 2},
+				TimeSignature: Fraction{4, 4},
 			},
 		}
 
@@ -274,10 +288,10 @@ func TestTrack_FindLastNotes(t *testing.T) {
 				{startTime: time.Second * 2, note: &Note{duration: &Duration{relativeDuration: relativeDuration{dots: 0, tuplet: nil}}}, isAbsolute: false},                        // 3s (1 is default without proper duration name)
 				{startTime: time.Millisecond * 2500, note: expectedResult[2], isAbsolute: false},                                                                                   // 4,5s max
 			},
-			trackSettings: trackSettings{
-				bpm:           120,
-				unit:          Fraction{1, 2},
-				timeSignature: Fraction{4, 4},
+			TrackSettings: TrackSettings{
+				BPM:           120,
+				Unit:          Fraction{1, 2},
+				TimeSignature: Fraction{4, 4},
 			},
 		}
 
@@ -288,26 +302,28 @@ func TestTrack_FindLastNotes(t *testing.T) {
 }
 
 func TestFindLastEvents(t *testing.T) {
-	bpm := uint64(120)
-	unit := Fraction{1, 2}
-	timeSignature := Fraction{4, 4}
+	trackSettings := &TrackSettings{
+		BPM:           uint64(120),
+		Unit:          Fraction{1, 2},
+		TimeSignature: Fraction{4, 4},
+	}
 
-	track := NewTrack(bpm, unit, timeSignature)
+	track := NewTrack(*trackSettings)
 
 	event1 := &Event{
-		note:       MustNewNote(C, 4).SetDuration(*NewDuration(DurationNameWhole)),
+		note:       MustNewNote(C, 4).SetDuration(*NewDurationWithRelativeValue(DurationNameWhole)),
 		startTime:  1 * time.Second,
 		isAbsolute: false,
 	}
 
 	event2 := &Event{
-		note:       MustNewNote(C, 4).SetDuration(*NewDuration(DurationNameWhole)),
+		note:       MustNewNote(C, 4).SetDuration(*NewDurationWithRelativeValue(DurationNameWhole)),
 		startTime:  2 * time.Second,
 		isAbsolute: false,
 	}
 
 	event3 := &Event{
-		note:       MustNewNote(C, 4).SetDuration(*NewDuration(DurationNameWhole)),
+		note:       MustNewNote(C, 4).SetDuration(*NewDurationWithRelativeValue(DurationNameWhole)),
 		startTime:  4 * time.Second,
 		isAbsolute: false,
 	}
@@ -330,14 +346,16 @@ func TestFindLastEvents(t *testing.T) {
 }
 
 func TestFindEnd(t *testing.T) {
-	bpm := uint64(120)
-	unit := Fraction{1, 2}
-	timeSignature := Fraction{4, 4}
+	trackSettings := &TrackSettings{
+		BPM:           uint64(120),
+		Unit:          Fraction{1, 2},
+		TimeSignature: Fraction{4, 4},
+	}
 
-	track := NewTrack(bpm, unit, timeSignature)
+	track := NewTrack(*trackSettings)
 
 	event1 := &Event{
-		note:       MustNewNote(C, 4).SetDuration(*NewDuration(DurationNameWhole)),
+		note:       MustNewNote(C, 4).SetDuration(*NewDurationWithRelativeValue(DurationNameWhole)),
 		startTime:  time.Second,
 		isAbsolute: false,
 	}
@@ -357,11 +375,13 @@ func TestFindEnd(t *testing.T) {
 }
 
 func TestTrack_GetStartAndEnd(t *testing.T) {
-	bpm := uint64(120)
-	unit := Fraction{1, 2}
-	timeSignature := Fraction{4, 4}
+	trackSettings := &TrackSettings{
+		BPM:           uint64(120),
+		Unit:          Fraction{1, 2},
+		TimeSignature: Fraction{4, 4},
+	}
 
-	track := NewTrack(bpm, unit, timeSignature)
+	track := NewTrack(*trackSettings)
 
 	type want struct {
 		start, end time.Duration
@@ -373,7 +393,7 @@ func TestTrack_GetStartAndEnd(t *testing.T) {
 	}{
 		{
 			event: &Event{
-				note:       MustNewNote(C, 4).SetDuration(*NewDuration(DurationNameWhole)),
+				note:       MustNewNote(C, 4).SetDuration(*NewDurationWithRelativeValue(DurationNameWhole)),
 				startTime:  time.Second,
 				isAbsolute: false,
 			},
@@ -405,11 +425,13 @@ func TestTrack_GetStartAndEnd(t *testing.T) {
 }
 
 func TestTrack_GetEnd(t *testing.T) {
-	bpm := uint64(120)
-	unit := Fraction{1, 2}
-	timeSignature := Fraction{4, 4}
+	trackSettings := &TrackSettings{
+		BPM:           uint64(120),
+		Unit:          Fraction{1, 2},
+		TimeSignature: Fraction{4, 4},
+	}
 
-	track := NewTrack(bpm, unit, timeSignature)
+	track := NewTrack(*trackSettings)
 
 	testCases := []struct {
 		event *Event
@@ -417,7 +439,7 @@ func TestTrack_GetEnd(t *testing.T) {
 	}{
 		{
 			event: &Event{
-				note:       MustNewNote(C, 4).SetDuration(*NewDuration(DurationNameWhole)),
+				note:       MustNewNote(C, 4).SetDuration(*NewDurationWithRelativeValue(DurationNameWhole)),
 				startTime:  time.Second,
 				isAbsolute: false,
 			},
