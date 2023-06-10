@@ -44,7 +44,7 @@ func TestDuration_TimeDuration(t *testing.T) {
 			args: args{
 				bpm:           60,                             // 60 bpm
 				unit:          &Fraction{1, 1},                // unit 1
-				timeSignature: &Fraction{1, 1},                // time signature 1
+				timeSignature: &Fraction{1, 1},                // time signature 1/1
 				Duration:      NewDuration(DurationNameWhole), // whole note without dots
 			},
 			want: want{

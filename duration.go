@@ -158,16 +158,30 @@ func (d *Duration) SetTupletTriplet() *Duration {
 	return d
 }
 
-// GetTimeDuration calculates and returns time.Duration of the current duration.
-func (d *Duration) GetTimeDuration(bpm uint64, unit, timeSignature *Fraction) time.Duration {
-	const baseValue = 2
-	noteDurationDecimal := decimal.NewFromInt(baseValue).Pow(decimal.NewFromInt(int64(d.name.getValue())))
+// GetAmountOfBars calculates and returns amount of bars within one minute.
+func (d *Duration) GetAmountOfBars(bpm uint64, unit, timeSignature *Fraction) decimal.Decimal {
+	if d == nil {
+		return decimal.Zero
+	}
+
 	bpmDecimal := decimal.NewFromInt(int64(bpm))
 	unitDecimal := decimal.NewFromInt(int64(unit.Numerator)).Div(decimal.NewFromInt(int64(unit.Denominator)))
 	timeSignatureDecimal := decimal.NewFromInt(int64(timeSignature.Numerator)).Div(decimal.NewFromInt(int64(timeSignature.Denominator)))
-	minuteDecimal := decimal.NewFromInt(minute)
 
-	amountOfBars := bpmDecimal.Mul(unitDecimal).Div(timeSignatureDecimal)
+	return bpmDecimal.Mul(unitDecimal).Div(timeSignatureDecimal)
+}
+
+// GetTimeDuration calculates and returns time.Duration of the current duration.
+func (d *Duration) GetTimeDuration(bpm uint64, unit, timeSignature *Fraction) time.Duration {
+	if d == nil {
+		return 0
+	}
+
+	amountOfBars := d.GetAmountOfBars(bpm, unit, timeSignature)
+
+	const baseValue = 2
+	noteDurationDecimal := decimal.NewFromInt(baseValue).Pow(decimal.NewFromInt(int64(d.name.getValue())))
+	minuteDecimal := decimal.NewFromInt(minute)
 
 	result := minuteDecimal.Div(amountOfBars).Mul(noteDurationDecimal)
 
