@@ -542,19 +542,19 @@ func TestNoteSetDuration(t *testing.T) {
 	}{
 		{
 			note: newNote(C),
-			want: NewDuration(DurationNameEighth),
+			want: NewDurationWithRelativeValue(DurationNameEighth),
 		},
 		{
 			note: newNote(C).SetDuration(Duration{0, relativeDuration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}}),
-			want: NewDuration(DurationNameEighth),
+			want: NewDurationWithRelativeValue(DurationNameEighth),
 		},
 		{
-			note: newNote(C).SetDuration(*NewDuration(DurationNameDoubleWhole)),
-			want: NewDuration(DurationNameEighth),
+			note: newNote(C).SetDuration(*NewDurationWithRelativeValue(DurationNameDoubleWhole)),
+			want: NewDurationWithRelativeValue(DurationNameEighth),
 		},
 		{
 			note: &Note{name: C, duration: &Duration{0, relativeDuration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}}},
-			want: NewDuration(DurationNameEighth),
+			want: NewDurationWithRelativeValue(DurationNameEighth),
 		},
 	}
 
@@ -574,11 +574,11 @@ func TestNoteGetDuration(t *testing.T) {
 		},
 		{
 			note: newNote(C).SetDuration(Duration{0, relativeDuration{name: DurationNameEighth, dots: 0, tuplet: nil}}),
-			want: NewDuration(DurationNameEighth),
+			want: NewDurationWithRelativeValue(DurationNameEighth),
 		},
 		{
-			note: newNote(C).SetDuration(*NewDuration(DurationNameEighth)),
-			want: NewDuration(DurationNameEighth),
+			note: newNote(C).SetDuration(*NewDurationWithRelativeValue(DurationNameEighth)),
+			want: NewDurationWithRelativeValue(DurationNameEighth),
 		},
 	}
 
@@ -601,7 +601,7 @@ func TestNoteSetAbsoluteDuration(t *testing.T) {
 			want: time.Second,
 		},
 		{
-			note: newNote(E).SetDuration(*NewDuration(DurationNameDoubleWhole)),
+			note: newNote(E).SetDuration(*NewDurationWithRelativeValue(DurationNameDoubleWhole)),
 			want: time.Second,
 		},
 		{
@@ -629,7 +629,7 @@ func TestNoteGetAbsoluteDuration(t *testing.T) {
 			want: time.Duration(0),
 		},
 		{
-			note: newNote(C).SetDuration(*NewDuration(DurationNameEighth)),
+			note: newNote(C).SetDuration(*NewDurationWithRelativeValue(DurationNameEighth)),
 			want: time.Duration(0),
 		},
 		{
@@ -641,7 +641,7 @@ func TestNoteGetAbsoluteDuration(t *testing.T) {
 			want: time.Second,
 		},
 		{
-			note: newNote(C).SetDuration(*NewDuration(DurationNameEighth)).SetAbsoluteDuration(time.Second),
+			note: newNote(C).SetDuration(*NewDurationWithRelativeValue(DurationNameEighth)).SetAbsoluteDuration(time.Second),
 			want: time.Second,
 		},
 		{

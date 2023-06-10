@@ -68,7 +68,7 @@ func NewNoteFromMIDINumber(midiNumber uint8) (*Note, error) {
 	noteNames := []NoteName{C, CSHARP, D, DSHARP, E, F, FSHARP, G, GSHARP, A, ASHARP, B}
 
 	noteName := noteNames[midiNumber%12]
-	octave := midiNumber/12 - 1 // Subtract 1 because MIDI note numbers start from C-1 (which is note number 12)
+	octave := midiNumber/12 - 1 //nolint:gomnd // Subtract 1 because MIDI note numbers start from C-1 (which is note number 12)
 
 	return newNoteWithOctave(noteName, MustNewOctave(OctaveNumber(octave))), nil
 }

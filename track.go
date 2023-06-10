@@ -7,23 +7,19 @@ import (
 // Track is a set of Events. Track also contains settings that allow to define the absolute duration of notes in the Events.
 type Track struct {
 	events []*Event
-	trackSettings
+	TrackSettings
 }
 
-type trackSettings struct {
-	bpm                 uint64
-	unit, timeSignature Fraction
+type TrackSettings struct {
+	BPM                 uint64
+	Unit, TimeSignature Fraction
 }
 
 // NewTrack creates a new track with specified settings.
-func NewTrack(bpm uint64, unit, timeSignature Fraction) *Track {
+func NewTrack(trackSettings TrackSettings) *Track {
 	return &Track{
-		events: []*Event{},
-		trackSettings: trackSettings{
-			bpm:           bpm,
-			unit:          unit,
-			timeSignature: timeSignature,
-		},
+		events:        []*Event{},
+		TrackSettings: trackSettings,
 	}
 }
 
@@ -180,7 +176,7 @@ func (t *Track) GetStartAndEnd(event *Event) (time.Duration, time.Duration) {
 		return event.startTime, event.startTime + event.note.GetAbsoluteDuration()
 	}
 
-	return event.startTime, event.startTime + event.note.TimeDuration(t.trackSettings.bpm, &t.trackSettings.unit, &t.trackSettings.timeSignature)
+	return event.startTime, event.startTime + event.note.TimeDuration(t.TrackSettings)
 }
 
 // GetEnd returns the end time of the event.
@@ -193,5 +189,5 @@ func (t *Track) GetEnd(event *Event) time.Duration {
 		return event.startTime + event.note.GetAbsoluteDuration()
 	}
 
-	return event.startTime + event.note.TimeDuration(t.trackSettings.bpm, &t.trackSettings.unit, &t.trackSettings.timeSignature)
+	return event.startTime + event.note.TimeDuration(t.TrackSettings)
 }

@@ -20,6 +20,7 @@
 ### Tracks:
 - [x] Adding notes as events
 - [x] Note timing calculation
+- [x] Getting sorted start/end events
 ### Chords:
 - [x] Adding and removing Notes
 - [x] Setting the same duration for all the chord's notes
@@ -52,7 +53,9 @@ Definitions may differ from conventional.
 **Interval** is the ratio of two musical sounds in pitch. 
 Chromatic interval means the ratio of two notes, diatonic interval means the ratio of two degrees.
 
-**Chord** Chord is a set of notes of the same duration.
+**Chord** is a set of notes of the same duration.
+
+**Track** is a set of events(e.g. notes) with starting time. 
 
 ![Concept pic](/img/concept.jpg)
 

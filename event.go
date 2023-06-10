@@ -1,6 +1,9 @@
 package muse
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Event struct {
 	startTime  time.Duration
@@ -14,6 +17,11 @@ func NewEvent(note *Note, startTime time.Duration, isAbsolute bool) *Event {
 		note:       note,
 		isAbsolute: isAbsolute,
 	}
+}
+
+// String is stringer for Event object.
+func (e *Event) String() string {
+	return fmt.Sprintf("start time: %v, note: %s, is absolute: %t", e.startTime, e.note.name, e.isAbsolute)
 }
 
 func (e *Event) Note() *Note {

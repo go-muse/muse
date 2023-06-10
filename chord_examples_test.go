@@ -10,13 +10,13 @@ import (
 // Creating a new chord.
 func ExampleNewChord() {
 	// notes with different durations
-	note1 := muse.MustNewNote(muse.E, 4).SetDuration(*muse.NewDuration(muse.DurationNameWhole))
-	note2 := muse.MustNewNote(muse.G, 4).SetDuration(*muse.NewDuration(muse.DurationNameHalf))
-	note3 := muse.MustNewNote(muse.B, 4).SetDuration(*muse.NewDuration(muse.DurationNameQuarter))
-	note4 := muse.MustNewNote(muse.D, 5).SetDuration(*muse.NewDuration(muse.DurationNameSixteenth))
+	note1 := muse.MustNewNote(muse.E, 4).SetDuration(*muse.NewDurationWithRelativeValue(muse.DurationNameWhole))
+	note2 := muse.MustNewNote(muse.G, 4).SetDuration(*muse.NewDurationWithRelativeValue(muse.DurationNameHalf))
+	note3 := muse.MustNewNote(muse.B, 4).SetDuration(*muse.NewDurationWithRelativeValue(muse.DurationNameQuarter))
+	note4 := muse.MustNewNote(muse.D, 5).SetDuration(*muse.NewDurationWithRelativeValue(muse.DurationNameSixteenth))
 
 	// duration for the chord
-	duration := muse.NewDuration(muse.DurationNameHalf)
+	duration := muse.NewDurationWithRelativeValue(muse.DurationNameHalf)
 
 	// notes will be added in the new chord with the specified duration. It will be the same for all the notes in the chord.
 	chord := muse.NewChord(*duration, *note1, *note2, *note3, *note4)
@@ -27,7 +27,7 @@ func ExampleNewChord() {
 
 // Creating a new empty chord and adding notes.
 func ExampleNewChordEmpty() {
-	duration := muse.NewDuration(muse.DurationNameHalf)
+	duration := muse.NewDurationWithRelativeValue(muse.DurationNameHalf)
 
 	chord := muse.NewChordEmpty()
 	chord.SetDuration(*duration)
@@ -45,7 +45,7 @@ func ExampleNewChordEmpty() {
 
 // Adding notes to the chord. Identical notes (equal by Name and Octave) will not be added.
 func ExampleChord_AddNotes() {
-	duration := muse.NewDuration(muse.DurationNameHalf)
+	duration := muse.NewDurationWithRelativeValue(muse.DurationNameHalf)
 
 	chord := muse.NewChordEmpty()
 	chord.SetDuration(*duration)
@@ -77,7 +77,7 @@ func ExampleChord_SetDuration() {
 
 	chord.AddNotes(*note1, *note2, *note3, *note4)
 
-	duration := muse.NewDuration(muse.DurationNameHalf)
+	duration := muse.NewDurationWithRelativeValue(muse.DurationNameHalf)
 	chord.SetDuration(*duration)
 
 	var resultStr string

@@ -50,7 +50,7 @@ func ExampleNote_SetOctave() {
 // Setting and Getting duration.
 func ExampleNote_SetDuration() {
 	// half note duration
-	duration := muse.NewDuration(muse.DurationNameHalf)
+	duration := muse.NewDurationWithRelativeValue(muse.DurationNameHalf)
 
 	// creating note and setting duration
 	note := muse.MustNewNote(muse.C, muse.OctaveNumber3).SetDuration(*duration)
@@ -62,17 +62,19 @@ func ExampleNote_SetDuration() {
 // Getting note's time.Duration from note's duration.
 func ExampleNote_TimeDuration() {
 	// musical settings
-	bpm := uint64(80)
-	unit := &muse.Fraction{1, 2}
-	timeSignature := &muse.Fraction{4, 4}
+	trackSettings := muse.TrackSettings{
+		BPM:           uint64(80),
+		Unit:          muse.Fraction{1, 2},
+		TimeSignature: muse.Fraction{4, 4},
+	}
 
 	// half note duration
-	duration := muse.NewDuration(muse.DurationNameHalf)
+	duration := muse.NewDurationWithRelativeValue(muse.DurationNameHalf)
 
 	// creating note and setting duration
 	note := muse.MustNewNote(muse.C, muse.OctaveNumber3).SetDuration(*duration)
 
-	fmt.Println(note.TimeDuration(bpm, unit, timeSignature))
+	fmt.Println(note.TimeDuration(trackSettings))
 	// Output: 750ms
 }
 

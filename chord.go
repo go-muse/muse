@@ -181,6 +181,7 @@ func (c *Chord) RemoveNotes(notes Notes) *Chord {
 		for i, chordNote := range c.notes {
 			if chordNote.IsEqual(&note) {
 				c.notes = append(c.notes[:i], c.notes[i+1:]...)
+
 				break
 			}
 		}
