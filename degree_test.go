@@ -103,12 +103,19 @@ func TestDegree_SetPrevious(t *testing.T) {
 }
 
 func TestDegree_Note(t *testing.T) {
-	expectedNote := newNote(C)
-	degree := Degree{note: expectedNote}
+	t.Run("get note from degree", func(t *testing.T) {
+		expectedNote := newNote(C)
+		degree := Degree{note: expectedNote}
 
-	if degree.Note() != expectedNote {
-		t.Errorf("Expected Note %v but got %v", expectedNote, degree.Note())
-	}
+		if degree.Note() != expectedNote {
+			t.Errorf("Expected Note %v but got %v", expectedNote, degree.Note())
+		}
+	})
+
+	t.Run("get note from empty degree", func(t *testing.T) {
+		var nilDegree *Degree
+		assert.Nil(t, nilDegree)
+	})
 }
 
 func TestDegree_SetNote(t *testing.T) {
@@ -203,6 +210,11 @@ func TestGetDegreeByDegreeNum(t *testing.T) {
 	t.Run("TestGetDegreeByDegreeNum: cycled degrees chain", func(t *testing.T) {
 		testingFunc(t, generateDegrees(3, true))
 	})
+
+	t.Run("TestGetDegreeByDegreeNum: cycled degrees chain", func(t *testing.T) {
+		var nilDegree *Degree
+		assert.Nil(t, nilDegree.GetDegreeByDegreeNum(5))
+	})
 }
 
 func TestDegree_GetForwardDegreeByDegreeNum(t *testing.T) {
@@ -229,8 +241,8 @@ func TestDegree_GetForwardDegreeByDegreeNum(t *testing.T) {
 	assert.Equal(t, expectedDegreeNum, result.Number(), "expected: %d, actual: %d", expectedDegreeNum, result.Number())
 }
 
-func TestDegreesIterator_GetAll(t *testing.T) {
-	t.Run("GetAll: non-empty input channel", func(t *testing.T) {
+func TestDegreesIterator_GetAllDegrees(t *testing.T) {
+	t.Run("GetAllDegrees: non-empty input channel", func(t *testing.T) {
 		input := make(chan *Degree)
 		expected := []*Degree{
 			{number: 1},
@@ -254,7 +266,7 @@ func TestDegreesIterator_GetAll(t *testing.T) {
 		}
 	})
 
-	t.Run("GetAll: empty input channel", func(t *testing.T) {
+	t.Run("GetAllDegrees: empty input channel", func(t *testing.T) {
 		input := make(chan *Degree)
 		var expected []*Degree
 
@@ -272,6 +284,11 @@ func TestDegreesIterator_GetAll(t *testing.T) {
 			assert.Equal(t, expected, result, "expected: %+v, result: %+v", expected, result)
 		}
 	})
+
+	t.Run("GetAllNotes: get all degrees from nil degrees iterator", func(t *testing.T) {
+		var nilDI DegreesIterator
+		assert.Nil(t, nilDI.GetAllDegrees())
+	})
 }
 
 func TestDegreesIterator_GetAllNotes(t *testing.T) {
@@ -287,6 +304,11 @@ func TestDegreesIterator_GetAllNotes(t *testing.T) {
 			}
 			currentDegree = currentDegree.GetNext()
 		}
+	})
+
+	t.Run("GetAllNotes: get all notes from nil degrees iterator", func(t *testing.T) {
+		var nilDI DegreesIterator
+		assert.Nil(t, nilDI.GetAllNotes())
 	})
 }
 
@@ -365,6 +387,11 @@ func TestDegree_GetDegrees(t *testing.T) {
 		if currentDegree.Number() != firstDegreeNum {
 			t.Errorf("last degree num: %d, firstDegreeNum: %d", currentDegree.Number(), firstDegreeNum)
 		}
+	})
+
+	t.Run("get previous degree from the empty degree", func(t *testing.T) {
+		var nilDegree *Degree
+		assert.Nil(t, nilDegree)
 	})
 }
 
