@@ -65,16 +65,23 @@ func TestDegree_SetNext(t *testing.T) {
 }
 
 func TestDegree_GetPrevious(t *testing.T) {
-	// Create a new instance of Degree with a Previous degree.
-	degree := &Degree{previous: &Degree{}}
+	t.Run("GetPrevious: get previous degree", func(t *testing.T) {
+		// Create a new instance of Degree with a Previous degree.
+		degree := &Degree{previous: &Degree{}}
 
-	// Call GetPrevious on the degree and store the result in a variable.
-	previousDegree := degree.GetPrevious()
+		// Call GetPrevious on the degree and store the result in a variable.
+		previousDegree := degree.GetPrevious()
 
-	// Check if the result of GetPrevious is equal to the degree's Previous degree.
-	if previousDegree != degree.previous {
-		t.Errorf("GetPrevious returned incorrect result: got %v, want %v", previousDegree, degree.previous)
-	}
+		// Check if the result of GetPrevious is equal to the degree's Previous degree.
+		if previousDegree != degree.previous {
+			t.Errorf("GetPrevious returned incorrect result: got %v, want %v", previousDegree, degree.previous)
+		}
+	})
+
+	t.Run("GetPrevious: get previous degree from nil degree", func(t *testing.T) {
+		var nilDegree *Degree
+		assert.Nil(t, nilDegree.GetPrevious())
+	})
 }
 
 func TestDegree_SetPrevious(t *testing.T) {
@@ -114,7 +121,7 @@ func TestDegree_Note(t *testing.T) {
 
 	t.Run("get note from empty degree", func(t *testing.T) {
 		var nilDegree *Degree
-		assert.Nil(t, nilDegree)
+		assert.Nil(t, nilDegree.Note())
 	})
 }
 
@@ -218,27 +225,34 @@ func TestGetDegreeByDegreeNum(t *testing.T) {
 }
 
 func TestDegree_GetForwardDegreeByDegreeNum(t *testing.T) {
-	firstDegreeNum := DegreeNum(1)
-	firstDegree := &Degree{
-		number: firstDegreeNum,
-	}
-
-	currentDegree := firstDegree
-	amountOfDegrees := DegreeNum(7)
-	for i := DegreeNum(2); i <= amountOfDegrees; i++ {
-		newDegree := &Degree{
-			number:   i,
-			previous: currentDegree,
+	t.Run("GetForwardDegreeByDegreeNum: positive", func(t *testing.T) {
+		firstDegreeNum := DegreeNum(1)
+		firstDegree := &Degree{
+			number: firstDegreeNum,
 		}
-		currentDegree.next = newDegree
-		currentDegree = newDegree
-	}
-	currentDegree.next = firstDegree
 
-	const forward = DegreeNum(103)
-	expectedDegreeNum := forward - (forward/amountOfDegrees)*amountOfDegrees + 1
-	result := firstDegree.GetForwardDegreeByDegreeNum(forward)
-	assert.Equal(t, expectedDegreeNum, result.Number(), "expected: %d, actual: %d", expectedDegreeNum, result.Number())
+		currentDegree := firstDegree
+		amountOfDegrees := DegreeNum(7)
+		for i := DegreeNum(2); i <= amountOfDegrees; i++ {
+			newDegree := &Degree{
+				number:   i,
+				previous: currentDegree,
+			}
+			currentDegree.next = newDegree
+			currentDegree = newDegree
+		}
+		currentDegree.next = firstDegree
+
+		const forward = DegreeNum(103)
+		expectedDegreeNum := forward - (forward/amountOfDegrees)*amountOfDegrees + 1
+		result := firstDegree.GetForwardDegreeByDegreeNum(forward)
+		assert.Equal(t, expectedDegreeNum, result.Number(), "expected: %d, actual: %d", expectedDegreeNum, result.Number())
+	})
+
+	t.Run("GetForwardDegreeByDegreeNum: get from nil degree", func(t *testing.T) {
+		var nilDegree *Degree
+		assert.Nil(t, nilDegree.GetForwardDegreeByDegreeNum(5))
+	})
 }
 
 func TestDegreesIterator_GetAllDegrees(t *testing.T) {
