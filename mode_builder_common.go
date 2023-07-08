@@ -49,6 +49,11 @@ func coreBuildingCommon(modeTemplate ModeTemplate, firstNote *Note) <-chan coreB
 		for iteratorResult := range modeTemplate.IterateOneRound(false) {
 			_, halfTones, halfTonesFromPrime := iteratorResult()
 
+			// To avoid duplicating root notes for one-note modes
+			if halfTones == HalftonesInOctave {
+				break
+			}
+
 			// Get next template note based on mode template's step
 			nextTemplateNote := templateNote.getByHalftones(halfTones)
 
@@ -224,9 +229,10 @@ type baseNote struct {
 // this will be hardcoded as to what each template note contains.
 func getTemplateNotesCommon() *templateNotesCommon {
 	templateNote12 := &templateNoteCommon{
-		next:       nil,
-		isAltered:  false,
-		notAltered: &Note{name: B},
+		next:         nil,
+		isAltered:    false,
+		notAltered:   &Note{name: B},
+		alteredNotes: []*noteRelation{{&Note{name: C}, &Note{name: CFLAT}}},
 	}
 
 	templateNote11 := &templateNoteCommon{
@@ -268,14 +274,14 @@ func getTemplateNotesCommon() *templateNotesCommon {
 		next:         templateNote7,
 		isAltered:    false,
 		notAltered:   &Note{name: F},
-		alteredNotes: nil,
+		alteredNotes: []*noteRelation{{&Note{name: E}, &Note{name: ESHARP}}},
 	}
 
 	templateNote5 := &templateNoteCommon{
 		next:         templateNote6,
 		isAltered:    false,
 		notAltered:   &Note{name: E},
-		alteredNotes: nil,
+		alteredNotes: []*noteRelation{{&Note{name: F}, &Note{name: FFLAT}}},
 	}
 
 	templateNote4 := &templateNoteCommon{
@@ -303,7 +309,7 @@ func getTemplateNotesCommon() *templateNotesCommon {
 		next:         templateNote2,
 		isAltered:    false,
 		notAltered:   &Note{name: C},
-		alteredNotes: nil,
+		alteredNotes: []*noteRelation{{&Note{name: B}, &Note{name: BSHARP}}},
 	}
 
 	// set links to previous template notes

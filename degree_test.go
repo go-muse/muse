@@ -28,24 +28,29 @@ func TestDegree_HalfTonesFromPrime(t *testing.T) {
 }
 
 func TestDegree_GetNext(t *testing.T) {
-	testCases := []struct {
+	type testCase struct {
 		degree *Degree
-	}{
-		{&Degree{number: 1, next: &Degree{number: 2}}},
-		{&Degree{number: 1, next: nil}},
-		{&Degree{}},
-		{nil},
+		want   *Degree
+	}
+
+	constructTestCase := func(degree *Degree, next *Degree) *testCase {
+		if degree != nil {
+			degree.next = next
+		}
+		return &testCase{
+			degree: degree,
+			want:   next,
+		}
+	}
+
+	testCases := []*testCase{
+		constructTestCase(&Degree{number: 1}, &Degree{number: 2}),
+		constructTestCase(&Degree{number: 1}, nil),
+		constructTestCase(nil, nil),
 	}
 
 	for _, testCase := range testCases {
-		if testCase.degree == nil {
-			assert.Panics(t, func() { _ = testCase.degree.GetNext() }) //nolint:scopelint
-
-			continue
-		}
-		if testCase.degree.next == nil {
-			assert.Nil(t, testCase.degree.GetNext())
-		}
+		assert.Equal(t, testCase.degree.GetNext(), testCase.want)
 	}
 }
 
@@ -60,16 +65,23 @@ func TestDegree_SetNext(t *testing.T) {
 }
 
 func TestDegree_GetPrevious(t *testing.T) {
-	// Create a new instance of Degree with a Previous degree.
-	degree := &Degree{previous: &Degree{}}
+	t.Run("GetPrevious: get previous degree", func(t *testing.T) {
+		// Create a new instance of Degree with a Previous degree.
+		degree := &Degree{previous: &Degree{}}
 
-	// Call GetPrevious on the degree and store the result in a variable.
-	previousDegree := degree.GetPrevious()
+		// Call GetPrevious on the degree and store the result in a variable.
+		previousDegree := degree.GetPrevious()
 
-	// Check if the result of GetPrevious is equal to the degree's Previous degree.
-	if previousDegree != degree.previous {
-		t.Errorf("GetPrevious returned incorrect result: got %v, want %v", previousDegree, degree.previous)
-	}
+		// Check if the result of GetPrevious is equal to the degree's Previous degree.
+		if previousDegree != degree.previous {
+			t.Errorf("GetPrevious returned incorrect result: got %v, want %v", previousDegree, degree.previous)
+		}
+	})
+
+	t.Run("GetPrevious: get previous degree from nil degree", func(t *testing.T) {
+		var nilDegree *Degree
+		assert.Nil(t, nilDegree.GetPrevious())
+	})
 }
 
 func TestDegree_SetPrevious(t *testing.T) {
@@ -98,12 +110,19 @@ func TestDegree_SetPrevious(t *testing.T) {
 }
 
 func TestDegree_Note(t *testing.T) {
-	expectedNote := newNote(C)
-	degree := Degree{note: expectedNote}
+	t.Run("get note from degree", func(t *testing.T) {
+		expectedNote := newNote(C)
+		degree := Degree{note: expectedNote}
 
-	if degree.Note() != expectedNote {
-		t.Errorf("Expected Note %v but got %v", expectedNote, degree.Note())
-	}
+		if degree.Note() != expectedNote {
+			t.Errorf("Expected Note %v but got %v", expectedNote, degree.Note())
+		}
+	})
+
+	t.Run("get note from empty degree", func(t *testing.T) {
+		var nilDegree *Degree
+		assert.Nil(t, nilDegree.Note())
+	})
 }
 
 func TestDegree_SetNote(t *testing.T) {
@@ -198,34 +217,46 @@ func TestGetDegreeByDegreeNum(t *testing.T) {
 	t.Run("TestGetDegreeByDegreeNum: cycled degrees chain", func(t *testing.T) {
 		testingFunc(t, generateDegrees(3, true))
 	})
+
+	t.Run("TestGetDegreeByDegreeNum: cycled degrees chain", func(t *testing.T) {
+		var nilDegree *Degree
+		assert.Nil(t, nilDegree.GetDegreeByDegreeNum(5))
+	})
 }
 
 func TestDegree_GetForwardDegreeByDegreeNum(t *testing.T) {
-	firstDegreeNum := DegreeNum(1)
-	firstDegree := &Degree{
-		number: firstDegreeNum,
-	}
-
-	currentDegree := firstDegree
-	amountOfDegrees := DegreeNum(7)
-	for i := DegreeNum(2); i <= amountOfDegrees; i++ {
-		newDegree := &Degree{
-			number:   i,
-			previous: currentDegree,
+	t.Run("GetForwardDegreeByDegreeNum: positive", func(t *testing.T) {
+		firstDegreeNum := DegreeNum(1)
+		firstDegree := &Degree{
+			number: firstDegreeNum,
 		}
-		currentDegree.next = newDegree
-		currentDegree = newDegree
-	}
-	currentDegree.next = firstDegree
 
-	const forward = DegreeNum(103)
-	expectedDegreeNum := forward - (forward/amountOfDegrees)*amountOfDegrees + 1
-	result := firstDegree.GetForwardDegreeByDegreeNum(forward)
-	assert.Equal(t, expectedDegreeNum, result.Number(), "expected: %d, actual: %d", expectedDegreeNum, result.Number())
+		currentDegree := firstDegree
+		amountOfDegrees := DegreeNum(7)
+		for i := DegreeNum(2); i <= amountOfDegrees; i++ {
+			newDegree := &Degree{
+				number:   i,
+				previous: currentDegree,
+			}
+			currentDegree.next = newDegree
+			currentDegree = newDegree
+		}
+		currentDegree.next = firstDegree
+
+		const forward = DegreeNum(103)
+		expectedDegreeNum := forward - (forward/amountOfDegrees)*amountOfDegrees + 1
+		result := firstDegree.GetForwardDegreeByDegreeNum(forward)
+		assert.Equal(t, expectedDegreeNum, result.Number(), "expected: %d, actual: %d", expectedDegreeNum, result.Number())
+	})
+
+	t.Run("GetForwardDegreeByDegreeNum: get from nil degree", func(t *testing.T) {
+		var nilDegree *Degree
+		assert.Nil(t, nilDegree.GetForwardDegreeByDegreeNum(5))
+	})
 }
 
-func TestDegreesIterator_GetAll(t *testing.T) {
-	t.Run("GetAll: non-empty input channel", func(t *testing.T) {
+func TestDegreesIterator_GetAllDegrees(t *testing.T) {
+	t.Run("GetAllDegrees: non-empty input channel", func(t *testing.T) {
 		input := make(chan *Degree)
 		expected := []*Degree{
 			{number: 1},
@@ -249,7 +280,7 @@ func TestDegreesIterator_GetAll(t *testing.T) {
 		}
 	})
 
-	t.Run("GetAll: empty input channel", func(t *testing.T) {
+	t.Run("GetAllDegrees: empty input channel", func(t *testing.T) {
 		input := make(chan *Degree)
 		var expected []*Degree
 
@@ -267,6 +298,11 @@ func TestDegreesIterator_GetAll(t *testing.T) {
 			assert.Equal(t, expected, result, "expected: %+v, result: %+v", expected, result)
 		}
 	})
+
+	t.Run("GetAllNotes: get all degrees from nil degrees iterator", func(t *testing.T) {
+		var nilDI DegreesIterator
+		assert.Nil(t, nilDI.GetAllDegrees())
+	})
 }
 
 func TestDegreesIterator_GetAllNotes(t *testing.T) {
@@ -282,6 +318,11 @@ func TestDegreesIterator_GetAllNotes(t *testing.T) {
 			}
 			currentDegree = currentDegree.GetNext()
 		}
+	})
+
+	t.Run("GetAllNotes: get all notes from nil degrees iterator", func(t *testing.T) {
+		var nilDI DegreesIterator
+		assert.Nil(t, nilDI.GetAllNotes())
 	})
 }
 
@@ -361,6 +402,11 @@ func TestDegree_GetDegrees(t *testing.T) {
 			t.Errorf("last degree num: %d, firstDegreeNum: %d", currentDegree.Number(), firstDegreeNum)
 		}
 	})
+
+	t.Run("get previous degree from the empty degree", func(t *testing.T) {
+		var nilDegree *Degree
+		assert.Nil(t, nilDegree)
+	})
 }
 
 func TestDegree_IterateOneRound(t *testing.T) {
@@ -370,11 +416,10 @@ func TestDegree_IterateOneRound(t *testing.T) {
 	assert.NoError(t, err)
 	mode2, err := MakeNewCustomMode(ModeTemplate{1, 2, 2, 2, 2, 2, 1}, "C#", "Custom Mode 2")
 	assert.NoError(t, err)
-	mode3, err := MakeNewCustomMode(ModeTemplate{1, 1, 1, 2, 2, 2, 2, 1}, "C#", "Custom Mode 3")
-	assert.NoError(t, err)
+	assert.Panics(t, func() { MakeNewCustomMode(ModeTemplate{1, 1, 1, 2, 2, 2, 2, 1}, "C#", "Custom Mode 3") })
 	mode4, err := MakeNewCustomMode(ModeTemplate{12}, "A", "Custom Mode 4")
 	assert.NoError(t, err)
-	modes := []*Mode{mode0, mode1, mode2, mode3, mode4}
+	modes := []*Mode{mode0, mode1, mode2, mode4}
 
 	mts := InitModeTemplatesStore()
 	notes := GetFullChromaticScale()
@@ -931,7 +976,8 @@ func TestDegree_InsertPrevious(t *testing.T) {
 	degree3 := &Degree{number: 3}
 
 	// inserting previous degree to a nil degree should result in panicking
-	// assert.Panics(t, func() { degree1.InsertPrevious(degree2) })
+	var nilDegree *Degree
+	assert.Panics(t, func() { nilDegree.InsertPrevious(degree2) })
 
 	// insert previous degree and test for mutual reference
 	degree1.InsertPrevious(degree2)

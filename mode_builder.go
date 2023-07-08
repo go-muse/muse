@@ -15,12 +15,13 @@ type modeBuilder interface {
 
 // newModeBuilder is constructor for mode builder.
 func newModeBuilder(modeTemplate ModeTemplate) modeBuilder {
-	switch modeTemplate.Length() {
-	case DegreesInHeptatonic:
+	switch {
+	case modeTemplate.Length() == DegreesInHeptatonic:
 		return &modeBuilder7degree{}
+	case modeTemplate.Length() <= DegreesInHeptatonic:
+		return &modeBuilderCommon{}
 	default:
-		// TODO: return &modeBuilderCommon{}
-		return &modeBuilder7degree{}
+		panic("Modes with eight or more steps are not yet supported.")
 	}
 }
 
