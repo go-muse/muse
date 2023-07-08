@@ -114,7 +114,16 @@ func GetTemplateByModeName(modeName ModeName) (ModeTemplate, error) {
 	case ModeNamePentatonicMinor:
 		return TemplatePentatonicMinor(), nil
 
-		// others:
+	case ModeNamePentatonicHirajoshi:
+		return TemplatePentatonicHirajoshi(), nil
+	case ModeNamePentatonicIwato:
+		return TemplatePentatonicIwato(), nil
+	case ModeNamePentatonicHonKumoiShiouzhi:
+		return TemplatePentatonicHonKumoiShiouzhi(), nil
+	case ModeNamePentatonicHonKumoiJoshi:
+		return TemplatePentatonicHonKumoiJoshi(), nil
+	case ModeNamePentatonicLydianPentatonic:
+		return TemplatePentatonicLydianPentatonic(), nil
 	}
 
 	return nil, errors.Wrapf(ErrModeNameUnknown, "got: %s", modeName)
@@ -318,6 +327,28 @@ func TemplatePentatonicBluesMajor() ModeTemplate {
 
 func TemplatePentatonicMinor() ModeTemplate {
 	return ModeTemplate{3, 2, 2, 3, 2}
+}
+
+// Japanese pentatonics
+
+func TemplatePentatonicHirajoshi() ModeTemplate {
+	return ModeTemplate{2, 1, 4, 1, 4}
+}
+
+func TemplatePentatonicIwato() ModeTemplate {
+	return ModeTemplate{1, 4, 1, 4, 2}
+}
+
+func TemplatePentatonicHonKumoiShiouzhi() ModeTemplate {
+	return ModeTemplate{4, 1, 4, 2, 1}
+}
+
+func TemplatePentatonicHonKumoiJoshi() ModeTemplate {
+	return ModeTemplate{1, 4, 2, 1, 4}
+}
+
+func TemplatePentatonicLydianPentatonic() ModeTemplate {
+	return ModeTemplate{4, 2, 1, 4, 1}
 }
 
 // others

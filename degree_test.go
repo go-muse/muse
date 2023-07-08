@@ -28,24 +28,29 @@ func TestDegree_HalfTonesFromPrime(t *testing.T) {
 }
 
 func TestDegree_GetNext(t *testing.T) {
-	testCases := []struct {
+	type testCase struct {
 		degree *Degree
-	}{
-		{&Degree{number: 1, next: &Degree{number: 2}}},
-		{&Degree{number: 1, next: nil}},
-		{&Degree{}},
-		{nil},
+		want   *Degree
+	}
+
+	constructTestCase := func(degree *Degree, next *Degree) *testCase {
+		if degree != nil {
+			degree.next = next
+		}
+		return &testCase{
+			degree: degree,
+			want:   next,
+		}
+	}
+
+	testCases := []*testCase{
+		constructTestCase(&Degree{number: 1}, &Degree{number: 2}),
+		constructTestCase(&Degree{number: 1}, nil),
+		constructTestCase(nil, nil),
 	}
 
 	for _, testCase := range testCases {
-		if testCase.degree == nil {
-			assert.Panics(t, func() { _ = testCase.degree.GetNext() }) //nolint:scopelint
-
-			continue
-		}
-		if testCase.degree.next == nil {
-			assert.Nil(t, testCase.degree.GetNext())
-		}
+		assert.Equal(t, testCase.degree.GetNext(), testCase.want)
 	}
 }
 
@@ -370,11 +375,10 @@ func TestDegree_IterateOneRound(t *testing.T) {
 	assert.NoError(t, err)
 	mode2, err := MakeNewCustomMode(ModeTemplate{1, 2, 2, 2, 2, 2, 1}, "C#", "Custom Mode 2")
 	assert.NoError(t, err)
-	mode3, err := MakeNewCustomMode(ModeTemplate{1, 1, 1, 2, 2, 2, 2, 1}, "C#", "Custom Mode 3")
-	assert.NoError(t, err)
+	assert.Panics(t, func() { MakeNewCustomMode(ModeTemplate{1, 1, 1, 2, 2, 2, 2, 1}, "C#", "Custom Mode 3") })
 	mode4, err := MakeNewCustomMode(ModeTemplate{12}, "A", "Custom Mode 4")
 	assert.NoError(t, err)
-	modes := []*Mode{mode0, mode1, mode2, mode3, mode4}
+	modes := []*Mode{mode0, mode1, mode2, mode4}
 
 	mts := InitModeTemplatesStore()
 	notes := GetFullChromaticScale()
@@ -931,7 +935,8 @@ func TestDegree_InsertPrevious(t *testing.T) {
 	degree3 := &Degree{number: 3}
 
 	// inserting previous degree to a nil degree should result in panicking
-	// assert.Panics(t, func() { degree1.InsertPrevious(degree2) })
+	var nilDegree *Degree
+	assert.Panics(t, func() { nilDegree.InsertPrevious(degree2) })
 
 	// insert previous degree and test for mutual reference
 	degree1.InsertPrevious(degree2)

@@ -51,6 +51,10 @@ func (d *Degree) HalfTonesFromPrime() HalfTones {
 
 // GetNext returns next degree.
 func (d *Degree) GetNext() *Degree {
+	if d == nil {
+		return nil
+	}
+
 	return d.next
 }
 
@@ -61,22 +65,34 @@ func (d *Degree) SetNext(nextDegree *Degree) {
 
 // GetPrevious returns previous degree.
 func (d *Degree) GetPrevious() *Degree {
+	if d == nil {
+		return nil
+	}
+
 	return d.previous
 }
 
 // SetPrevious sets previous degree for the current degree.
 func (d *Degree) SetPrevious(previousDegree *Degree) {
-	d.previous = previousDegree
+	if d != nil {
+		d.previous = previousDegree
+	}
 }
 
 // Note returns a pointer to the note lying on this degree.
 func (d *Degree) Note() *Note {
+	if d == nil {
+		return nil
+	}
+
 	return d.note
 }
 
 // Note sets note for the current degree.
 func (d *Degree) SetNote(note *Note) {
-	d.note = note
+	if d != nil {
+		d.note = note
+	}
 }
 
 // ModalCharacteristics returns modal characteristics of the note.
