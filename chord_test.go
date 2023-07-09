@@ -129,7 +129,7 @@ func TestChord_AddNote(t *testing.T) {
 
 	t.Run("Chord_AddNote: adding to nil chord", func(t *testing.T) {
 		var chord *Chord
-		note := MustNewNote(C, 1)
+		note := MustNewNoteWithOctave(C, 1)
 		chord.AddNote(*note)
 		assert.Nil(t, chord)
 	})
@@ -197,7 +197,7 @@ func TestChord_AddNotes(t *testing.T) {
 
 	t.Run("Chord_AddNotes: adding to nil chord", func(t *testing.T) {
 		var chord *Chord
-		chord.AddNotes(*MustNewNote(C, 1), *MustNewNote(D, 2))
+		chord.AddNotes(*MustNewNoteWithOctave(C, 1), *MustNewNoteWithOctave(D, 2))
 		assert.Nil(t, chord)
 	})
 }

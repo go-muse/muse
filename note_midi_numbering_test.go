@@ -43,7 +43,7 @@ func TestNoteMIDINumber(t *testing.T) {
 				want: 0,
 			},
 			{
-				note: MustNewNoteWithoutOctave(C),
+				note: MustNewNote(C),
 				want: 0,
 			},
 			{
@@ -181,23 +181,23 @@ func Test_NewNoteFromMIDINumber(t *testing.T) {
 			midiNumber uint8
 			want       *Note
 		}{
-			{midiNumber: 0, want: MustNewNote(C, -1)},
-			{midiNumber: 1, want: MustNewNote(CSHARP, -1)},
-			{midiNumber: 2, want: MustNewNote(D, -1)},
-			{midiNumber: 3, want: MustNewNote(DSHARP, -1)},
-			{midiNumber: 4, want: MustNewNote(E, -1)},
-			{midiNumber: 5, want: MustNewNote(F, -1)},
-			{midiNumber: 6, want: MustNewNote(FSHARP, -1)},
-			{midiNumber: 7, want: MustNewNote(G, -1)},
-			{midiNumber: 8, want: MustNewNote(GSHARP, -1)},
-			{midiNumber: 9, want: MustNewNote(A, -1)},
-			{midiNumber: 10, want: MustNewNote(ASHARP, -1)},
-			{midiNumber: 11, want: MustNewNote(B, -1)},
-			{midiNumber: 12, want: MustNewNote(C, 0)},
-			{midiNumber: 24, want: MustNewNote(C, 1)},
-			{midiNumber: 36, want: MustNewNote(C, 2)},
-			{midiNumber: 126, want: MustNewNote(FSHARP, 9)},
-			{midiNumber: 127, want: MustNewNote(G, 9)},
+			{midiNumber: 0, want: MustNewNoteWithOctave(C, -1)},
+			{midiNumber: 1, want: MustNewNoteWithOctave(CSHARP, -1)},
+			{midiNumber: 2, want: MustNewNoteWithOctave(D, -1)},
+			{midiNumber: 3, want: MustNewNoteWithOctave(DSHARP, -1)},
+			{midiNumber: 4, want: MustNewNoteWithOctave(E, -1)},
+			{midiNumber: 5, want: MustNewNoteWithOctave(F, -1)},
+			{midiNumber: 6, want: MustNewNoteWithOctave(FSHARP, -1)},
+			{midiNumber: 7, want: MustNewNoteWithOctave(G, -1)},
+			{midiNumber: 8, want: MustNewNoteWithOctave(GSHARP, -1)},
+			{midiNumber: 9, want: MustNewNoteWithOctave(A, -1)},
+			{midiNumber: 10, want: MustNewNoteWithOctave(ASHARP, -1)},
+			{midiNumber: 11, want: MustNewNoteWithOctave(B, -1)},
+			{midiNumber: 12, want: MustNewNoteWithOctave(C, 0)},
+			{midiNumber: 24, want: MustNewNoteWithOctave(C, 1)},
+			{midiNumber: 36, want: MustNewNoteWithOctave(C, 2)},
+			{midiNumber: 126, want: MustNewNoteWithOctave(FSHARP, 9)},
+			{midiNumber: 127, want: MustNewNoteWithOctave(G, 9)},
 		}
 
 		var midiNumber *Note

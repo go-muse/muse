@@ -46,15 +46,27 @@ type Interval struct {
 	degree1, degree2 *Degree
 }
 
-func (iwd *Interval) GetInterval() *ChromaticInterval {
+func (iwd *Interval) Interval() *ChromaticInterval {
+	if iwd == nil {
+		return nil
+	}
+
 	return iwd.ChromaticInterval
 }
 
-func (iwd *Interval) GetDegree1() *Degree {
+func (iwd *Interval) Degree1() *Degree {
+	if iwd == nil {
+		return nil
+	}
+
 	return iwd.degree1
 }
 
-func (iwd *Interval) GetDegree2() *Degree {
+func (iwd *Interval) Degree2() *Degree {
+	if iwd == nil {
+		return nil
+	}
+
 	return iwd.degree2
 }
 
@@ -111,7 +123,7 @@ func NewIntervalChromatic(halfTones HalfTones) (*ChromaticInterval, error) {
 	case IntervalHalfTones17:
 		return IntervalPerfectEleventh(), nil
 	case IntervalHalfTones18:
-		// no name for tritone after octave
+		return IntervalOctaveWithTritone(), nil
 	case IntervalHalfTones19:
 		return IntervalPerfectTwelfth(), nil
 	case IntervalHalfTones20:
@@ -379,7 +391,7 @@ func MakeDegreeByIntervalName(degree *Degree, intervalName IntervalName) (*Degre
 	newDegree := &Degree{
 		number:                degree.Number() + 1,
 		halfTonesFromPrime:    degree.halfTonesFromPrime + interval.HalfTones(),
-		previous:              degree,
+		previous:              nil,
 		next:                  nil,
 		note:                  note,
 		modalCharacteristics:  nil,

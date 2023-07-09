@@ -37,6 +37,7 @@ func TestDegree_GetNext(t *testing.T) {
 		if degree != nil {
 			degree.next = next
 		}
+
 		return &testCase{
 			degree: degree,
 			want:   next,
@@ -416,7 +417,7 @@ func TestDegree_IterateOneRound(t *testing.T) {
 	assert.NoError(t, err)
 	mode2, err := MakeNewCustomMode(ModeTemplate{1, 2, 2, 2, 2, 2, 1}, "C#", "Custom Mode 2")
 	assert.NoError(t, err)
-	assert.Panics(t, func() { MakeNewCustomMode(ModeTemplate{1, 1, 1, 2, 2, 2, 2, 1}, "C#", "Custom Mode 3") })
+	assert.Panics(t, func() { _, _ = MakeNewCustomMode(ModeTemplate{1, 1, 1, 2, 2, 2, 2, 1}, "C#", "Custom Mode 3") })
 	mode4, err := MakeNewCustomMode(ModeTemplate{12}, "A", "Custom Mode 4")
 	assert.NoError(t, err)
 	modes := []*Mode{mode0, mode1, mode2, mode4}
@@ -742,7 +743,7 @@ func TestDegree_Copy(t *testing.T) {
 		halfTonesFromPrime:    2,
 		previous:              &Degree{},
 		next:                  &Degree{},
-		note:                  MustNewNote(C, OctaveNumber1),
+		note:                  MustNewNoteWithOctave(C, OctaveNumber1),
 		modalCharacteristics:  ModalCharacteristics{},
 		absoluteModalPosition: &ModalPosition{name: ModalPositionNameHigh, weight: -5},
 	}
@@ -783,7 +784,7 @@ func TestDegree_CopyCut(t *testing.T) {
 		halfTonesFromPrime:    2,
 		previous:              &Degree{},
 		next:                  &Degree{},
-		note:                  MustNewNote(C, OctaveNumber0),
+		note:                  MustNewNoteWithOctave(C, OctaveNumber0),
 		modalCharacteristics:  ModalCharacteristics{},
 		absoluteModalPosition: &ModalPosition{name: ModalPositionNameHigh, weight: -5},
 	}

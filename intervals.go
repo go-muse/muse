@@ -17,17 +17,18 @@ const (
 	IntervalNameMajorSeventh  = IntervalName("MajorSeventh")
 	IntervalNamePerfectOctave = IntervalName("PerfectOctave")
 
-	IntervalNameMinorNinth       = IntervalName("MinorNinth")
-	IntervalNameMajorNinth       = IntervalName("MajorNinth")
-	IntervalNameMinorTenth       = IntervalName("MinorTenth")
-	IntervalNameMajorTenth       = IntervalName("MajorTenth")
-	IntervalNamePerfectEleventh  = IntervalName("PerfectEleventh")
-	IntervalNamePerfectTwelfth   = IntervalName("PerfectTwelfth") // Tritave
-	IntervalNameMinorThirteenth  = IntervalName("MinorThirteenth")
-	IntervalNameMajorThirteenth  = IntervalName("MajorThirteenth")
-	IntervalNameMinorFourteenth  = IntervalName("MinorFourteenth")
-	IntervalNameMajorFourteenth  = IntervalName("MajorFourteenth")
-	IntervalNamePerfectFifteenth = IntervalName("PerfectFifteenth ") // Double octave
+	IntervalNameMinorNinth        = IntervalName("MinorNinth")
+	IntervalNameMajorNinth        = IntervalName("MajorNinth")
+	IntervalNameMinorTenth        = IntervalName("MinorTenth")
+	IntervalNameMajorTenth        = IntervalName("MajorTenth")
+	IntervalNamePerfectEleventh   = IntervalName("PerfectEleventh")
+	IntervalNameOctaveWithTritone = IntervalName("OctaveWithTritone") // no real name for tritone after octave
+	IntervalNamePerfectTwelfth    = IntervalName("PerfectTwelfth")    // Tritave
+	IntervalNameMinorThirteenth   = IntervalName("MinorThirteenth")
+	IntervalNameMajorThirteenth   = IntervalName("MajorThirteenth")
+	IntervalNameMinorFourteenth   = IntervalName("MinorFourteenth")
+	IntervalNameMajorFourteenth   = IntervalName("MajorFourteenth")
+	IntervalNamePerfectFifteenth  = IntervalName("PerfectFifteenth ") // Double octave
 
 	IntervalNamePerfectUnisonShort = IntervalName("P1")
 	IntervalNameMinorSecondShort   = IntervalName("m2")
@@ -43,17 +44,18 @@ const (
 	IntervalNameMajorSeventhShort  = IntervalName("M7")
 	IntervalNamePerfectOctaveShort = IntervalName("P8")
 
-	IntervalNameMinorNinthShort       = IntervalName("m9")
-	IntervalNameMajorNinthShort       = IntervalName("M9")
-	IntervalNameMinorTenthShort       = IntervalName("m10")
-	IntervalNameMajorTenthShort       = IntervalName("M10")
-	IntervalNamePerfectEleventhShort  = IntervalName("P11")
-	IntervalNamePerfectTwelfthShort   = IntervalName("P12")
-	IntervalNameMinorThirteenthShort  = IntervalName("m13")
-	IntervalNameMajorThirteenthShort  = IntervalName("M13")
-	IntervalNameMinorFourteenthShort  = IntervalName("m14")
-	IntervalNameMajorFourteenthShort  = IntervalName("M14")
-	IntervalNamePerfectFifteenthShort = IntervalName("P15")
+	IntervalNameMinorNinthShort        = IntervalName("m9")
+	IntervalNameMajorNinthShort        = IntervalName("M9")
+	IntervalNameMinorTenthShort        = IntervalName("m10")
+	IntervalNameMajorTenthShort        = IntervalName("M10")
+	IntervalNamePerfectEleventhShort   = IntervalName("P11")
+	IntervalNameOctaveWithTritoneShort = IntervalName("OT")
+	IntervalNamePerfectTwelfthShort    = IntervalName("P12")
+	IntervalNameMinorThirteenthShort   = IntervalName("m13")
+	IntervalNameMajorThirteenthShort   = IntervalName("M13")
+	IntervalNameMinorFourteenthShort   = IntervalName("m14")
+	IntervalNameMajorFourteenthShort   = IntervalName("M14")
+	IntervalNamePerfectFifteenthShort  = IntervalName("P15")
 
 	// Diatonic intervals.
 
@@ -348,7 +350,16 @@ func IntervalPerfectEleventh() *ChromaticInterval {
 	}
 }
 
-// No chromatic name for 18 halftones
+func IntervalOctaveWithTritone() *ChromaticInterval {
+	return &ChromaticInterval{
+		Sonance: 0,
+		names: &intervalNameExtended{
+			name:      IntervalNameOctaveWithTritone,
+			shortName: IntervalNameOctaveWithTritoneShort,
+		},
+		halfTones: IntervalHalfTones17,
+	}
+}
 
 func IntervalPerfectTwelfth() *ChromaticInterval {
 	return &ChromaticInterval{

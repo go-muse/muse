@@ -1,7 +1,5 @@
 package muse
 
-// Regular names
-
 const (
 	// C is the name of the note "C".
 	C = NoteName("C")

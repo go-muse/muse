@@ -13,7 +13,7 @@ func ExampleNewDurationWithRelativeValue() {
 	duration := muse.NewDurationWithRelativeValue(muse.DurationNameHalf)
 
 	// creating note and setting duration
-	note := muse.MustNewNote(muse.C, muse.OctaveNumber3).SetDuration(*duration)
+	note := muse.MustNewNoteWithOctave(muse.C, muse.OctaveNumber3).SetDuration(*duration)
 
 	fmt.Println(note.Duration().Name())
 	// Output: Half
@@ -25,7 +25,7 @@ func ExampleNewDurationWithAbsoluteValue() {
 	duration := muse.NewDurationWithAbsoluteValue(time.Second)
 
 	// creating note and setting duration
-	note := muse.MustNewNote(muse.C, muse.OctaveNumber3).SetDuration(*duration)
+	note := muse.MustNewNoteWithOctave(muse.C, muse.OctaveNumber3).SetDuration(*duration)
 
 	fmt.Println(note.GetAbsoluteDuration())
 	// Output: 1s

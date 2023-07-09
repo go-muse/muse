@@ -7,6 +7,22 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestNoteName_NewNote(t *testing.T) {
+	t.Run("NoteName_NewNote: positive cases", func(t *testing.T) {
+		scale := GetAllPossibleNotes(2)
+		for _, note := range scale {
+			assert.Equal(t, note.name, note.name.NewNote().Name())
+		}
+	})
+
+	t.Run("NoteName_NewNote: negative cases", func(t *testing.T) {
+		scale := NewScaleFromNoteNames("", "incorrect_name", "Abbb#", "C##b#", "a")
+		for _, note := range scale {
+			assert.Panics(t, func() { _ = note.name.NewNote() }, "expected panic on note name %s", note.Name())
+		}
+	})
+}
+
 func TestNoteName_String(t *testing.T) {
 	expectedNoteName := "C"
 	nn := NoteName(expectedNoteName)
