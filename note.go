@@ -5,7 +5,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 )
 
@@ -32,7 +31,16 @@ func (ns Notes) String() string {
 
 // newNote creates new note with a given name without any restrictions.
 func newNote(name NoteName) *Note {
-	return &Note{name: name, octave: nil}
+	return &Note{name: name, octave: nil, duration: nil}
+}
+
+// NewNote creates new note with a given name and octave number.
+func NewNote(noteName NoteName) (*Note, error) {
+	if err := noteName.Validate(); err != nil {
+		return nil, err
+	}
+
+	return newNote(noteName), nil
 }
 
 // newNote creates new note with a given name and octave without any restrictions.
@@ -40,11 +48,8 @@ func newNoteWithOctave(name NoteName, octave *Octave) *Note {
 	return &Note{name: name, octave: octave}
 }
 
-// ErrNoteNameUnknown is the error that occurs when trying to determine the name of a note if it is not known.
-var ErrNoteNameUnknown = errors.New("unknown note name")
-
-// NewNote creates new note with a given name validating it.
-func NewNote(noteName NoteName, octaveNumber OctaveNumber) (*Note, error) {
+// NewNoteWithOctave creates new note with a given name and octave number.
+func NewNoteWithOctave(noteName NoteName, octaveNumber OctaveNumber) (*Note, error) {
 	if err := noteName.Validate(); err != nil {
 		return nil, err
 	}
@@ -57,9 +62,9 @@ func NewNote(noteName NoteName, octaveNumber OctaveNumber) (*Note, error) {
 	return newNoteWithOctave(noteName, octave), nil
 }
 
-// MustNewNote creates new note with panic in case of invalid note name or octave.
-func MustNewNote(noteName NoteName, octaveNumber OctaveNumber) *Note {
-	note, err := NewNote(noteName, octaveNumber)
+// MustNewNoteWithOctave creates new note with panic in case of invalid note name or octave.
+func MustNewNoteWithOctave(noteName NoteName, octaveNumber OctaveNumber) *Note {
+	note, err := NewNoteWithOctave(noteName, octaveNumber)
 	if err != nil {
 		panic(err)
 	}
@@ -67,8 +72,8 @@ func MustNewNote(noteName NoteName, octaveNumber OctaveNumber) *Note {
 	return note
 }
 
-// MustNewNote creates new note with panic in case of invalid note name or octave.
-func MustNewNoteWithoutOctave(noteName NoteName) *Note {
+// MustNewNote creates new note with panic in case of invalid note name.
+func MustNewNote(noteName NoteName) *Note {
 	if err := noteName.Validate(); err != nil {
 		panic(err)
 	}
@@ -76,9 +81,9 @@ func MustNewNoteWithoutOctave(noteName NoteName) *Note {
 	return newNote(noteName)
 }
 
-// NewNoteFromString creates a new note from the given string. It has default octave number.
+// NewNoteFromString creates a new note from the given string.
 func NewNoteFromString(s string) (*Note, error) {
-	return NewNote(NoteName(s), OctaveNumberDefault)
+	return NewNote(NoteName(s))
 }
 
 // Name returns name of the note.

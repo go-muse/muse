@@ -11,7 +11,7 @@ import (
 //
 //nolint:dupword
 func ExampleNote() {
-	note1, err := muse.NewNote(muse.C, muse.OctaveNumberDefault)
+	note1, err := muse.NewNoteWithOctave(muse.C, muse.OctaveNumberDefault)
 	if err != nil {
 		panic(err)
 	}
@@ -23,10 +23,15 @@ func ExampleNote() {
 		panic(err)
 	}
 
-	note4 := muse.MustNewNote(muse.CSHARP, muse.OctaveNumberDefault)
+	note4 := muse.MustNewNoteWithOctave(muse.CSHARP, muse.OctaveNumberDefault)
 
-	fmt.Println(note1.IsEqualByName(note2), note3.IsEqualByName(note4), note1.IsEqualByName(note3))
-	// Output: true true false
+	note5, err := muse.NewNote(muse.C)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(note1.IsEqualByName(note2), note3.IsEqualByName(note4), note1.IsEqualByName(note3), note1.IsEqualByName(note5))
+	// Output: true true false true
 }
 
 // Create a note and set octave.
@@ -38,7 +43,7 @@ func ExampleNote_SetOctave() {
 	}
 
 	// create a new note without any octave
-	note := muse.MustNewNoteWithoutOctave(muse.C)
+	note := muse.C.NewNote()
 
 	// set the octave to the note
 	note.SetOctave(octave)
@@ -53,7 +58,7 @@ func ExampleNote_SetDuration() {
 	duration := muse.NewDurationWithRelativeValue(muse.DurationNameHalf)
 
 	// creating note and setting duration
-	note := muse.MustNewNote(muse.C, muse.OctaveNumber3).SetDuration(*duration)
+	note := muse.MustNewNoteWithOctave(muse.C, muse.OctaveNumber3).SetDuration(*duration)
 
 	fmt.Println(note.Duration().Name())
 	// Output: Half
@@ -72,7 +77,7 @@ func ExampleNote_TimeDuration() {
 	duration := muse.NewDurationWithRelativeValue(muse.DurationNameHalf)
 
 	// creating note and setting duration
-	note := muse.MustNewNote(muse.C, muse.OctaveNumber3).SetDuration(*duration)
+	note := muse.MustNewNoteWithOctave(muse.C, muse.OctaveNumber3).SetDuration(*duration)
 
 	fmt.Println(note.TimeDuration(trackSettings))
 	// Output: 750ms
@@ -81,7 +86,7 @@ func ExampleNote_TimeDuration() {
 // Setting and Getting custom duration.
 func ExampleNote_SetAbsoluteDuration() {
 	// creating note and setting custom duration
-	note := muse.MustNewNote(muse.C, muse.OctaveNumber3).SetAbsoluteDuration(time.Second)
+	note := muse.MustNewNoteWithOctave(muse.C, muse.OctaveNumber3).SetAbsoluteDuration(time.Second)
 
 	fmt.Println(note.GetAbsoluteDuration())
 	// Output: 1s

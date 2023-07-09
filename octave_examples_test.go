@@ -27,7 +27,7 @@ func ExampleOctave_SetToNote() {
 	}
 
 	// create a new note without any octave
-	note := muse.MustNewNoteWithoutOctave(muse.C)
+	note := muse.C.NewNote()
 
 	// set the octave to the note
 	octave.SetToNote(note)

@@ -8,7 +8,7 @@ import (
 )
 
 func TestNewEvent(t *testing.T) {
-	note := MustNewNote(C, 4)
+	note := MustNewNoteWithOctave(C, 4)
 	startTime := 1 * time.Second
 	isAbsolute := true
 
@@ -21,7 +21,7 @@ func TestNewEvent(t *testing.T) {
 }
 
 func TestEvent_Note(t *testing.T) {
-	note := MustNewNote(C, 4)
+	note := MustNewNoteWithOctave(C, 4)
 	event := &Event{note: note}
 
 	assert.Equal(t, note, event.Note(), "they should be equal")
@@ -34,10 +34,10 @@ func TestEvent_Note(t *testing.T) {
 }
 
 func TestEvent_SetNote(t *testing.T) {
-	note1 := MustNewNote(C, 4)
+	note1 := MustNewNoteWithOctave(C, 4)
 	event := &Event{note: note1}
 
-	note2 := MustNewNote(D, 4)
+	note2 := MustNewNoteWithOctave(D, 4)
 	event.SetNote(note2)
 
 	assert.Equal(t, note2, event.Note(), "they should be equal")

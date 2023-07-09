@@ -76,7 +76,7 @@ const (
 
 // Pentatonic modes
 
-// Main pentatonics
+// Main pentatonics.
 const (
 	ModeNamePentatonicMajor      = ModeName("PentatonicMajor")
 	ModeNamePentatonicSustained  = ModeName("PentatonicSustained")  // African, Malian
@@ -85,7 +85,7 @@ const (
 	ModeNamePentatonicMinor      = ModeName("PentatonicMinor")
 )
 
-// Japanese pentatonics
+// Japanese pentatonics.
 const (
 	ModeNamePentatonicHirajoshi        = ModeName("PentatonicHirajoshi")
 	ModeNamePentatonicIwato            = ModeName("PentatonicIwato")

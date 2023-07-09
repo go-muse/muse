@@ -55,7 +55,7 @@ func TestNewNote(t *testing.T) {
 		var err error
 		for _, noteName := range noteNames {
 			// setup: create a Note with a valid name
-			newNote, err = NewNote(noteName, OctaveNumberDefault)
+			newNote, err = NewNote(noteName)
 			assert.NoError(t, err)
 			assert.NotNil(t, newNote, "expected note from note name %s", noteName)
 
@@ -69,24 +69,88 @@ func TestNewNote(t *testing.T) {
 	t.Run("TestNewNote: invalid note name", func(t *testing.T) {
 		// setup: create a Note with invalid name
 		expectedName := NoteName("Hello")
-		newNote, err := NewNote(expectedName, OctaveNumberDefault)
+		newNote, err := NewNote(expectedName)
+		// assert that the returned error matches the expected error
+		assert.ErrorIs(t, err, ErrNoteNameUnknown)
+		assert.Nil(t, newNote)
+	})
+}
+
+func TestNewNoteWithOctave(t *testing.T) {
+	t.Run("TestNewNoteWithOctave: valid note name", func(t *testing.T) {
+		noteNames := []NoteName{
+			C,
+			CFLAT,
+			CFLAT2,
+			CSHARP,
+			CSHARP2,
+			D,
+			DFLAT,
+			DFLAT2,
+			DSHARP,
+			DSHARP2,
+			E,
+			EFLAT,
+			EFLAT2,
+			ESHARP,
+			ESHARP2,
+			F,
+			FFLAT,
+			FFLAT2,
+			FSHARP,
+			FSHARP2,
+			G,
+			GFLAT,
+			GFLAT2,
+			GSHARP,
+			GSHARP2,
+			A,
+			AFLAT,
+			AFLAT2,
+			ASHARP,
+			ASHARP2,
+			B,
+			BFLAT,
+			BFLAT2,
+			BSHARP,
+			BSHARP2,
+		}
+		var newNote *Note
+		var err error
+		for _, noteName := range noteNames {
+			// setup: create a Note with a valid name
+			newNote, err = NewNoteWithOctave(noteName, OctaveNumberDefault)
+			assert.NoError(t, err)
+			assert.NotNil(t, newNote, "expected note from note name %s", noteName)
+
+			// assert that the returned name matches the expected name
+			if newNote.name != noteName {
+				t.Errorf("Expected note name to be '%s', but got '%s'", noteName, newNote.name)
+			}
+		}
+	})
+
+	t.Run("TestNewNoteWithOctave: invalid note name", func(t *testing.T) {
+		// setup: create a Note with invalid name
+		expectedName := NoteName("Hello")
+		newNote, err := NewNoteWithOctave(expectedName, OctaveNumberDefault)
 		// assert that the returned error matches the expected error
 		assert.ErrorIs(t, err, ErrNoteNameUnknown)
 		assert.Nil(t, newNote)
 	})
 
-	t.Run("TestNewNote: invalid octave number", func(t *testing.T) {
+	t.Run("TestNewNoteWithOctave: invalid octave number", func(t *testing.T) {
 		// setup: create a Note with invalid octave number
 		expectedName := C
-		newNote, err := NewNote(expectedName, 15)
+		newNote, err := NewNoteWithOctave(expectedName, 15)
 		// assert that the returned error matches the expected error
 		assert.ErrorIs(t, err, ErrOctaveNumberUnknown)
 		assert.Nil(t, newNote)
 	})
 }
 
-func TestMustNewNote(t *testing.T) {
-	t.Run("TestNewNote: valid note name", func(t *testing.T) {
+func TestMustNewNoteWithOctave(t *testing.T) {
+	t.Run("TestMustNewNoteWithOctave: valid note name", func(t *testing.T) {
 		noteNames := []NoteName{
 			C,
 			CFLAT,
@@ -127,7 +191,7 @@ func TestMustNewNote(t *testing.T) {
 		var newNote *Note
 		for _, noteName := range noteNames {
 			// assert that the function works without panic
-			assert.NotPanics(t, func() { newNote = MustNewNote(noteName, OctaveNumberDefault) }) //nolint:scopelint
+			assert.NotPanics(t, func() { newNote = MustNewNoteWithOctave(noteName, OctaveNumberDefault) }) //nolint:scopelint
 
 			// assert that the returned name matches the expected name
 			if newNote.name != noteName {
@@ -136,11 +200,11 @@ func TestMustNewNote(t *testing.T) {
 		}
 	})
 
-	t.Run("MustNewNote: invalid note name", func(t *testing.T) {
+	t.Run("TestMustNewNoteWithOctave: invalid note name", func(t *testing.T) {
 		// setup: create a Note with invalid name
 		expectedName := NoteName("Hello")
 		// assert that the function works without panic
-		assert.Panics(t, func() { _ = MustNewNote(expectedName, OctaveNumberDefault) })
+		assert.Panics(t, func() { _ = MustNewNoteWithOctave(expectedName, OctaveNumberDefault) })
 	})
 }
 

@@ -19,14 +19,14 @@ func ExampleTrack_AddNote() {
 	// creating a track
 	track := muse.NewTrack(trackSettings)
 
-	noteC := muse.MustNewNote(muse.C, muse.OctaveNumber4).SetAbsoluteDuration(time.Second)
+	noteC := muse.MustNewNoteWithOctave(muse.C, muse.OctaveNumber4).SetAbsoluteDuration(time.Second)
 	track.AddNote(
 		noteC,
 		0,
 		true,
 	)
 
-	noteD := muse.MustNewNote(muse.C, muse.OctaveNumber4).SetDuration(*muse.NewDurationWithRelativeValue(muse.DurationNameHalf))
+	noteD := muse.MustNewNoteWithOctave(muse.C, muse.OctaveNumber4).SetDuration(*muse.NewDurationWithRelativeValue(muse.DurationNameHalf))
 	track.AddNote(
 		noteD,
 		noteC.GetAbsoluteDuration(),

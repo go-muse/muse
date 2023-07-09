@@ -1,7 +1,18 @@
 package muse
 
+import "github.com/pkg/errors"
+
 // NoteName is a common note for the note.
 type NoteName string
+
+// NewNote creates a new note from the note name.
+// Creating a note by its name, taken from the Muse library, guarantees panics-free execution of this method.
+func (nn NoteName) NewNote() *Note {
+	return MustNewNote(nn)
+}
+
+// ErrNoteNameUnknown is the error that occurs when trying to determine the name of a note if it is not known.
+var ErrNoteNameUnknown = errors.New("unknown note name")
 
 // String is stringer for NoteName type.
 func (nn NoteName) String() string {

@@ -43,17 +43,17 @@ func TestMakeNewMode(t *testing.T) {
 
 		firstDegree := mode.GetFirstDegree()
 
-		firstNote, err := NewNote(tonalCenter, OctaveNumberDefault)
+		firstNote, err := NewNoteWithOctave(tonalCenter, OctaveNumberDefault)
 		assert.NoError(t, err)
 		assert.True(t, firstDegree.note.IsEqualByName(firstNote))
 
 		naturalMinorFromC := []*Note{
-			MustNewNoteWithoutOctave(D),
-			MustNewNoteWithoutOctave(EFLAT),
-			MustNewNoteWithoutOctave(F),
-			MustNewNoteWithoutOctave(G),
-			MustNewNoteWithoutOctave(AFLAT),
-			MustNewNoteWithoutOctave(BFLAT),
+			MustNewNote(D),
+			MustNewNote(EFLAT),
+			MustNewNote(F),
+			MustNewNote(G),
+			MustNewNote(AFLAT),
+			MustNewNote(BFLAT),
 		}
 
 		for _, note := range naturalMinorFromC {
@@ -73,17 +73,17 @@ func TestMakeNewMode(t *testing.T) {
 		firstDegree := mode.GetFirstDegree()
 		assert.NotNil(t, mode)
 
-		firstNote, err := NewNote(tonalCenter, OctaveNumberDefault)
+		firstNote, err := NewNoteWithOctave(tonalCenter, OctaveNumberDefault)
 		assert.NoError(t, err)
 		assert.True(t, firstDegree.note.IsEqualByName(firstNote))
 
 		naturalMajorFromC := []*Note{
-			MustNewNoteWithoutOctave(D),
-			MustNewNoteWithoutOctave(E),
-			MustNewNoteWithoutOctave(F),
-			MustNewNoteWithoutOctave(G),
-			MustNewNoteWithoutOctave(A),
-			MustNewNoteWithoutOctave(B),
+			MustNewNote(D),
+			MustNewNote(E),
+			MustNewNote(F),
+			MustNewNote(G),
+			MustNewNote(A),
+			MustNewNote(B),
 		}
 
 		for _, note := range naturalMajorFromC {
@@ -103,17 +103,17 @@ func TestMakeNewMode(t *testing.T) {
 		firstDegree := mode.GetFirstDegree()
 		assert.NotNil(t, mode)
 
-		firstNote, err := NewNote(tonalCenter, OctaveNumberDefault)
+		firstNote, err := NewNoteWithOctave(tonalCenter, OctaveNumberDefault)
 		assert.NoError(t, err)
 		assert.True(t, firstDegree.note.IsEqualByName(firstNote))
 
 		naturalMajorFromB := []*Note{
-			MustNewNoteWithoutOctave(CSHARP),
-			MustNewNoteWithoutOctave(DSHARP),
-			MustNewNoteWithoutOctave(E),
-			MustNewNoteWithoutOctave(FSHARP),
-			MustNewNoteWithoutOctave(GSHARP),
-			MustNewNoteWithoutOctave(ASHARP),
+			MustNewNote(CSHARP),
+			MustNewNote(DSHARP),
+			MustNewNote(E),
+			MustNewNote(FSHARP),
+			MustNewNote(GSHARP),
+			MustNewNote(ASHARP),
 		}
 
 		for _, note := range naturalMajorFromB {
