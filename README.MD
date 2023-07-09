@@ -90,6 +90,15 @@ A: You can find them in the storage of mode names and their templates by specify
 Q: How to create a note?\
 A: It is preferable to create a note by its name, taken from the library [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NoteName.NewNote). Also, there are other ways to create notes [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note).
 
+Q: How to specify an octave to a note?\
+A: You can create an octave [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Octave) and set it to your note [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Octave.SetToNote) [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.SetOctave).
+
+Q: How to know MIDI number of a note?\
+A: For this, you need to assign an octave to the note then call the method to get the midi number [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.MIDINumber). Also, you can create a note from known midi number [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NewNoteFromMIDINumber).
+
+Q: How to set a note's duration?\
+A: There are two types of durations. The first type is a relative duration, based on the [note value](https://en.wikipedia.org/wiki/Note_value) [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NewDuration). Eventually, knowing the bpm, unit, and time signature, you'll be able to get the absolute time duration of the note [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Duration.TimeDuration), [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.TimeDuration). The second type is absolute duration. You can set your time.Duration as absolute duration [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.SetAbsoluteDuration). These types are separate values and do not affect each other.
+
 Q: How to make modes?\
 A: You can make it by specifying correct names (from the muse package) [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MakeNewMode) [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MustMakeNewMode) or you can create custom mode. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MakeNewCustomMode)
 
@@ -99,14 +108,9 @@ A: You can iterate through degrees  [![example](https://img.shields.io/badge/exa
 Q: Are there already existing scales in the library?\
 A: Yes, there is mode templates store [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-InitModeTemplatesStore). It contains mode names and templates.
 
-Q: How to specify an octave to a note?\
-A: You can create an octave [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Octave) and set it to your note [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Octave.SetToNote) [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.SetOctave).
 
-Q: How to set a note's duration?\
-A: There are two types of durations. The first type is a relative duration, based on the [note value](https://en.wikipedia.org/wiki/Note_value) [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NewDuration). Eventually, knowing the bpm, unit, and time signature, you'll be able to get the absolute time duration of the note [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Duration.TimeDuration), [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.TimeDuration). The second type is absolute duration. You can set your time.Duration as absolute duration [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.SetAbsoluteDuration). These types are separate values and do not affect each other.
 
-Q: How to know MIDI number of a note?\
-A: For this, you need to assign an octave to the note then call the method to get the midi number [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.MIDINumber). Also, you can create a note from known midi number [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NewNoteFromMIDINumber).
+
 
 Q: How to use chords?\
 A: Chord is a set of notes with the same duration  [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NewChord). You can add your notes to the chord, their durations will be set to chord's duration automatically [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Chord.AddNotes).
