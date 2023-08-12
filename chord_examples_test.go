@@ -10,16 +10,16 @@ import (
 // Creating a new chord.
 func ExampleNewChord() {
 	// notes with different durations
-	note1 := muse.MustNewNoteWithOctave(muse.E, 4).SetDuration(*muse.NewDurationWithRelativeValue(muse.DurationNameWhole))
-	note2 := muse.MustNewNoteWithOctave(muse.G, 4).SetDuration(*muse.NewDurationWithRelativeValue(muse.DurationNameHalf))
-	note3 := muse.MustNewNoteWithOctave(muse.B, 4).SetDuration(*muse.NewDurationWithRelativeValue(muse.DurationNameQuarter))
-	note4 := muse.MustNewNoteWithOctave(muse.D, 5).SetDuration(*muse.NewDurationWithRelativeValue(muse.DurationNameSixteenth))
+	note1 := muse.MustNewNoteWithOctave(muse.E, 4).SetDurationRel(muse.NewDurationRel(muse.DurationNameWhole))
+	note2 := muse.MustNewNoteWithOctave(muse.G, 4).SetDurationRel(muse.NewDurationRel(muse.DurationNameHalf))
+	note3 := muse.MustNewNoteWithOctave(muse.B, 4).SetDurationRel(muse.NewDurationRel(muse.DurationNameQuarter))
+	note4 := muse.MustNewNoteWithOctave(muse.D, 5).SetDurationRel(muse.NewDurationRel(muse.DurationNameSixteenth))
 
 	// duration for the chord
-	duration := muse.NewDurationWithRelativeValue(muse.DurationNameHalf)
+	duration := muse.NewDurationRel(muse.DurationNameHalf)
 
 	// notes will be added in the new chord with the specified duration. It will be the same for all the notes in the chord.
-	chord := muse.NewChord(*duration, *note1, *note2, *note3, *note4)
+	chord := muse.NewChord(*note1, *note2, *note3, *note4).SetDurationRel(duration)
 
 	fmt.Println(chord.String())
 	// Output: notes: [E G B D], duration name: Half, custom duration: 0s
@@ -27,10 +27,10 @@ func ExampleNewChord() {
 
 // Creating a new empty chord and adding notes.
 func ExampleNewChordEmpty() {
-	duration := muse.NewDurationWithRelativeValue(muse.DurationNameHalf)
+	duration := muse.NewDurationRel(muse.DurationNameHalf)
 
 	chord := muse.NewChordEmpty()
-	chord.SetDuration(*duration)
+	chord.SetDurationRel(duration)
 
 	note1 := muse.MustNewNoteWithOctave(muse.E, 4)
 	note2 := muse.MustNewNoteWithOctave(muse.G, 4)
@@ -45,10 +45,10 @@ func ExampleNewChordEmpty() {
 
 // Adding notes to the chord. Identical notes (equal by Name and Octave) will not be added.
 func ExampleChord_AddNotes() {
-	duration := muse.NewDurationWithRelativeValue(muse.DurationNameHalf)
+	duration := muse.NewDurationRel(muse.DurationNameHalf)
 
 	chord := muse.NewChordEmpty()
-	chord.SetDuration(*duration)
+	chord.SetDurationRel(duration)
 
 	note1 := muse.MustNewNoteWithOctave(muse.E, 4)
 	note2 := muse.MustNewNoteWithOctave(muse.G, 4)
@@ -66,8 +66,8 @@ func ExampleChord_AddNotes() {
 	// Output: notes: [E G B D], duration name: Half, custom duration: 0s
 }
 
-// Setting duration to the chord.
-func ExampleChord_SetDuration() {
+// Setting relative duration to the chord.
+func ExampleChord_SetDurationRel() {
 	chord := muse.NewChordEmpty()
 
 	note1 := muse.MustNewNoteWithOctave(muse.E, 4)
@@ -77,12 +77,12 @@ func ExampleChord_SetDuration() {
 
 	chord.AddNotes(*note1, *note2, *note3, *note4)
 
-	duration := muse.NewDurationWithRelativeValue(muse.DurationNameHalf)
-	chord.SetDuration(*duration)
+	duration := muse.NewDurationRel(muse.DurationNameHalf)
+	chord.SetDurationRel(duration)
 
 	var resultStr string
 	for _, chordNote := range chord.Notes() {
-		resultStr += fmt.Sprintf("note: %s duration: %s\n", chordNote.Name(), chordNote.Duration().Name())
+		resultStr += fmt.Sprintf("note: %s duration: %s\n", chordNote.Name(), chordNote.DurationRel().Name())
 	}
 
 	fmt.Println(resultStr)
@@ -92,8 +92,8 @@ func ExampleChord_SetDuration() {
 	// note: D duration: Half
 }
 
-// Setting custom duration to the chord.
-func ExampleChord_SetAbsoluteDuration() {
+// Setting custom absolute duration to the chord.
+func ExampleChord_SetDurationAbs() {
 	chord := muse.NewChordEmpty()
 
 	note1 := muse.MustNewNoteWithOctave(muse.E, 4)
@@ -103,11 +103,11 @@ func ExampleChord_SetAbsoluteDuration() {
 
 	chord.AddNotes(*note1, *note2, *note3, *note4)
 
-	chord.SetAbsoluteDuration(time.Second)
+	chord.SetDurationAbs(time.Second)
 
 	var resultStr string
 	for _, chordNote := range chord.Notes() {
-		resultStr += fmt.Sprintf("note: %s custom duration: %s\n", chordNote.Name(), chordNote.GetAbsoluteDuration())
+		resultStr += fmt.Sprintf("note: %s custom duration: %s\n", chordNote.Name(), chordNote.DurationAbs())
 	}
 
 	fmt.Println(resultStr)

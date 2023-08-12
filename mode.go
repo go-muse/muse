@@ -127,7 +127,7 @@ func (m *Mode) GetDegreeByDegreeNum(degreeNum DegreeNum) *Degree {
 		return nil // or error?
 	}
 
-	return m.degree.GetDegreeByDegreeNum(degreeNum)
+	return m.degree.getDegreeByDegreeNum(degreeNum)
 }
 
 // GetNoteByDegreeNum returns note by degree number.

@@ -17,6 +17,13 @@ type intervalNameExtended struct {
 	shortName IntervalName
 }
 
+// ChromaticInterval is the interval defined just by halftones, without degrees.
+type ChromaticInterval struct {
+	Sonance
+	names     *intervalNameExtended
+	halfTones HalfTones
+}
+
 // Name returns interval's name.
 func (i *ChromaticInterval) Name() IntervalName {
 	return i.names.name
@@ -30,13 +37,6 @@ func (i *ChromaticInterval) ShortName() IntervalName {
 // HalfTones returns amount of half tones in the interval.
 func (i *ChromaticInterval) HalfTones() HalfTones {
 	return i.halfTones
-}
-
-// ChromaticInterval is the interval defined just by halftones, without degrees.
-type ChromaticInterval struct {
-	Sonance
-	names     *intervalNameExtended
-	halfTones HalfTones
 }
 
 // Interval is determined by 1) half tones between degrees 2) amount of degrees between.
