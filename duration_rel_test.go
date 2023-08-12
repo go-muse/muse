@@ -338,4 +338,3 @@ func TestDuration_GetPartOfBarByRelative(t *testing.T) {
 		assert.True(t, testCase.want.Equal(testCase.duration.GetPartOfBar(testCase.timeSignature)), "expected: %+v, actual: %+v", testCase.want, testCase.duration.GetPartOfBar(testCase.timeSignature))
 	}
 }
-

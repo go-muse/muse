@@ -7,7 +7,7 @@ import (
 )
 
 // Creating a new relative duration and assigning it to the note.
-func ExampleNewDurationWithRelativeValue() {
+func ExampleNewDurationRel() {
 	// half note duration
 	duration := muse.NewDurationRel(muse.DurationNameHalf)
 
@@ -19,7 +19,7 @@ func ExampleNewDurationWithRelativeValue() {
 }
 
 // Getting time.Duration from duration.
-func ExampleDuration_GetTimeDuration() {
+func ExampleDurationRel_GetTimeDuration() {
 	// musical settings
 	trackSettings := muse.TrackSettings{
 		BPM:           uint64(120),

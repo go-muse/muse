@@ -52,8 +52,8 @@ func ExampleNote_SetOctave() {
 	// Output: FirstOctave
 }
 
-// Setting and Getting duration.
-func ExampleNote_SetDuration() {
+// Setting and Getting relative duration.
+func ExampleNote_SetDurationRel() {
 	// half note duration
 	duration := muse.NewDurationRel(muse.DurationNameHalf)
 
@@ -65,7 +65,7 @@ func ExampleNote_SetDuration() {
 }
 
 // Getting note's time.Duration from note's duration.
-func ExampleNote_TimeDuration() {
+func ExampleNote_GetTimeDuration() {
 	// musical settings
 	trackSettings := muse.TrackSettings{
 		BPM:           uint64(80),
