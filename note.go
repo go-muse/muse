@@ -11,9 +11,10 @@ import (
 // Note is the representation of a musical sound.
 // Each note has a name (i.e., pitch class) and is characterized by octave and duration.
 type Note struct {
-	name     NoteName
-	octave   *Octave
-	duration *Duration
+	name        NoteName
+	octave      *Octave
+	durationAbs time.Duration
+	durationRel *DurationRel
 }
 
 // Notes is slice of Note.
@@ -31,7 +32,7 @@ func (ns Notes) String() string {
 
 // newNote creates new note with a given name without any restrictions.
 func newNote(name NoteName) *Note {
-	return &Note{name: name, octave: nil, duration: nil}
+	return &Note{name: name, octave: nil, durationAbs: 0, durationRel: nil}
 }
 
 // NewNote creates new note with a given name and octave number.
@@ -143,7 +144,7 @@ func (n *Note) Copy() *Note {
 		return nil
 	}
 
-	return &Note{name: n.Name(), octave: n.octave, duration: n.duration}
+	return &Note{name: n.Name(), octave: n.octave, durationAbs: n.durationAbs, durationRel: n.durationRel}
 }
 
 // AlterUp alterates the note upwards.
@@ -249,76 +250,74 @@ func (n *Note) SetOctave(octave *Octave) *Note {
 	return n
 }
 
-// SetDuration sets duration to the note and returns the note.
-func (n *Note) SetDuration(duration Duration) *Note {
+// SetDurationAbs sets absolute duration to the note and returns the note.
+func (n *Note) SetDurationAbs(duration time.Duration) *Note {
 	if n == nil {
 		return nil
 	}
 
-	n.duration = &duration
+	n.durationAbs = duration
 
 	return n
 }
 
-// Duration returns duration of the note.
-func (n *Note) Duration() *Duration {
+// SetDurationRel sets relative duration to the note and returns the note.
+func (n *Note) SetDurationRel(duration *DurationRel) *Note {
 	if n == nil {
 		return nil
 	}
 
-	return n.duration
-}
-
-// TimeDuration returns time.Duration of the note based on bpm rate, unit and time signature.
-func (n *Note) TimeDuration(trackSettings TrackSettings) time.Duration {
-	if n == nil || n.duration == nil {
-		return 0
-	}
-
-	return n.duration.GetTimeDuration(trackSettings)
-}
-
-// SetAbsoluteDuration sets custom duration to the note and returns the note.
-func (n *Note) SetAbsoluteDuration(d time.Duration) *Note {
-	if n == nil {
-		return n
-	}
-
-	if n.duration == nil {
-		n.duration = &Duration{
-			absoluteDuration: 0,
-			relativeDuration: relativeDuration{},
-		}
-	}
-
-	n.duration.absoluteDuration = d
+	n.durationRel = duration
 
 	return n
 }
 
-// GetAbsoluteDuration returns custom duration of the note.
-func (n *Note) GetAbsoluteDuration() time.Duration {
-	if n == nil || n.duration == nil {
+// DurationAbs returns absolute duration of the note.
+func (n *Note) DurationAbs() time.Duration {
+	if n == nil {
 		return 0
 	}
 
-	return n.duration.absoluteDuration
+	return n.durationAbs
 }
 
-// GetPartOfBarByRelative returns duration value in decimal.
-func (n *Note) GetPartOfBarByRelative(timeSignature *Fraction) decimal.Decimal {
-	if n == nil || n.duration == nil {
+// DurationRel returns relative duration of the note.
+func (n *Note) DurationRel() *DurationRel {
+	if n == nil {
+		return nil
+	}
+
+	return n.durationRel
+}
+
+// GetTimeDuration calculates and returns time.Duration of the note based on bpm rate, unit and time signature.
+func (n *Note) GetTimeDuration(trackSettings TrackSettings) time.Duration {
+	if n == nil || n.durationRel == nil {
+		return 0
+	}
+
+	return n.durationRel.GetTimeDuration(trackSettings)
+}
+
+// GetPartOfBarByRel calculates and returns duration value in decimal.
+func (n *Note) GetPartOfBarByRel(timeSignature *Fraction) decimal.Decimal {
+	if n == nil || n.durationRel == nil {
 		return decimal.Zero
 	}
 
-	return n.duration.GetPartOfBarByRelative(timeSignature)
+	return n.durationRel.GetPartOfBar(timeSignature)
 }
 
-// GetPartOfBarByAbsolute returns duration value in decimal.
-func (n *Note) GetPartOfBarByAbsolute(trackSettings TrackSettings) decimal.Decimal {
-	if n == nil || n.duration == nil {
+// GetPartOfBarByAbs calculates and returns duration value in decimal.
+func (n *Note) GetPartOfBarByAbs(trackSettings TrackSettings) decimal.Decimal {
+	if n == nil {
 		return decimal.Zero
 	}
 
-	return n.duration.GetPartOfBarByAbsolute(trackSettings)
+	amountofBars := GetAmountOfBars(trackSettings)
+	secondsInBar := decimal.NewFromInt(int64(time.Duration(secondsInMinute) * time.Second)).Div(amountofBars)
+
+	result := secondsInBar.Div(decimal.NewFromFloat(float64(n.durationAbs)))
+
+	return result
 }

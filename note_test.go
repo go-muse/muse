@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -357,7 +358,7 @@ func TestNoteIsEqual(t *testing.T) {
 }
 
 func TestNoteCopy(t *testing.T) {
-	note1 := &Note{name: C, octave: &Octave{-1, "custom"}, duration: &Duration{absoluteDuration: 0, relativeDuration: relativeDuration{"custom", 1, nil}}}
+	note1 := &Note{name: C, octave: &Octave{-1, "custom"}, durationAbs: 0, durationRel: &DurationRel{"custom", 1, nil}}
 	note2 := note1.Copy()
 
 	// Test the pointer address is not the same
@@ -599,59 +600,59 @@ func TestNoteSetOctave(t *testing.T) {
 	})
 }
 
-func TestNoteSetDuration(t *testing.T) {
+func TestNoteSetDurationRel(t *testing.T) {
 	testCases := []struct {
 		note *Note
-		want *Duration
+		want *DurationRel
 	}{
 		{
 			note: newNote(C),
-			want: NewDurationWithRelativeValue(DurationNameEighth),
+			want: NewDurationRel(DurationNameEighth),
 		},
 		{
-			note: newNote(C).SetDuration(Duration{0, relativeDuration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}}),
-			want: NewDurationWithRelativeValue(DurationNameEighth),
+			note: newNote(C).SetDurationRel(&DurationRel{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}),
+			want: NewDurationRel(DurationNameEighth),
 		},
 		{
-			note: newNote(C).SetDuration(*NewDurationWithRelativeValue(DurationNameDoubleWhole)),
-			want: NewDurationWithRelativeValue(DurationNameEighth),
+			note: newNote(C).SetDurationRel(NewDurationRel(DurationNameDoubleWhole)),
+			want: NewDurationRel(DurationNameEighth),
 		},
 		{
-			note: &Note{name: C, duration: &Duration{0, relativeDuration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}}},
-			want: NewDurationWithRelativeValue(DurationNameEighth),
+			note: &Note{name: C, durationRel: &DurationRel{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}},
+			want: NewDurationRel(DurationNameEighth),
 		},
 	}
 
 	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.SetDuration(*testCase.want).duration)
+		assert.Equal(t, testCase.want, testCase.note.SetDurationRel(testCase.want).durationRel)
 	}
 }
 
-func TestNoteGetDuration(t *testing.T) {
+func TestNote_DurationRel(t *testing.T) {
 	testCases := []struct {
 		note *Note
-		want *Duration
+		want *DurationRel
 	}{
 		{
 			note: newNote(C),
 			want: nil,
 		},
 		{
-			note: newNote(C).SetDuration(Duration{0, relativeDuration{name: DurationNameEighth, dots: 0, tuplet: nil}}),
-			want: NewDurationWithRelativeValue(DurationNameEighth),
+			note: newNote(C).SetDurationRel(&DurationRel{name: DurationNameEighth, dots: 0, tuplet: nil}),
+			want: NewDurationRel(DurationNameEighth),
 		},
 		{
-			note: newNote(C).SetDuration(*NewDurationWithRelativeValue(DurationNameEighth)),
-			want: NewDurationWithRelativeValue(DurationNameEighth),
+			note: newNote(C).SetDurationRel(NewDurationRel(DurationNameEighth)),
+			want: NewDurationRel(DurationNameEighth),
 		},
 	}
 
 	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.Duration())
+		assert.Equal(t, testCase.want, testCase.note.DurationRel())
 	}
 }
 
-func TestNoteSetAbsoluteDuration(t *testing.T) {
+func TestNoteSetDurationAbs(t *testing.T) {
 	testCases := []struct {
 		note *Note
 		want time.Duration
@@ -661,25 +662,25 @@ func TestNoteSetAbsoluteDuration(t *testing.T) {
 			want: time.Second,
 		},
 		{
-			note: newNote(D).SetDuration(Duration{0, relativeDuration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}}),
+			note: newNote(D).SetDurationRel(&DurationRel{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}),
 			want: time.Second,
 		},
 		{
-			note: newNote(E).SetDuration(*NewDurationWithRelativeValue(DurationNameDoubleWhole)),
+			note: newNote(E).SetDurationRel(NewDurationRel(DurationNameDoubleWhole)),
 			want: time.Second,
 		},
 		{
-			note: &Note{name: F, duration: &Duration{0, relativeDuration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}}},
+			note: &Note{name: F, durationRel: &DurationRel{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}},
 			want: time.Second,
 		},
 	}
 
 	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.SetAbsoluteDuration(testCase.want).duration.absoluteDuration)
+		assert.Equal(t, testCase.want, testCase.note.SetDurationAbs(testCase.want).durationAbs)
 	}
 }
 
-func TestNoteGetAbsoluteDuration(t *testing.T) {
+func TestNoteDurationAbs(t *testing.T) {
 	testCases := []struct {
 		note *Note
 		want time.Duration
@@ -689,33 +690,33 @@ func TestNoteGetAbsoluteDuration(t *testing.T) {
 			want: time.Duration(0),
 		},
 		{
-			note: newNote(C).SetDuration(Duration{0, relativeDuration{name: DurationNameEighth, dots: 0, tuplet: nil}}),
+			note: newNote(C).SetDurationRel(&DurationRel{name: DurationNameEighth, dots: 0, tuplet: nil}),
 			want: time.Duration(0),
 		},
 		{
-			note: newNote(C).SetDuration(*NewDurationWithRelativeValue(DurationNameEighth)),
+			note: newNote(C).SetDurationRel(NewDurationRel(DurationNameEighth)),
 			want: time.Duration(0),
 		},
 		{
-			note: &Note{name: C, duration: &Duration{0, relativeDuration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}}},
+			note: &Note{name: C, durationRel: &DurationRel{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}},
 			want: time.Duration(0),
 		},
 		{
-			note: newNote(C).SetDuration(Duration{0, relativeDuration{name: DurationNameEighth, dots: 0, tuplet: nil}}).SetAbsoluteDuration(time.Second),
+			note: newNote(C).SetDurationRel(&DurationRel{name: DurationNameEighth, dots: 0, tuplet: nil}).SetDurationAbs(time.Second),
 			want: time.Second,
 		},
 		{
-			note: newNote(C).SetDuration(*NewDurationWithRelativeValue(DurationNameEighth)).SetAbsoluteDuration(time.Second),
+			note: newNote(C).SetDurationRel(NewDurationRel(DurationNameEighth)).SetDurationAbs(time.Second),
 			want: time.Second,
 		},
 		{
-			note: &Note{name: C, duration: &Duration{time.Second, relativeDuration{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}}},
+			note: &Note{name: C, durationRel: &DurationRel{name: DurationNameDoubleWhole, dots: 3, tuplet: &Tuplet{n: 1, m: 2}}, durationAbs: time.Second},
 			want: time.Second,
 		},
 	}
 
 	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.GetAbsoluteDuration())
+		assert.Equal(t, testCase.want, testCase.note.DurationAbs(), "absolute duration: %v", testCase.note.DurationAbs())
 	}
 }
 
@@ -739,5 +740,63 @@ func TestNoteGetAlterationShift(t *testing.T) {
 
 	for _, testCase := range testCases {
 		assert.Equal(t, testCase.want, testCase.note.GetAlterationShift(), testCase.note)
+	}
+}
+
+func TestNoteGetPartOfBarByRel(t *testing.T) {
+	testCases := []struct {
+		note          *Note
+		timeSignature *Fraction
+		want          decimal.Decimal
+	}{
+		{
+			note:          &Note{durationRel: NewDurationRel(DurationNameWhole)},
+			timeSignature: &Fraction{1, 1},
+			want:          decimal.NewFromInt(1),
+		},
+		{
+			note:          &Note{durationRel: NewDurationRel(DurationNameHalf)},
+			timeSignature: &Fraction{1, 2},
+			want:          decimal.NewFromInt(1),
+		},
+		{
+			note:          &Note{durationRel: NewDurationRel(DurationNameWhole)},
+			timeSignature: &Fraction{1, 2},
+			want:          decimal.NewFromFloat(0.5),
+		},
+		{
+			note:          &Note{durationRel: NewDurationRel(DurationNameHalf)},
+			timeSignature: &Fraction{1, 1},
+			want:          decimal.NewFromInt(2),
+		},
+		{
+			note:          &Note{durationRel: NewDurationRel(DurationNameWhole).SetDots(1)},
+			timeSignature: &Fraction{1, 1},
+			want:          decimal.NewFromFloat(1.5),
+		},
+		{
+			note:          &Note{durationRel: NewDurationRel(DurationNameWhole).SetDots(2)},
+			timeSignature: &Fraction{1, 1},
+			want:          decimal.NewFromFloat(1.75),
+		},
+		{
+			note:          &Note{durationRel: NewDurationRel(DurationNameWhole).SetTupletDuplet()},
+			timeSignature: &Fraction{1, 1},
+			want:          decimal.NewFromFloat(0.6666666666666667),
+		},
+		{
+			note:          &Note{durationRel: NewDurationRel(DurationNameWhole).SetTupletTriplet()},
+			timeSignature: &Fraction{1, 1},
+			want:          decimal.NewFromFloat(1.5),
+		},
+		{
+			note:          &Note{durationRel: NewDurationRel(DurationNameWhole).SetTupletTriplet().AddDot()},
+			timeSignature: &Fraction{1, 1},
+			want:          decimal.NewFromFloat(2.25),
+		},
+	}
+
+	for _, testCase := range testCases {
+		assert.True(t, testCase.want.Equal(testCase.note.GetPartOfBarByRel(testCase.timeSignature)), "expected: %+v, actual: %+v", testCase.want, testCase.note.durationRel.GetPartOfBar(testCase.timeSignature))
 	}
 }

@@ -105,8 +105,8 @@ func (d *Degree) AbsoluteModalPosition() *ModalPosition {
 	return d.absoluteModalPosition
 }
 
-// GetDegreeByDegreeNum returns degree by degree number.
-func (d *Degree) GetDegreeByDegreeNum(degreeNum DegreeNum) *Degree {
+// getDegreeByDegreeNum returns the degree from the chain of degrees by its number, if it exists.
+func (d *Degree) getDegreeByDegreeNum(degreeNum DegreeNum) *Degree {
 	if d == nil {
 		return nil
 	}
@@ -348,7 +348,7 @@ func (d *Degree) AttachNext(degree *Degree) {
 	degree.SetPrevious(d)
 }
 
-// AttachNext adds degree as next to current degree with mutual reference.
+// InsertNext inserts the specified degree between the current one and the next one, if it exists.
 func (d *Degree) InsertNext(degree *Degree) {
 	if d.NextExists() {
 		d.GetNext().AttachPrevious(degree)
@@ -363,7 +363,7 @@ func (d *Degree) AttachPrevious(degree *Degree) {
 	degree.SetNext(d)
 }
 
-// InsertPrevious adds degree as next to current degree with mutual reference.
+// InsertPrevious inserts the specified degree between the current one and the previous one, if it exists.
 func (d *Degree) InsertPrevious(degree *Degree) {
 	if d.PreviousExists() {
 		d.GetPrevious().AttachNext(degree)

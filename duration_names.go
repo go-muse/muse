@@ -5,19 +5,19 @@ import "math"
 type DurationName string
 
 const (
-	DurationNameLarge                 = DurationName("Large")
-	DurationNameLong                  = DurationName("Long")
-	DurationNameDoubleWhole           = DurationName("DoubleWhole")
-	DurationNameWhole                 = DurationName("Whole")
-	DurationNameHalf                  = DurationName("Half")
-	DurationNameQuarter               = DurationName("Quarter")
-	DurationNameEighth                = DurationName("Eighth")
-	DurationNameSixteenth             = DurationName("Sixteenth")
-	DurationNameThirtySecond          = DurationName("ThirtySecond")
-	DurationNamesSixtyFourth          = DurationName("SixtyFourth")
-	DurationNamesHundredTwentyEighth  = DurationName("HundredTwentyEighth")
-	DurationNamesTwoHundredFiftySixth = DurationName("TwoHundredFiftySixth")
-	DurationNamesFiveHundredTwelfth   = DurationName("FiveHundredTwelfth")
+	DurationNameLarge                = DurationName("Large")
+	DurationNameLong                 = DurationName("Long")
+	DurationNameDoubleWhole          = DurationName("DoubleWhole")
+	DurationNameWhole                = DurationName("Whole")
+	DurationNameHalf                 = DurationName("Half")
+	DurationNameQuarter              = DurationName("Quarter")
+	DurationNameEighth               = DurationName("Eighth")
+	DurationNameSixteenth            = DurationName("Sixteenth")
+	DurationNameThirtySecond         = DurationName("ThirtySecond")
+	DurationNameSixtyFourth          = DurationName("SixtyFourth")
+	DurationNameHundredTwentyEighth  = DurationName("HundredTwentyEighth")
+	DurationNameTwoHundredFiftySixth = DurationName("TwoHundredFiftySixth")
+	DurationNameFiveHundredTwelfth   = DurationName("FiveHundredTwelfth")
 )
 
 //nolint:gomnd
@@ -41,13 +41,13 @@ func (dn DurationName) getValue() int8 {
 		return -4
 	case DurationNameThirtySecond:
 		return -5
-	case DurationNamesSixtyFourth:
+	case DurationNameSixtyFourth:
 		return -6
-	case DurationNamesHundredTwentyEighth:
+	case DurationNameHundredTwentyEighth:
 		return -7
-	case DurationNamesTwoHundredFiftySixth:
+	case DurationNameTwoHundredFiftySixth:
 		return -8
-	case DurationNamesFiveHundredTwelfth:
+	case DurationNameFiveHundredTwelfth:
 		return -9
 	default:
 		return 0

@@ -9,13 +9,14 @@ import (
 // When a note is added to a chord, it is assigned the duration of the chord.
 // When the duration of the chord changes, all notes in the chord are assigned the duration of the chord.
 type Chord struct {
-	notes    Notes
-	duration *Duration
+	notes       Notes
+	durationAbs time.Duration
+	durationRel *DurationRel
 }
 
-// NewChord creates a new chord with the specified notes and duration, assigning the specified duration to all notes.
-func NewChord(duration Duration, notes ...Note) *Chord {
-	chord := &Chord{duration: &duration}
+// NewChord creates a new chord with the specified notes.
+func NewChord(notes ...Note) *Chord {
+	chord := &Chord{}
 
 	return chord.AddNotes(notes...)
 }
@@ -31,7 +32,7 @@ func (c *Chord) String() string {
 		return "nil chord"
 	}
 
-	return fmt.Sprintf("notes: %+v, duration name: %+v, custom duration: %+v", c.notes, c.duration.Name(), c.duration.absoluteDuration)
+	return fmt.Sprintf("notes: %+v, duration name: %+v, custom duration: %+v", c.notes, c.durationRel.Name(), c.durationAbs)
 }
 
 // AddNote adds a note to the chord, replacing it in case of a match.
@@ -40,7 +41,8 @@ func (c *Chord) AddNote(n Note) *Chord {
 		return c
 	}
 
-	n.duration = c.duration
+	n.durationAbs = c.durationAbs
+	n.durationRel = c.durationRel
 
 	for _, chordNote := range c.notes {
 		if chordNote.IsEqual(&n) {
@@ -67,7 +69,8 @@ func (c *Chord) AddNotes(notes ...Note) *Chord {
 			}
 		}
 
-		note.duration = c.duration
+		note.durationAbs = c.durationAbs
+		note.durationRel = c.durationRel
 		c.notes = append(c.notes, note)
 
 	NEXT:
@@ -87,62 +90,52 @@ func (c *Chord) Notes() Notes {
 	return c.notes
 }
 
-// SetAbsoluteDuration sets custom duration to the chord and returns the chord.
-func (c *Chord) SetAbsoluteDuration(d time.Duration) *Chord {
+// SetDurationAbs sets custom duration to the chord and returns the chord.
+func (c *Chord) SetDurationAbs(d time.Duration) *Chord {
 	if c == nil {
 		return c
 	}
 
-	if c.duration == nil {
-		c.duration = &Duration{absoluteDuration: 0}
-	}
-
-	c.duration.absoluteDuration = d
+	c.durationAbs = d
 
 	for i := range c.notes {
-		if c.notes[i].duration == nil {
-			c.notes[i].duration = c.duration
-
-			continue
-		}
-
-		c.notes[i].duration.absoluteDuration = d
+		c.notes[i].durationAbs = c.durationAbs
 	}
 
 	return c
 }
 
-// GetAbsoluteDuration returns custom duration of the chord.
-func (c *Chord) GetAbsoluteDuration() time.Duration {
-	if c == nil || c.duration == nil {
+// GetDurationAbs returns custom duration of the chord.
+func (c *Chord) GetDurationAbs() time.Duration {
+	if c == nil {
 		return 0
 	}
 
-	return c.duration.absoluteDuration
+	return c.durationAbs
 }
 
 // SetDuration sets duration to the chord and returns the chord.
-func (c *Chord) SetDuration(duration Duration) *Chord {
+func (c *Chord) SetDurationRel(dr *DurationRel) *Chord {
 	if c == nil {
 		return c
 	}
 
-	c.duration = &duration
+	c.durationRel = dr
 
 	for i := range c.notes {
-		c.notes[i].duration = &duration
+		c.notes[i].durationRel = c.durationRel
 	}
 
 	return c
 }
 
 // GetDuration returns duration of the chord.
-func (c *Chord) GetDuration() *Duration {
+func (c *Chord) GetDurationRel() *DurationRel {
 	if c == nil {
 		return nil
 	}
 
-	return c.duration
+	return c.durationRel
 }
 
 // Empty removes all the notes from the chord.
@@ -157,13 +150,13 @@ func (c *Chord) Empty() *Chord {
 }
 
 // RemoveNote removes a note from the chord that is similar to the specified by it's name and octave.
-func (c *Chord) RemoveNote(note Note) *Chord {
+func (c *Chord) RemoveNote(note *Note) *Chord {
 	if c == nil {
 		return nil
 	}
 
 	for i, chordNote := range c.notes {
-		if chordNote.IsEqual(&note) {
+		if chordNote.IsEqual(note) {
 			c.notes = append(c.notes[:i], c.notes[i+1:]...)
 		}
 	}
@@ -178,26 +171,20 @@ func (c *Chord) RemoveNotes(notes Notes) *Chord {
 	}
 
 	for _, note := range notes {
-		for i, chordNote := range c.notes {
-			if chordNote.IsEqual(&note) {
-				c.notes = append(c.notes[:i], c.notes[i+1:]...)
-
-				break
-			}
-		}
+		c.RemoveNote(&note)
 	}
 
 	return c
 }
 
 // Exists checks if a note exists in the chord.
-func (c *Chord) Exists(note Note) bool {
+func (c *Chord) Exists(note *Note) bool {
 	if c == nil {
 		return false
 	}
 
 	for _, chordNote := range c.notes {
-		if chordNote.IsEqual(&note) {
+		if chordNote.IsEqual(note) {
 			return true
 		}
 	}

@@ -168,26 +168,26 @@ func (t *Track) FindEnd() time.Duration {
 
 // GetStartAndEnd returns the start and end time of the event.
 func (t *Track) GetStartAndEnd(event *Event) (time.Duration, time.Duration) {
-	if t == nil || event == nil || event.note == nil || event.note.duration == nil {
+	if t == nil || event == nil || event.note == nil {
 		return 0, 0
 	}
 
 	if event.isAbsolute {
-		return event.startTime, event.startTime + event.note.GetAbsoluteDuration()
+		return event.startTime, event.startTime + event.note.durationAbs
 	}
 
-	return event.startTime, event.startTime + event.note.TimeDuration(t.TrackSettings)
+	return event.startTime, event.startTime + event.note.GetTimeDuration(t.TrackSettings)
 }
 
 // GetEnd returns the end time of the event.
 func (t *Track) GetEnd(event *Event) time.Duration {
-	if t == nil || event == nil || event.note == nil || event.note.duration == nil {
+	if t == nil || event == nil || event.note == nil {
 		return 0
 	}
 
 	if event.isAbsolute {
-		return event.startTime + event.note.GetAbsoluteDuration()
+		return event.startTime + event.note.durationAbs
 	}
 
-	return event.startTime + event.note.TimeDuration(t.TrackSettings)
+	return event.startTime + event.note.GetTimeDuration(t.TrackSettings)
 }

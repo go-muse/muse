@@ -86,7 +86,7 @@ func TestTrack_AddChord(t *testing.T) {
 		*MustNewNoteWithOctave(C, 4),
 		*MustNewNoteWithOctave(D, 4),
 	}
-	chord := NewChord(*NewDurationWithRelativeValue(DurationNameWhole), chordNotes...)
+	chord := NewChord(chordNotes...).SetDurationRel(NewDurationRel(DurationNameWhole))
 
 	startTime := time.Second
 	isAbsolute := true
@@ -158,49 +158,51 @@ func TestTrack_AddNoteToTheEnd(t *testing.T) {
 	track := NewTrack(*trackSettings)
 
 	event1 := &Event{
-		note:       MustNewNoteWithOctave(C, 4).SetAbsoluteDuration(time.Second),
+		note:       MustNewNoteWithOctave(C, 4).SetDurationAbs(time.Second),
 		startTime:  1 * time.Second,
-		isAbsolute: false,
+		isAbsolute: true,
 	}
 
 	event2 := &Event{
-		note:       MustNewNoteWithOctave(C, 4).SetDuration(*NewDurationWithRelativeValue(DurationNameWhole)),
+		note:       MustNewNoteWithOctave(C, 4).SetDurationRel(NewDurationRel(DurationNameWhole)),
 		startTime:  2 * time.Second,
-		isAbsolute: true,
+		isAbsolute: false,
 	}
 
 	track.AddEvent(event1)
 	track.AddEvent(event2)
 
-	noteToEnd := MustNewNoteWithOctave(C, 4).SetDuration(*NewDurationWithRelativeValue(DurationNameWhole))
-	track.AddNoteToTheEnd(noteToEnd, true)
+	noteToEnd := MustNewNoteWithOctave(C, 4).SetDurationRel(NewDurationRel(DurationNameWhole))
+	track.AddNoteToTheEnd(noteToEnd, false)
 
 	assert.Equal(t, 3, len(track.Events()), "they should be equal")
 
 	lastEvent := track.Events()[len(track.Events())-1]
 	assert.Equal(t, noteToEnd, lastEvent.note, "they should be equal")
-	assert.Equal(t, 3*time.Second, lastEvent.startTime, "they should be equal")
-	assert.True(t, lastEvent.isAbsolute, "it should be true")
+	assert.Equal(t, 4*time.Second, lastEvent.startTime, "they should be equal")
+	assert.Equal(t, 6*time.Second, track.GetEnd(lastEvent), "they should be equal")
+	assert.False(t, lastEvent.isAbsolute, "it should be false")
 }
 
 func TestTrack_FindLastNotes(t *testing.T) {
 	t.Run("Track_FindLastNotes: absolute events, one result", func(t *testing.T) {
 		expectedResult := []*Note{
-			{duration: &Duration{absoluteDuration: 5}},
+			{durationAbs: 5},
 		}
+
 		track := &Track{
 			events: []*Event{
-				{startTime: 0, note: &Note{duration: &Duration{absoluteDuration: 7}}, isAbsolute: true}, // 7
-				{startTime: 1, note: &Note{duration: &Duration{absoluteDuration: 2}}, isAbsolute: true}, // 3
-				{startTime: 2, note: &Note{duration: &Duration{absoluteDuration: 1}}, isAbsolute: true}, // 3
-				{startTime: 0, note: &Note{duration: &Duration{absoluteDuration: 4}}, isAbsolute: true}, // 4
-				{startTime: 1, note: &Note{duration: &Duration{absoluteDuration: 1}}, isAbsolute: true}, // 2
-				{startTime: 3, note: expectedResult[0], isAbsolute: true},                               // 8 is max
-				{startTime: 3, note: &Note{duration: &Duration{absoluteDuration: 3}}, isAbsolute: true}, // 6
-				{startTime: 1, note: &Note{duration: &Duration{absoluteDuration: 2}}, isAbsolute: true}, // 3
-				{startTime: 3, note: &Note{duration: &Duration{absoluteDuration: 4}}, isAbsolute: true}, // 7
-				{startTime: 5, note: &Note{duration: &Duration{absoluteDuration: 1}}, isAbsolute: true}, // 6
-				{startTime: 0, note: &Note{duration: &Duration{absoluteDuration: 0}}, isAbsolute: true}, // 6
+				{startTime: 0, note: &Note{durationAbs: 7}, isAbsolute: true}, // 7
+				{startTime: 1, note: &Note{durationAbs: 2}, isAbsolute: true}, // 3
+				{startTime: 2, note: &Note{durationAbs: 1}, isAbsolute: true}, // 3
+				{startTime: 0, note: &Note{durationAbs: 4}, isAbsolute: true}, // 4
+				{startTime: 1, note: &Note{durationAbs: 1}, isAbsolute: true}, // 2
+				{startTime: 3, note: expectedResult[0], isAbsolute: true},     // 8 is max
+				{startTime: 3, note: &Note{durationAbs: 3}, isAbsolute: true}, // 6
+				{startTime: 1, note: &Note{durationAbs: 2}, isAbsolute: true}, // 3
+				{startTime: 3, note: &Note{durationAbs: 4}, isAbsolute: true}, // 7
+				{startTime: 5, note: &Note{durationAbs: 1}, isAbsolute: true}, // 6
+				{startTime: 0, note: &Note{durationAbs: 0}, isAbsolute: true}, // 6
 			},
 			TrackSettings: TrackSettings{
 				BPM:           120,
@@ -216,23 +218,23 @@ func TestTrack_FindLastNotes(t *testing.T) {
 
 	t.Run("Track_FindLastNotes: absolute events, multiple results", func(t *testing.T) {
 		expectedResult := []*Note{
-			{duration: &Duration{absoluteDuration: 5}},
-			{duration: &Duration{absoluteDuration: 4}},
-			{duration: &Duration{absoluteDuration: 5}},
+			{durationAbs: 5},
+			{durationAbs: 4},
+			{durationAbs: 5},
 		}
 		track := &Track{
 			events: []*Event{
-				{startTime: 0, note: &Note{duration: &Duration{absoluteDuration: 7}}, isAbsolute: true}, // 7
-				{startTime: 1, note: &Note{duration: &Duration{absoluteDuration: 2}}, isAbsolute: true}, // 3
-				{startTime: 2, note: &Note{duration: &Duration{absoluteDuration: 1}}, isAbsolute: true}, // 3
-				{startTime: 0, note: &Note{duration: &Duration{absoluteDuration: 4}}, isAbsolute: true}, // 4
-				{startTime: 1, note: &Note{duration: &Duration{absoluteDuration: 1}}, isAbsolute: true}, // 2
-				{startTime: 3, note: expectedResult[0], isAbsolute: true},                               // 8 is max
-				{startTime: 1, note: &Note{duration: &Duration{absoluteDuration: 2}}, isAbsolute: true}, // 3
-				{startTime: 4, note: expectedResult[1], isAbsolute: true},                               // 8 is max
-				{startTime: 3, note: expectedResult[2], isAbsolute: true},                               // 8 is max
-				{startTime: 5, note: &Note{duration: &Duration{absoluteDuration: 1}}, isAbsolute: true}, // 6
-				{startTime: 0, note: &Note{duration: &Duration{absoluteDuration: 0}}, isAbsolute: true}, // 6
+				{startTime: 0, note: &Note{durationAbs: 7}, isAbsolute: true}, // 7
+				{startTime: 1, note: &Note{durationAbs: 2}, isAbsolute: true}, // 3
+				{startTime: 2, note: &Note{durationAbs: 1}, isAbsolute: true}, // 3
+				{startTime: 0, note: &Note{durationAbs: 4}, isAbsolute: true}, // 4
+				{startTime: 1, note: &Note{durationAbs: 1}, isAbsolute: true}, // 2
+				{startTime: 3, note: expectedResult[0], isAbsolute: true},     // 8 is max
+				{startTime: 1, note: &Note{durationAbs: 2}, isAbsolute: true}, // 3
+				{startTime: 4, note: expectedResult[1], isAbsolute: true},     // 8 is max
+				{startTime: 3, note: expectedResult[2], isAbsolute: true},     // 8 is max
+				{startTime: 5, note: &Note{durationAbs: 1}, isAbsolute: true}, // 6
+				{startTime: 0, note: &Note{durationAbs: 0}, isAbsolute: true}, // 6
 			},
 			TrackSettings: TrackSettings{
 				BPM:           120,
@@ -248,16 +250,16 @@ func TestTrack_FindLastNotes(t *testing.T) {
 
 	t.Run("Track_FindLastNotes: relative events, one result", func(t *testing.T) {
 		expectedResult := []*Note{
-			{duration: &Duration{relativeDuration: relativeDuration{dots: 0, tuplet: &Tuplet{n: 3, m: 2}}}},
+			{durationRel: &DurationRel{dots: 0, tuplet: &Tuplet{n: 3, m: 2}}},
 		}
 		track := &Track{
 			events: []*Event{
-				{startTime: time.Second, note: &Note{duration: &Duration{relativeDuration: relativeDuration{dots: 0, tuplet: &Tuplet{n: 2, m: 3}}}}, isAbsolute: false},            // 1,(6)s
-				{startTime: time.Millisecond, note: &Note{duration: &Duration{relativeDuration: relativeDuration{dots: 0, tuplet: &Tuplet{n: 2, m: 8}}}}, isAbsolute: false},       // 251ms
-				{startTime: time.Millisecond * 400, note: &Note{duration: &Duration{relativeDuration: relativeDuration{dots: 1, tuplet: &Tuplet{n: 2, m: 3}}}}, isAbsolute: false}, // 1,4s
-				{startTime: time.Second * 3, note: expectedResult[0], isAbsolute: false},                                                                                           // 4,5s max
-				{startTime: time.Second, note: &Note{duration: &Duration{relativeDuration: relativeDuration{dots: 2, tuplet: &Tuplet{n: 2, m: 3}}}}, isAbsolute: false},            // 2.1(6)s
-				{startTime: time.Second * 2, note: &Note{duration: &Duration{relativeDuration: relativeDuration{dots: 0, tuplet: nil}}}, isAbsolute: false},                        // 3s (1 is default without proper duration name)
+				{startTime: time.Second, note: &Note{durationRel: &DurationRel{dots: 0, tuplet: &Tuplet{n: 2, m: 3}}}, isAbsolute: false},            // 1,(6)s
+				{startTime: time.Millisecond, note: &Note{durationRel: &DurationRel{dots: 0, tuplet: &Tuplet{n: 2, m: 8}}}, isAbsolute: false},       // 251ms
+				{startTime: time.Millisecond * 400, note: &Note{durationRel: &DurationRel{dots: 1, tuplet: &Tuplet{n: 2, m: 3}}}, isAbsolute: false}, // 1,4s
+				{startTime: time.Second * 3, note: expectedResult[0], isAbsolute: false},                                                             // 4,5s max
+				{startTime: time.Second, note: &Note{durationRel: &DurationRel{dots: 2, tuplet: &Tuplet{n: 2, m: 3}}}, isAbsolute: false},            // 2.1(6)s
+				{startTime: time.Second * 2, note: &Note{durationRel: &DurationRel{dots: 0, tuplet: nil}}, isAbsolute: false},                        // 3s (1 is default without proper duration name)
 			},
 			TrackSettings: TrackSettings{
 				BPM:           120,
@@ -273,20 +275,20 @@ func TestTrack_FindLastNotes(t *testing.T) {
 
 	t.Run("Track_FindLastNotes: relative events, multiple results", func(t *testing.T) {
 		expectedResult := []*Note{
-			{duration: &Duration{relativeDuration: relativeDuration{dots: 0, tuplet: &Tuplet{n: 3, m: 2}}}},
-			{duration: &Duration{relativeDuration: relativeDuration{dots: 1, tuplet: nil}}},
-			{duration: &Duration{relativeDuration: relativeDuration{name: DurationNameDoubleWhole, dots: 0, tuplet: nil}}},
+			{durationRel: &DurationRel{dots: 0, tuplet: &Tuplet{n: 3, m: 2}}},
+			{durationRel: &DurationRel{dots: 1, tuplet: nil}},
+			{durationRel: &DurationRel{name: DurationNameDoubleWhole, dots: 0, tuplet: nil}},
 		}
 		track := &Track{
 			events: []*Event{
-				{startTime: time.Second, note: &Note{duration: &Duration{relativeDuration: relativeDuration{dots: 0, tuplet: &Tuplet{n: 2, m: 3}}}}, isAbsolute: false},            // 1,(6)s
-				{startTime: time.Millisecond, note: &Note{duration: &Duration{relativeDuration: relativeDuration{dots: 0, tuplet: &Tuplet{n: 2, m: 8}}}}, isAbsolute: false},       // 251ms
-				{startTime: time.Millisecond * 400, note: &Note{duration: &Duration{relativeDuration: relativeDuration{dots: 1, tuplet: &Tuplet{n: 2, m: 3}}}}, isAbsolute: false}, // 1,4s
-				{startTime: time.Second * 3, note: expectedResult[0], isAbsolute: false},                                                                                           // 4,5s max
-				{startTime: time.Second, note: &Note{duration: &Duration{relativeDuration: relativeDuration{dots: 2, tuplet: &Tuplet{n: 2, m: 3}}}}, isAbsolute: false},            // 2.1(6)s
-				{startTime: time.Second * 3, note: expectedResult[1], isAbsolute: false},                                                                                           // 4,5s max
-				{startTime: time.Second * 2, note: &Note{duration: &Duration{relativeDuration: relativeDuration{dots: 0, tuplet: nil}}}, isAbsolute: false},                        // 3s (1 is default without proper duration name)
-				{startTime: time.Millisecond * 2500, note: expectedResult[2], isAbsolute: false},                                                                                   // 4,5s max
+				{startTime: time.Second, note: &Note{durationRel: &DurationRel{dots: 0, tuplet: &Tuplet{n: 2, m: 3}}}, isAbsolute: false},            // 1,(6)s
+				{startTime: time.Millisecond, note: &Note{durationRel: &DurationRel{dots: 0, tuplet: &Tuplet{n: 2, m: 8}}}, isAbsolute: false},       // 251ms
+				{startTime: time.Millisecond * 400, note: &Note{durationRel: &DurationRel{dots: 1, tuplet: &Tuplet{n: 2, m: 3}}}, isAbsolute: false}, // 1,4s
+				{startTime: time.Second * 3, note: expectedResult[0], isAbsolute: false},                                                             // 4,5s max
+				{startTime: time.Second, note: &Note{durationRel: &DurationRel{dots: 2, tuplet: &Tuplet{n: 2, m: 3}}}, isAbsolute: false},            // 2.1(6)s
+				{startTime: time.Second * 3, note: expectedResult[1], isAbsolute: false},                                                             // 4,5s max
+				{startTime: time.Second * 2, note: &Note{durationRel: &DurationRel{dots: 0, tuplet: nil}}, isAbsolute: false},                        // 3s (1 is default without proper duration name)
+				{startTime: time.Millisecond * 2500, note: expectedResult[2], isAbsolute: false},
 			},
 			TrackSettings: TrackSettings{
 				BPM:           120,
@@ -311,27 +313,27 @@ func TestFindLastEvents(t *testing.T) {
 	track := NewTrack(*trackSettings)
 
 	event1 := &Event{
-		note:       MustNewNoteWithOctave(C, 4).SetDuration(*NewDurationWithRelativeValue(DurationNameWhole)),
+		note:       MustNewNoteWithOctave(C, 4).SetDurationRel(NewDurationRel(DurationNameWhole)),
 		startTime:  1 * time.Second,
 		isAbsolute: false,
 	}
 
 	event2 := &Event{
-		note:       MustNewNoteWithOctave(C, 4).SetDuration(*NewDurationWithRelativeValue(DurationNameWhole)),
+		note:       MustNewNoteWithOctave(C, 4).SetDurationRel(NewDurationRel(DurationNameWhole)),
 		startTime:  2 * time.Second,
 		isAbsolute: false,
 	}
 
 	event3 := &Event{
-		note:       MustNewNoteWithOctave(C, 4).SetDuration(*NewDurationWithRelativeValue(DurationNameWhole)),
+		note:       MustNewNoteWithOctave(C, 4).SetDurationRel(NewDurationRel(DurationNameWhole)),
 		startTime:  4 * time.Second,
 		isAbsolute: false,
 	}
 
 	event4 := &Event{
-		note:       MustNewNoteWithOctave(C, 4).SetAbsoluteDuration(time.Second),
+		note:       MustNewNoteWithOctave(C, 4).SetDurationAbs(1 * time.Second),
 		startTime:  4 * time.Second,
-		isAbsolute: false,
+		isAbsolute: true,
 	}
 
 	track.AddEvent(event1)
@@ -355,13 +357,13 @@ func TestFindEnd(t *testing.T) {
 	track := NewTrack(*trackSettings)
 
 	event1 := &Event{
-		note:       MustNewNoteWithOctave(C, 4).SetDuration(*NewDurationWithRelativeValue(DurationNameWhole)),
+		note:       MustNewNoteWithOctave(C, 4).SetDurationRel(NewDurationRel(DurationNameWhole)),
 		startTime:  time.Second,
 		isAbsolute: false,
 	}
 
 	event2 := &Event{
-		note:       MustNewNoteWithOctave(C, 4).SetAbsoluteDuration(time.Second),
+		note:       MustNewNoteWithOctave(C, 4).SetDurationAbs(time.Second),
 		startTime:  2 * time.Second,
 		isAbsolute: true,
 	}
@@ -393,7 +395,7 @@ func TestTrack_GetStartAndEnd(t *testing.T) {
 	}{
 		{
 			event: &Event{
-				note:       MustNewNoteWithOctave(C, 4).SetDuration(*NewDurationWithRelativeValue(DurationNameWhole)),
+				note:       MustNewNoteWithOctave(C, 4).SetDurationRel(NewDurationRel(DurationNameWhole)),
 				startTime:  time.Second,
 				isAbsolute: false,
 			},
@@ -404,7 +406,7 @@ func TestTrack_GetStartAndEnd(t *testing.T) {
 		},
 		{
 			event: &Event{
-				note:       MustNewNoteWithOctave(C, 4).SetAbsoluteDuration(time.Millisecond * 500),
+				note:       MustNewNoteWithOctave(C, 4).SetDurationAbs(time.Millisecond * 500),
 				startTime:  time.Millisecond * 500,
 				isAbsolute: true,
 			},
@@ -439,7 +441,7 @@ func TestTrack_GetEnd(t *testing.T) {
 	}{
 		{
 			event: &Event{
-				note:       MustNewNoteWithOctave(C, 4).SetDuration(*NewDurationWithRelativeValue(DurationNameWhole)),
+				note:       MustNewNoteWithOctave(C, 4).SetDurationRel(NewDurationRel(DurationNameWhole)),
 				startTime:  time.Second,
 				isAbsolute: false,
 			},
@@ -447,7 +449,7 @@ func TestTrack_GetEnd(t *testing.T) {
 		},
 		{
 			event: &Event{
-				note:       MustNewNoteWithOctave(C, 4).SetAbsoluteDuration(time.Millisecond * 500),
+				note:       MustNewNoteWithOctave(C, 4).SetDurationAbs(time.Millisecond * 500),
 				startTime:  time.Millisecond * 500,
 				isAbsolute: true,
 			},

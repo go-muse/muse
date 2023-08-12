@@ -52,20 +52,20 @@ func ExampleNote_SetOctave() {
 	// Output: FirstOctave
 }
 
-// Setting and Getting duration.
-func ExampleNote_SetDuration() {
+// Setting and Getting relative duration.
+func ExampleNote_SetDurationRel() {
 	// half note duration
-	duration := muse.NewDurationWithRelativeValue(muse.DurationNameHalf)
+	duration := muse.NewDurationRel(muse.DurationNameHalf)
 
 	// creating note and setting duration
-	note := muse.MustNewNoteWithOctave(muse.C, muse.OctaveNumber3).SetDuration(*duration)
+	note := muse.MustNewNoteWithOctave(muse.C, muse.OctaveNumber3).SetDurationRel(duration)
 
-	fmt.Println(note.Duration().Name())
+	fmt.Println(note.DurationRel().Name())
 	// Output: Half
 }
 
 // Getting note's time.Duration from note's duration.
-func ExampleNote_TimeDuration() {
+func ExampleNote_GetTimeDuration() {
 	// musical settings
 	trackSettings := muse.TrackSettings{
 		BPM:           uint64(80),
@@ -74,20 +74,20 @@ func ExampleNote_TimeDuration() {
 	}
 
 	// half note duration
-	duration := muse.NewDurationWithRelativeValue(muse.DurationNameHalf)
+	duration := muse.NewDurationRel(muse.DurationNameHalf)
 
 	// creating note and setting duration
-	note := muse.MustNewNoteWithOctave(muse.C, muse.OctaveNumber3).SetDuration(*duration)
+	note := muse.MustNewNoteWithOctave(muse.C, muse.OctaveNumber3).SetDurationRel(duration)
 
-	fmt.Println(note.TimeDuration(trackSettings))
+	fmt.Println(note.GetTimeDuration(trackSettings))
 	// Output: 750ms
 }
 
 // Setting and Getting custom duration.
-func ExampleNote_SetAbsoluteDuration() {
+func ExampleNote_SetDurationAbs() {
 	// creating note and setting custom duration
-	note := muse.MustNewNoteWithOctave(muse.C, muse.OctaveNumber3).SetAbsoluteDuration(time.Second)
+	note := muse.MustNewNoteWithOctave(muse.C, muse.OctaveNumber3).SetDurationAbs(time.Second)
 
-	fmt.Println(note.GetAbsoluteDuration())
+	fmt.Println(note.DurationAbs())
 	// Output: 1s
 }

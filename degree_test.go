@@ -127,7 +127,7 @@ func TestDegree_Note(t *testing.T) {
 }
 
 func TestDegree_SetNote(t *testing.T) {
-	t.Run("TestGetDegreeByDegreeNum: uncycled degrees chain", func(t *testing.T) {
+	t.Run("TestDegree_SetNote: uncycled degrees chain", func(t *testing.T) {
 		// create a degree and a note
 		d := &Degree{}
 		n := newNote(C)
@@ -141,7 +141,7 @@ func TestDegree_SetNote(t *testing.T) {
 		}
 	})
 
-	t.Run("TestGetDegreeByDegreeNum: uncycled degrees chain", func(t *testing.T) {
+	t.Run("TestDegree_SetNote: uncycled degrees chain", func(t *testing.T) {
 		// create a degree with a note
 		d := &Degree{note: newNote(C)}
 
@@ -154,7 +154,7 @@ func TestDegree_SetNote(t *testing.T) {
 		}
 	})
 
-	t.Run("TestGetDegreeByDegreeNum: uncycled degrees chain", func(t *testing.T) {
+	t.Run("TestDegree_SetNote: uncycled degrees chain", func(t *testing.T) {
 		// create a degree with a note
 		d := &Degree{note: newNote(C)}
 
@@ -200,28 +200,28 @@ func TestDegree_NoteReturnsNotePointer(t *testing.T) {
 	assert.Equal(t, note, degree.Note())
 }
 
-func TestGetDegreeByDegreeNum(t *testing.T) {
+func TestDegree_getDegreeByDegreeNum(t *testing.T) {
 	testingFunc := func(t *testing.T, firstDegree *Degree) {
 		t.Helper()
 		for degree := range firstDegree.IterateOneRound(false) {
 			for d := range firstDegree.IterateOneRound(false) {
-				resultDegree := degree.GetDegreeByDegreeNum(d.Number())
+				resultDegree := degree.getDegreeByDegreeNum(d.Number())
 				assert.Equal(t, d.Number(), resultDegree.Number(), "degree number: %d, expected: %+v, actual: %+v", degree.Number(), degree, resultDegree)
 			}
 		}
 	}
 
-	t.Run("TestGetDegreeByDegreeNum: uncycled degrees chain", func(t *testing.T) {
+	t.Run("TestDegree_getDegreeByDegreeNum: uncycled degrees chain", func(t *testing.T) {
 		testingFunc(t, generateDegrees(3, false))
 	})
 
-	t.Run("TestGetDegreeByDegreeNum: cycled degrees chain", func(t *testing.T) {
+	t.Run("TestDegree_getDegreeByDegreeNum: cycled degrees chain", func(t *testing.T) {
 		testingFunc(t, generateDegrees(3, true))
 	})
 
-	t.Run("TestGetDegreeByDegreeNum: cycled degrees chain", func(t *testing.T) {
+	t.Run("TestDegree_getDegreeByDegreeNum: cycled degrees chain", func(t *testing.T) {
 		var nilDegree *Degree
-		assert.Nil(t, nilDegree.GetDegreeByDegreeNum(5))
+		assert.Nil(t, nilDegree.getDegreeByDegreeNum(5))
 	})
 }
 
