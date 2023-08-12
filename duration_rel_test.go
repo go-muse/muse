@@ -23,6 +23,15 @@ func TestNewDuration(t *testing.T) {
 	}
 }
 
+func TestDuration_Name(t *testing.T) {
+	validDurationName := DurationNameEighth
+	duration1 := &DurationRel{name: validDurationName}
+	assert.Equal(t, validDurationName, duration1.Name())
+
+	var duration2 *DurationRel
+	assert.Equal(t, DurationName(""), duration2.Name())
+}
+
 func TestDuration_GetAmountOfBars(t *testing.T) {
 	type (
 		args struct {

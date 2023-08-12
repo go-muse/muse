@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -739,5 +740,63 @@ func TestNoteGetAlterationShift(t *testing.T) {
 
 	for _, testCase := range testCases {
 		assert.Equal(t, testCase.want, testCase.note.GetAlterationShift(), testCase.note)
+	}
+}
+
+func TestNoteGetPartOfBarByRel(t *testing.T) {
+	testCases := []struct {
+		note          *Note
+		timeSignature *Fraction
+		want          decimal.Decimal
+	}{
+		{
+			note:          &Note{durationRel: NewDurationRel(DurationNameWhole)},
+			timeSignature: &Fraction{1, 1},
+			want:          decimal.NewFromInt(1),
+		},
+		{
+			note:          &Note{durationRel: NewDurationRel(DurationNameHalf)},
+			timeSignature: &Fraction{1, 2},
+			want:          decimal.NewFromInt(1),
+		},
+		{
+			note:          &Note{durationRel: NewDurationRel(DurationNameWhole)},
+			timeSignature: &Fraction{1, 2},
+			want:          decimal.NewFromFloat(0.5),
+		},
+		{
+			note:          &Note{durationRel: NewDurationRel(DurationNameHalf)},
+			timeSignature: &Fraction{1, 1},
+			want:          decimal.NewFromInt(2),
+		},
+		{
+			note:          &Note{durationRel: NewDurationRel(DurationNameWhole).SetDots(1)},
+			timeSignature: &Fraction{1, 1},
+			want:          decimal.NewFromFloat(1.5),
+		},
+		{
+			note:          &Note{durationRel: NewDurationRel(DurationNameWhole).SetDots(2)},
+			timeSignature: &Fraction{1, 1},
+			want:          decimal.NewFromFloat(1.75),
+		},
+		{
+			note:          &Note{durationRel: NewDurationRel(DurationNameWhole).SetTupletDuplet()},
+			timeSignature: &Fraction{1, 1},
+			want:          decimal.NewFromFloat(0.6666666666666667),
+		},
+		{
+			note:          &Note{durationRel: NewDurationRel(DurationNameWhole).SetTupletTriplet()},
+			timeSignature: &Fraction{1, 1},
+			want:          decimal.NewFromFloat(1.5),
+		},
+		{
+			note:          &Note{durationRel: NewDurationRel(DurationNameWhole).SetTupletTriplet().AddDot()},
+			timeSignature: &Fraction{1, 1},
+			want:          decimal.NewFromFloat(2.25),
+		},
+	}
+
+	for _, testCase := range testCases {
+		assert.True(t, testCase.want.Equal(testCase.note.GetPartOfBarByRel(testCase.timeSignature)), "expected: %+v, actual: %+v", testCase.want, testCase.note.durationRel.GetPartOfBar(testCase.timeSignature))
 	}
 }
