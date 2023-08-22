@@ -19,6 +19,11 @@ type Fraction struct {
 	Denominator uint64
 }
 
+// value returns decimal value of the fraction.
+func (f *Fraction) value() decimal.Decimal {
+	return decimal.NewFromInt(int64(f.Numerator)).Div(decimal.NewFromInt(int64(f.Denominator)))
+}
+
 // minute is amount of nanoseconds in minute.
 const (
 	secondsInMinute = int64(60)
@@ -166,10 +171,8 @@ func (dr *DurationRel) SetTupletTriplet() *DurationRel {
 // GetAmountOfBars calculates and returns amount of bars within one minute.
 func GetAmountOfBars(trackSettings TrackSettings) decimal.Decimal {
 	bpmDecimal := decimal.NewFromInt(int64(trackSettings.BPM))
-	unitDecimal := decimal.NewFromInt(int64(trackSettings.Unit.Numerator)).Div(decimal.NewFromInt(int64(trackSettings.Unit.Denominator)))
-	timeSignatureDecimal := decimal.NewFromInt(int64(trackSettings.TimeSignature.Numerator)).Div(decimal.NewFromInt(int64(trackSettings.TimeSignature.Denominator)))
 
-	return bpmDecimal.Mul(unitDecimal).Div(timeSignatureDecimal)
+	return bpmDecimal.Mul(trackSettings.Unit.value()).Div(trackSettings.TimeSignature.value())
 }
 
 // GetTimeDuration calculates and returns time.Duration of the current duration.
@@ -181,7 +184,7 @@ func (dr *DurationRel) GetTimeDuration(trackSettings TrackSettings) time.Duratio
 	amountOfBars := GetAmountOfBars(trackSettings)
 
 	const baseValue = 2
-	noteDurationDecimal := decimal.NewFromInt(baseValue).Pow(decimal.NewFromInt(int64(dr.name.getValue())))
+	noteDurationDecimal := dr.Name().GetValue()
 	minuteDecimal := decimal.NewFromInt(minute)
 
 	result := minuteDecimal.Div(amountOfBars).Mul(noteDurationDecimal)
@@ -206,10 +209,9 @@ func (dr *DurationRel) GetPartOfBar(timeSignature *Fraction) decimal.Decimal {
 	}
 
 	const baseValue = 2
-	noteDurationDecimal := decimal.NewFromInt(baseValue).Pow(decimal.NewFromInt(int64(dr.name.getValue())))
-	timeSignatureDecimal := decimal.NewFromInt(int64(timeSignature.Numerator)).Div(decimal.NewFromInt(int64(timeSignature.Denominator)))
+	noteDurationDecimal := dr.Name().GetValue()
 
-	result := timeSignatureDecimal.Div(noteDurationDecimal)
+	result := timeSignature.value().Div(noteDurationDecimal)
 
 	base := result
 	for i := int64(1); i <= int64(dr.dots); i++ {

@@ -1,14 +1,14 @@
 package muse
 
-type IntervalsStore map[IntervalName]func() *ChromaticInterval
+type IntervalsStore map[IntervalName]func() *IntervalChromatic
 
-func (is IntervalsStore) GetInterval(intervalName IntervalName) *ChromaticInterval {
+func (is IntervalsStore) GetInterval(intervalName IntervalName) *IntervalChromatic {
 	return is[intervalName]()
 }
 
-func (is IntervalsStore) AddInterval(interval *ChromaticInterval) {
-	is[interval.Name()] = func() *ChromaticInterval { return interval }
-	is[interval.ShortName()] = func() *ChromaticInterval { return interval }
+func (is IntervalsStore) AddInterval(interval *IntervalChromatic) {
+	is[interval.Name()] = func() *IntervalChromatic { return interval }
+	is[interval.ShortName()] = func() *IntervalChromatic { return interval }
 }
 
 func InitIntervalsStore() IntervalsStore {
@@ -46,35 +46,35 @@ func InitIntervalsStore() IntervalsStore {
 
 	// Mode's intervals
 
-	intervalsStore[IntervalNameModifiedDiminishedSecond] = IntervalDiminishedSecond
-	intervalsStore[IntervalNameModifiedAugmentedUnison] = IntervalAugmentedUnison
-	intervalsStore[IntervalNameModifiedDiminishedThird] = IntervalDiminishedThird
-	intervalsStore[IntervalNameModifiedAugmentedSecond] = IntervalAugmentedSecond
-	intervalsStore[IntervalNameModifiedDiminishedFourth] = IntervalDiminishedFourth
-	intervalsStore[IntervalNameModifiedAugmentedThird] = IntervalAugmentedThird
-	intervalsStore[IntervalNameModifiedDiminishedFifth] = IntervalDiminishedFifth
-	intervalsStore[IntervalNameModifiedAugmentedFourth] = IntervalAugmentedFourth
-	intervalsStore[IntervalNameModifiedDiminishedSixth] = IntervalDiminishedSixth
-	intervalsStore[IntervalNameModifiedAugmentedFifth] = IntervalAugmentedFifth
-	intervalsStore[IntervalNameModifiedDiminishedSeventh] = IntervalDiminishedSeventh
-	intervalsStore[IntervalNameModifiedAugmentedSixth] = IntervalAugmentedSixth
-	intervalsStore[IntervalNameModifiedDiminishedOctave] = IntervalDiminishedOctave
-	intervalsStore[IntervalNameModifiedAugmentedSeventh] = IntervalAugmentedSeventh
+	intervalsStore[IntervalNameDiminishedSecond] = IntervalDiminishedSecond
+	intervalsStore[IntervalNameAugmentedUnison] = IntervalAugmentedUnison
+	intervalsStore[IntervalNameDiminishedThird] = IntervalDiminishedThird
+	intervalsStore[IntervalNameAugmentedSecond] = IntervalAugmentedSecond
+	intervalsStore[IntervalNameDiminishedFourth] = IntervalDiminishedFourth
+	intervalsStore[IntervalNameAugmentedThird] = IntervalAugmentedThird
+	intervalsStore[IntervalNameDiminishedFifth] = IntervalDiminishedFifth
+	intervalsStore[IntervalNameAugmentedFourth] = IntervalAugmentedFourth
+	intervalsStore[IntervalNameDiminishedSixth] = IntervalDiminishedSixth
+	intervalsStore[IntervalNameAugmentedFifth] = IntervalAugmentedFifth
+	intervalsStore[IntervalNameDiminishedSeventh] = IntervalDiminishedSeventh
+	intervalsStore[IntervalNameAugmentedSixth] = IntervalAugmentedSixth
+	intervalsStore[IntervalNameDiminishedOctave] = IntervalDiminishedOctave
+	intervalsStore[IntervalNameAugmentedSeventh] = IntervalAugmentedSeventh
 
-	intervalsStore[IntervalNameModifiedDiminishedSecondShort] = IntervalDiminishedSecond
-	intervalsStore[IntervalNameModifiedAugmentedUnisonShort] = IntervalAugmentedUnison
-	intervalsStore[IntervalNameModifiedDiminishedThirdShort] = IntervalDiminishedThird
-	intervalsStore[IntervalNameModifiedAugmentedSecondShort] = IntervalAugmentedSecond
-	intervalsStore[IntervalNameModifiedDiminishedFourthShort] = IntervalDiminishedFourth
-	intervalsStore[IntervalNameModifiedAugmentedThirdShort] = IntervalAugmentedThird
-	intervalsStore[IntervalNameModifiedDiminishedFifthShort] = IntervalDiminishedFifth
-	intervalsStore[IntervalNameModifiedAugmentedFourthShort] = IntervalAugmentedFourth
-	intervalsStore[IntervalNameModifiedDiminishedSixthShort] = IntervalDiminishedSixth
-	intervalsStore[IntervalNameModifiedAugmentedFifthShort] = IntervalAugmentedFifth
-	intervalsStore[IntervalNameModifiedDiminishedSeventhShort] = IntervalDiminishedSeventh
-	intervalsStore[IntervalNameModifiedAugmentedSixthShort] = IntervalAugmentedSixth
-	intervalsStore[IntervalNameModifiedDiminishedOctaveShort] = IntervalDiminishedOctave
-	intervalsStore[IntervalNameModifiedAugmentedSeventhShort] = IntervalAugmentedSeventh
+	intervalsStore[IntervalNameDiminishedSecondShort] = IntervalDiminishedSecond
+	intervalsStore[IntervalNameAugmentedUnisonShort] = IntervalAugmentedUnison
+	intervalsStore[IntervalNameDiminishedThirdShort] = IntervalDiminishedThird
+	intervalsStore[IntervalNameAugmentedSecondShort] = IntervalAugmentedSecond
+	intervalsStore[IntervalNameDiminishedFourthShort] = IntervalDiminishedFourth
+	intervalsStore[IntervalNameAugmentedThirdShort] = IntervalAugmentedThird
+	intervalsStore[IntervalNameDiminishedFifthShort] = IntervalDiminishedFifth
+	intervalsStore[IntervalNameAugmentedFourthShort] = IntervalAugmentedFourth
+	intervalsStore[IntervalNameDiminishedSixthShort] = IntervalDiminishedSixth
+	intervalsStore[IntervalNameAugmentedFifthShort] = IntervalAugmentedFifth
+	intervalsStore[IntervalNameDiminishedSeventhShort] = IntervalDiminishedSeventh
+	intervalsStore[IntervalNameAugmentedSixthShort] = IntervalAugmentedSixth
+	intervalsStore[IntervalNameDiminishedOctaveShort] = IntervalDiminishedOctave
+	intervalsStore[IntervalNameAugmentedSeventhShort] = IntervalAugmentedSeventh
 
 	return intervalsStore
 }

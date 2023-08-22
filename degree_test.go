@@ -223,6 +223,10 @@ func TestDegree_getDegreeByDegreeNum(t *testing.T) {
 		var nilDegree *Degree
 		assert.Nil(t, nilDegree.getDegreeByDegreeNum(5))
 	})
+
+	t.Run("TestDegree_getDegreeByDegreeNum: negative case", func(t *testing.T) {
+		assert.Nil(t, generateDegrees(3, true).getDegreeByDegreeNum(5))
+	})
 }
 
 func TestDegree_GetForwardDegreeByDegreeNum(t *testing.T) {

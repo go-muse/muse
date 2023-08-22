@@ -97,7 +97,7 @@ func TestDuration_GetAmountOfBars(t *testing.T) {
 	}
 }
 
-func TestDuration_TimeDuration(t *testing.T) {
+func TestDuration_GetTimeDuration(t *testing.T) {
 	type (
 		args struct {
 			*TrackSettings
@@ -290,7 +290,7 @@ func TestDuration_RemoveDots(t *testing.T) {
 	assert.Zero(t, duration2.RemoveDots().Dots())
 }
 
-func TestDuration_GetPartOfBarByRelative(t *testing.T) {
+func TestDuration_GetPartOfBar(t *testing.T) {
 	testCases := []struct {
 		duration      *DurationRel
 		timeSignature *Fraction
@@ -346,4 +346,117 @@ func TestDuration_GetPartOfBarByRelative(t *testing.T) {
 	for _, testCase := range testCases {
 		assert.True(t, testCase.want.Equal(testCase.duration.GetPartOfBar(testCase.timeSignature)), "expected: %+v, actual: %+v", testCase.want, testCase.duration.GetPartOfBar(testCase.timeSignature))
 	}
+}
+
+func TestFraction_value(t *testing.T) {
+	numerator, denominator := int64(3), int64(4)
+	fraction := &Fraction{
+		Numerator:   uint64(numerator),
+		Denominator: uint64(denominator),
+	}
+
+	assert.Equal(t, decimal.NewFromInt(numerator).Div(decimal.NewFromInt(int64(denominator))), fraction.value())
+}
+
+func TestDuration_SetTuplet(t *testing.T) {
+	t.Run("Duration_SetTuplet: positive cases", func(t *testing.T) {
+		testCases := []struct {
+			duration *DurationRel
+			tuplet   *Tuplet
+		}{
+			{
+				duration: &DurationRel{
+					tuplet: nil,
+				},
+				tuplet: NewTuplet(2, 3),
+			},
+			{
+				duration: &DurationRel{
+					tuplet: NewTuplet(3, 2),
+				},
+				tuplet: NewTuplet(2, 3),
+			},
+			{
+				duration: &DurationRel{
+					tuplet: NewTuplet(2, 3),
+				},
+				tuplet: NewTuplet(2, 3),
+			},
+		}
+
+		for _, testCase := range testCases {
+			assert.Equal(t, testCase.tuplet, testCase.duration.SetTuplet(testCase.tuplet).tuplet)
+		}
+	})
+
+	t.Run("Duration_SetTuplet: negative cases", func(t *testing.T) {
+		var duration *DurationRel
+		assert.Nil(t, duration.SetTuplet(NewTuplet(2, 3)))
+	})
+}
+
+func TestDuration_SetTupletDuplet(t *testing.T) {
+	t.Run("SetTupletDuplet: positive cases", func(t *testing.T) {
+		testCases := []struct {
+			duration *DurationRel
+		}{
+			{
+				duration: &DurationRel{
+					tuplet: nil,
+				},
+			},
+			{
+				duration: &DurationRel{
+					tuplet: NewTuplet(3, 2),
+				},
+			},
+			{
+				duration: &DurationRel{
+					tuplet: NewTuplet(2, 3),
+				},
+			},
+		}
+
+		for _, testCase := range testCases {
+			assert.Equal(t, NewTuplet(2, 3), testCase.duration.SetTupletDuplet().tuplet)
+		}
+	})
+
+	t.Run("SetTupletDuplet: negative cases", func(t *testing.T) {
+		var duration *DurationRel
+		assert.Nil(t, duration.SetTupletDuplet())
+	})
+}
+
+func TestDuration_SetTupletTriplet(t *testing.T) {
+	t.Run("SetTupletTriplet: positive cases", func(t *testing.T) {
+		testCases := []struct {
+			duration *DurationRel
+		}{
+			{
+				duration: &DurationRel{
+					tuplet: nil,
+				},
+			},
+			{
+				duration: &DurationRel{
+					tuplet: NewTuplet(3, 2),
+				},
+			},
+			{
+				duration: &DurationRel{
+					tuplet: NewTuplet(2, 3),
+				},
+			},
+		}
+
+		for _, testCase := range testCases {
+			assert.Equal(t, NewTuplet(3, 2), testCase.duration.SetTupletTriplet().tuplet)
+		}
+	})
+
+	t.Run("SetTupletTriplet: negative cases", func(t *testing.T) {
+		var duration *DurationRel
+		assert.Nil(t, duration.SetTupletTriplet())
+	})
 }
