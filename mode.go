@@ -208,9 +208,9 @@ func (m *Mode) GetIntervals(opts *IntervalFilteringOptions) []Interval {
 	for degree := range m.GetFirstDegree().IterateOneRound(false) {
 		if !opts.FilterByAbsoluteModalPositionExist(degree.absoluteModalPosition.name) {
 			for _, mc := range degree.modalCharacteristics {
-				if !opts.FilterByDegreeCharacteristicNameExist(mc.name) && !opts.FilterBySonanceExist(mc.interval.Sonance) {
+				if !opts.FilterByDegreeCharacteristicNameExist(mc.name) && !opts.FilterBySonanceExist(mc.interval.chromaticInterval.Sonance) {
 					intervalWithDegrees := Interval{
-						ChromaticInterval: mc.interval.Interval(),
+						chromaticInterval: mc.interval.IntervalChromatic(),
 						degree1:           degree,
 						degree2:           mc.degree,
 					}

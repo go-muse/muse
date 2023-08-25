@@ -1,6 +1,8 @@
 package muse
 
-import "math"
+import (
+	"github.com/shopspring/decimal"
+)
 
 type DurationName string
 
@@ -20,43 +22,46 @@ const (
 	DurationNameFiveHundredTwelfth   = DurationName("FiveHundredTwelfth")
 )
 
+// getValue returns the power to which the number 2 must be raised to obtain the part of the bar occupied by the note.
+//
 //nolint:gomnd
-func (dn DurationName) getValue() int8 {
+func (dn DurationName) getValue() decimal.Decimal {
 	switch dn {
 	case DurationNameLarge:
-		return 3
+		return decimal.NewFromInt(3)
 	case DurationNameLong:
-		return 2
+		return decimal.NewFromInt(2)
 	case DurationNameDoubleWhole:
-		return 1
+		return decimal.NewFromInt(1)
 	case DurationNameWhole:
-		return 0
+		return decimal.NewFromInt(0)
 	case DurationNameHalf:
-		return -1
+		return decimal.NewFromInt(-1)
 	case DurationNameQuarter:
-		return -2
+		return decimal.NewFromInt(-2)
 	case DurationNameEighth:
-		return -3
+		return decimal.NewFromInt(-3)
 	case DurationNameSixteenth:
-		return -4
+		return decimal.NewFromInt(-4)
 	case DurationNameThirtySecond:
-		return -5
+		return decimal.NewFromInt(-5)
 	case DurationNameSixtyFourth:
-		return -6
+		return decimal.NewFromInt(-6)
 	case DurationNameHundredTwentyEighth:
-		return -7
+		return decimal.NewFromInt(-7)
 	case DurationNameTwoHundredFiftySixth:
-		return -8
+		return decimal.NewFromInt(-8)
 	case DurationNameFiveHundredTwelfth:
-		return -9
+		return decimal.NewFromInt(-9)
 	default:
-		return 0
+		return decimal.NewFromInt(0)
 	}
 }
 
-// GetValue returns float value that represents note's duration as part of a bar.
+// GetValue returns value that represents note's duration as part of a bar.
 //
 //nolint:gomnd
-func (dn DurationName) GetValue() float64 {
-	return math.Pow(2, float64(dn.getValue())) // 2 means base to get real note value
+func (dn DurationName) GetValue() decimal.Decimal {
+	const baseValue = 2
+	return decimal.NewFromInt(baseValue).Pow(dn.getValue())
 }

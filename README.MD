@@ -108,10 +108,6 @@ A: You can iterate through degrees  [![example](https://img.shields.io/badge/exa
 Q: Are there already existing scales in the library?\
 A: Yes, there is mode templates store [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-InitModeTemplatesStore). It contains mode names and templates.
 
-
-
-
-
 Q: How to use chords?\
 A: Chord is a set of notes with the same duration  [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NewChord). You can add your notes to the chord, their durations will be set to chord's duration automatically [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Chord.AddNotes).
 

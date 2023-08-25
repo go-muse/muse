@@ -1,6 +1,7 @@
 package muse
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -49,6 +50,27 @@ func TestNewChord(t *testing.T) {
 			assert.Equal(t, duration, chordNote.durationRel, "expected note %v to have duration %v, got %v", i, duration, chordNote.durationRel)
 		}
 	})
+}
+
+func TestChord_String(t *testing.T) {
+	t.Run("Chord_String: positive", func(t *testing.T) {
+		chord := &Chord{
+			notes:       nil,
+			durationAbs: time.Second,
+			durationRel: &DurationRel{name: "custom", dots: 2, tuplet: &Tuplet{n: 2, m: 3}},
+		}
+
+		assert.Equal(t,
+			fmt.Sprintf("notes: %+v, duration name: %+v, custom duration: %+v", chord.notes, chord.durationRel.Name(), chord.durationAbs),
+			chord.String(),
+		)
+	})
+
+	t.Run("Chord_String: negative", func(t *testing.T) {
+		var chord *Chord
+		assert.Equal(t, "nil chord", chord.String())
+	})
+
 }
 
 func TestNewChordEmpty(t *testing.T) {

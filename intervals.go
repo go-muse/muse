@@ -59,67 +59,67 @@ const (
 
 	// Diatonic intervals.
 
-	IntervalNameModifiedDiminishedSecond  = IntervalName("DiminishedSecond")
-	IntervalNameModifiedAugmentedUnison   = IntervalName("AugmentedUnison")
-	IntervalNameModifiedDiminishedThird   = IntervalName("DiminishedThird")
-	IntervalNameModifiedAugmentedSecond   = IntervalName("AugmentedSecond")
-	IntervalNameModifiedDiminishedFourth  = IntervalName("DiminishedFourth")
-	IntervalNameModifiedAugmentedThird    = IntervalName("AugmentedThird")
-	IntervalNameModifiedDiminishedFifth   = IntervalName("DiminishedFifth")
-	IntervalNameModifiedAugmentedFourth   = IntervalName("AugmentedFourth")
-	IntervalNameModifiedDiminishedSixth   = IntervalName("DiminishedSixth")
-	IntervalNameModifiedAugmentedFifth    = IntervalName("AugmentedFifth")
-	IntervalNameModifiedDiminishedSeventh = IntervalName("DiminishedSeventh")
-	IntervalNameModifiedAugmentedSixth    = IntervalName("AugmentedSixth")
-	IntervalNameModifiedDiminishedOctave  = IntervalName("DiminishedOctave")
-	IntervalNameModifiedAugmentedSeventh  = IntervalName("AugmentedSeventh")
+	IntervalNameDiminishedSecond  = IntervalName("DiminishedSecond")
+	IntervalNameAugmentedUnison   = IntervalName("AugmentedUnison")
+	IntervalNameDiminishedThird   = IntervalName("DiminishedThird")
+	IntervalNameAugmentedSecond   = IntervalName("AugmentedSecond")
+	IntervalNameDiminishedFourth  = IntervalName("DiminishedFourth")
+	IntervalNameAugmentedThird    = IntervalName("AugmentedThird")
+	IntervalNameDiminishedFifth   = IntervalName("DiminishedFifth")
+	IntervalNameAugmentedFourth   = IntervalName("AugmentedFourth")
+	IntervalNameDiminishedSixth   = IntervalName("DiminishedSixth")
+	IntervalNameAugmentedFifth    = IntervalName("AugmentedFifth")
+	IntervalNameDiminishedSeventh = IntervalName("DiminishedSeventh")
+	IntervalNameAugmentedSixth    = IntervalName("AugmentedSixth")
+	IntervalNameDiminishedOctave  = IntervalName("DiminishedOctave")
+	IntervalNameAugmentedSeventh  = IntervalName("AugmentedSeventh")
 
-	IntervalNameModifiedDiminishedNinth      = IntervalName("DiminishedNinth")
-	IntervalNameModifiedAugmentedOctave      = IntervalName("AugmentedOctave")
-	IntervalNameModifiedDiminishedTenth      = IntervalName("DiminishedTenth")
-	IntervalNameModifiedAugmentedNinth       = IntervalName("AugmentedNinth")
-	IntervalNameModifiedDiminishedEleventh   = IntervalName("DiminishedEleventh")
-	IntervalNameModifiedAugmentedTenth       = IntervalName("AugmentedTenth")
-	IntervalNameModifiedDiminishedTwelfth    = IntervalName("DiminishedTwelfth")
-	IntervalNameModifiedAugmentedEleventh    = IntervalName("AugmentedEleventh")
-	IntervalNameModifiedDiminishedThirteenth = IntervalName("DiminishedThirteenth")
-	IntervalNameModifiedAugmentedTwelfth     = IntervalName("AugmentedTwelfth")
-	IntervalNameModifiedDiminishedFourteenth = IntervalName("DiminishedFourteenth")
-	IntervalNameModifiedAugmentedThirteenth  = IntervalName("AugmentedThirteenth")
-	IntervalNameModifiedDiminishedFifteenth  = IntervalName("DiminishedFifteenth")
-	IntervalNameModifiedAugmentedFourteenth  = IntervalName("AugmentedFourteenth") // Double octave
-	IntervalNameModifiedAugmentedFifteenth   = IntervalName("AugmentedFifteenth")
+	IntervalNameDiminishedNinth      = IntervalName("DiminishedNinth")
+	IntervalNameAugmentedOctave      = IntervalName("AugmentedOctave")
+	IntervalNameDiminishedTenth      = IntervalName("DiminishedTenth")
+	IntervalNameAugmentedNinth       = IntervalName("AugmentedNinth")
+	IntervalNameDiminishedEleventh   = IntervalName("DiminishedEleventh")
+	IntervalNameAugmentedTenth       = IntervalName("AugmentedTenth")
+	IntervalNameDiminishedTwelfth    = IntervalName("DiminishedTwelfth")
+	IntervalNameAugmentedEleventh    = IntervalName("AugmentedEleventh")
+	IntervalNameDiminishedThirteenth = IntervalName("DiminishedThirteenth")
+	IntervalNameAugmentedTwelfth     = IntervalName("AugmentedTwelfth")
+	IntervalNameDiminishedFourteenth = IntervalName("DiminishedFourteenth")
+	IntervalNameAugmentedThirteenth  = IntervalName("AugmentedThirteenth")
+	IntervalNameDiminishedFifteenth  = IntervalName("DiminishedFifteenth")
+	IntervalNameAugmentedFourteenth  = IntervalName("AugmentedFourteenth") // Double octave
+	IntervalNameAugmentedFifteenth   = IntervalName("AugmentedFifteenth")
 
-	IntervalNameModifiedDiminishedSecondShort  = IntervalName("d2")
-	IntervalNameModifiedAugmentedUnisonShort   = IntervalName("A1")
-	IntervalNameModifiedDiminishedThirdShort   = IntervalName("d3")
-	IntervalNameModifiedAugmentedSecondShort   = IntervalName("A2")
-	IntervalNameModifiedDiminishedFourthShort  = IntervalName("d4")
-	IntervalNameModifiedAugmentedThirdShort    = IntervalName("A3")
-	IntervalNameModifiedDiminishedFifthShort   = IntervalName("d5")
-	IntervalNameModifiedAugmentedFourthShort   = IntervalName("A4")
-	IntervalNameModifiedDiminishedSixthShort   = IntervalName("d6")
-	IntervalNameModifiedAugmentedFifthShort    = IntervalName("A5")
-	IntervalNameModifiedDiminishedSeventhShort = IntervalName("d7")
-	IntervalNameModifiedAugmentedSixthShort    = IntervalName("A6")
-	IntervalNameModifiedDiminishedOctaveShort  = IntervalName("d8")
-	IntervalNameModifiedAugmentedSeventhShort  = IntervalName("A7")
+	IntervalNameDiminishedSecondShort  = IntervalName("d2")
+	IntervalNameAugmentedUnisonShort   = IntervalName("A1")
+	IntervalNameDiminishedThirdShort   = IntervalName("d3")
+	IntervalNameAugmentedSecondShort   = IntervalName("A2")
+	IntervalNameDiminishedFourthShort  = IntervalName("d4")
+	IntervalNameAugmentedThirdShort    = IntervalName("A3")
+	IntervalNameDiminishedFifthShort   = IntervalName("d5")
+	IntervalNameAugmentedFourthShort   = IntervalName("A4")
+	IntervalNameDiminishedSixthShort   = IntervalName("d6")
+	IntervalNameAugmentedFifthShort    = IntervalName("A5")
+	IntervalNameDiminishedSeventhShort = IntervalName("d7")
+	IntervalNameAugmentedSixthShort    = IntervalName("A6")
+	IntervalNameDiminishedOctaveShort  = IntervalName("d8")
+	IntervalNameAugmentedSeventhShort  = IntervalName("A7")
 
-	IntervalNameModifiedDiminishedNinthShort      = IntervalName("d9")
-	IntervalNameModifiedAugmentedOctaveShort      = IntervalName("A8")
-	IntervalNameModifiedDiminishedTenthShort      = IntervalName("d10")
-	IntervalNameModifiedAugmentedNinthShort       = IntervalName("A9")
-	IntervalNameModifiedDiminishedEleventhShort   = IntervalName("d11")
-	IntervalNameModifiedAugmentedTenthShort       = IntervalName("A10")
-	IntervalNameModifiedDiminishedTwelfthShort    = IntervalName("d12")
-	IntervalNameModifiedAugmentedEleventhShort    = IntervalName("A11")
-	IntervalNameModifiedDiminishedThirteenthShort = IntervalName("d13")
-	IntervalNameModifiedAugmentedTwelfthShort     = IntervalName("A12")
-	IntervalNameModifiedDiminishedFourteenthShort = IntervalName("d14")
-	IntervalNameModifiedAugmentedThirteenthShort  = IntervalName("A13")
-	IntervalNameModifiedDiminishedFifteenthShort  = IntervalName("d15")
-	IntervalNameModifiedAugmentedFourteenthShort  = IntervalName("A14")
-	IntervalNameModifiedAugmentedFifteenthShort   = IntervalName("A15")
+	IntervalNameDiminishedNinthShort      = IntervalName("d9")
+	IntervalNameAugmentedOctaveShort      = IntervalName("A8")
+	IntervalNameDiminishedTenthShort      = IntervalName("d10")
+	IntervalNameAugmentedNinthShort       = IntervalName("A9")
+	IntervalNameDiminishedEleventhShort   = IntervalName("d11")
+	IntervalNameAugmentedTenthShort       = IntervalName("A10")
+	IntervalNameDiminishedTwelfthShort    = IntervalName("d12")
+	IntervalNameAugmentedEleventhShort    = IntervalName("A11")
+	IntervalNameDiminishedThirteenthShort = IntervalName("d13")
+	IntervalNameAugmentedTwelfthShort     = IntervalName("A12")
+	IntervalNameDiminishedFourteenthShort = IntervalName("d14")
+	IntervalNameAugmentedThirteenthShort  = IntervalName("A13")
+	IntervalNameDiminishedFifteenthShort  = IntervalName("d15")
+	IntervalNameAugmentedFourteenthShort  = IntervalName("A14")
+	IntervalNameAugmentedFifteenthShort   = IntervalName("A15")
 )
 
 const (
@@ -152,8 +152,8 @@ const (
 
 // Chromatic intervals.
 
-func IntervalPerfectUnison() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalPerfectUnison() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonancePerfectUnison,
 		names: &intervalNameExtended{
 			name:      IntervalNamePerfectUnison,
@@ -163,8 +163,8 @@ func IntervalPerfectUnison() *ChromaticInterval {
 	}
 }
 
-func IntervalMinorSecond() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalMinorSecond() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceMinorSecond,
 		names: &intervalNameExtended{
 			name:      IntervalNameMinorSecond,
@@ -174,8 +174,8 @@ func IntervalMinorSecond() *ChromaticInterval {
 	}
 }
 
-func IntervalMajorSecond() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalMajorSecond() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceMajorSecond,
 		names: &intervalNameExtended{
 			name:      IntervalNameMajorSecond,
@@ -185,8 +185,8 @@ func IntervalMajorSecond() *ChromaticInterval {
 	}
 }
 
-func IntervalMinorThird() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalMinorThird() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceMinorThird,
 		names: &intervalNameExtended{
 			name:      IntervalNameMinorThird,
@@ -196,8 +196,8 @@ func IntervalMinorThird() *ChromaticInterval {
 	}
 }
 
-func IntervalMajorThird() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalMajorThird() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceMajorThird,
 		names: &intervalNameExtended{
 			name:      IntervalNameMajorThird,
@@ -207,8 +207,8 @@ func IntervalMajorThird() *ChromaticInterval {
 	}
 }
 
-func IntervalPerfectFourth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalPerfectFourth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonancePerfectFourth,
 		names: &intervalNameExtended{
 			name:      IntervalNamePerfectFourth,
@@ -218,8 +218,8 @@ func IntervalPerfectFourth() *ChromaticInterval {
 	}
 }
 
-func IntervalTritone() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalTritone() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceTritone,
 		names: &intervalNameExtended{
 			name:      IntervalNameTritone,
@@ -229,8 +229,8 @@ func IntervalTritone() *ChromaticInterval {
 	}
 }
 
-func IntervalPerfectFifth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalPerfectFifth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonancePerfectFifth,
 		names: &intervalNameExtended{
 			name:      IntervalNamePerfectFifth,
@@ -240,8 +240,8 @@ func IntervalPerfectFifth() *ChromaticInterval {
 	}
 }
 
-func IntervalMinorSixth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalMinorSixth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceMinorSixth,
 		names: &intervalNameExtended{
 			name:      IntervalNameMinorSixth,
@@ -251,8 +251,8 @@ func IntervalMinorSixth() *ChromaticInterval {
 	}
 }
 
-func IntervalMajorSixth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalMajorSixth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceMajorSixth,
 		names: &intervalNameExtended{
 			name:      IntervalNameMajorSixth,
@@ -262,8 +262,8 @@ func IntervalMajorSixth() *ChromaticInterval {
 	}
 }
 
-func IntervalMinorSeventh() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalMinorSeventh() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceMinorSeventh,
 		names: &intervalNameExtended{
 			name:      IntervalNameMinorSeventh,
@@ -273,8 +273,8 @@ func IntervalMinorSeventh() *ChromaticInterval {
 	}
 }
 
-func IntervalMajorSeventh() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalMajorSeventh() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceMajorSeventh,
 		names: &intervalNameExtended{
 			name:      IntervalNameMajorSeventh,
@@ -284,8 +284,8 @@ func IntervalMajorSeventh() *ChromaticInterval {
 	}
 }
 
-func IntervalPerfectOctave() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalPerfectOctave() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonancePerfectOctave,
 		names: &intervalNameExtended{
 			name:      IntervalNamePerfectOctave,
@@ -295,8 +295,8 @@ func IntervalPerfectOctave() *ChromaticInterval {
 	}
 }
 
-func IntervalMinorNinth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalMinorNinth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: 0,
 		names: &intervalNameExtended{
 			name:      IntervalNameMinorNinth,
@@ -306,8 +306,8 @@ func IntervalMinorNinth() *ChromaticInterval {
 	}
 }
 
-func IntervalMajorNinth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalMajorNinth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: 0,
 		names: &intervalNameExtended{
 			name:      IntervalNameMajorNinth,
@@ -317,8 +317,8 @@ func IntervalMajorNinth() *ChromaticInterval {
 	}
 }
 
-func IntervalMinorTenth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalMinorTenth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: 0,
 		names: &intervalNameExtended{
 			name:      IntervalNameMinorTenth,
@@ -328,8 +328,8 @@ func IntervalMinorTenth() *ChromaticInterval {
 	}
 }
 
-func IntervalMajorTenth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalMajorTenth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: 0,
 		names: &intervalNameExtended{
 			name:      IntervalNameMajorTenth,
@@ -339,8 +339,8 @@ func IntervalMajorTenth() *ChromaticInterval {
 	}
 }
 
-func IntervalPerfectEleventh() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalPerfectEleventh() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: 0,
 		names: &intervalNameExtended{
 			name:      IntervalNamePerfectEleventh,
@@ -350,8 +350,8 @@ func IntervalPerfectEleventh() *ChromaticInterval {
 	}
 }
 
-func IntervalOctaveWithTritone() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalOctaveWithTritone() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: 0,
 		names: &intervalNameExtended{
 			name:      IntervalNameOctaveWithTritone,
@@ -361,8 +361,8 @@ func IntervalOctaveWithTritone() *ChromaticInterval {
 	}
 }
 
-func IntervalPerfectTwelfth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalPerfectTwelfth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: 0,
 		names: &intervalNameExtended{
 			name:      IntervalNamePerfectTwelfth,
@@ -372,8 +372,8 @@ func IntervalPerfectTwelfth() *ChromaticInterval {
 	}
 }
 
-func IntervalMinorThirteenth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalMinorThirteenth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: 0,
 		names: &intervalNameExtended{
 			name:      IntervalNameMinorThirteenth,
@@ -383,8 +383,8 @@ func IntervalMinorThirteenth() *ChromaticInterval {
 	}
 }
 
-func IntervalMajorThirteenth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalMajorThirteenth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: 0,
 		names: &intervalNameExtended{
 			name:      IntervalNameMajorThirteenth,
@@ -394,8 +394,8 @@ func IntervalMajorThirteenth() *ChromaticInterval {
 	}
 }
 
-func IntervalMinorFourteenth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalMinorFourteenth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: 0,
 		names: &intervalNameExtended{
 			name:      IntervalNameMinorFourteenth,
@@ -405,8 +405,8 @@ func IntervalMinorFourteenth() *ChromaticInterval {
 	}
 }
 
-func IntervalMajorFourteenth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalMajorFourteenth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: 0,
 		names: &intervalNameExtended{
 			name:      IntervalNameMajorFourteenth,
@@ -416,8 +416,8 @@ func IntervalMajorFourteenth() *ChromaticInterval {
 	}
 }
 
-func IntervalPerfectFifteenth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalPerfectFifteenth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: 0,
 		names: &intervalNameExtended{
 			name:      IntervalNamePerfectFifteenth,
@@ -429,155 +429,155 @@ func IntervalPerfectFifteenth() *ChromaticInterval {
 
 // Compound chromatic (diatonic) intervals
 
-func IntervalDiminishedSecond() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalDiminishedSecond() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonancePerfectUnison,
 		names: &intervalNameExtended{
-			name:      IntervalNameModifiedDiminishedSecond,
-			shortName: IntervalNameModifiedDiminishedSecondShort,
+			name:      IntervalNameDiminishedSecond,
+			shortName: IntervalNameDiminishedSecondShort,
 		},
 		halfTones: IntervalHalfTones0,
 	}
 }
 
-func IntervalAugmentedUnison() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalAugmentedUnison() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceMinorSecond,
 		names: &intervalNameExtended{
-			name:      IntervalNameModifiedAugmentedUnison,
-			shortName: IntervalNameModifiedAugmentedUnisonShort,
+			name:      IntervalNameAugmentedUnison,
+			shortName: IntervalNameAugmentedUnisonShort,
 		},
 		halfTones: IntervalHalfTones1,
 	}
 }
 
-func IntervalDiminishedThird() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalDiminishedThird() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceMajorSecond,
 		names: &intervalNameExtended{
-			name:      IntervalNameModifiedDiminishedThird,
-			shortName: IntervalNameModifiedDiminishedThirdShort,
+			name:      IntervalNameDiminishedThird,
+			shortName: IntervalNameDiminishedThirdShort,
 		},
 		halfTones: IntervalHalfTones2,
 	}
 }
 
-func IntervalAugmentedSecond() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalAugmentedSecond() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceMinorThird,
 		names: &intervalNameExtended{
-			name:      IntervalNameModifiedAugmentedSecond,
-			shortName: IntervalNameModifiedAugmentedSecondShort,
+			name:      IntervalNameAugmentedSecond,
+			shortName: IntervalNameAugmentedSecondShort,
 		},
 		halfTones: IntervalHalfTones3,
 	}
 }
 
-func IntervalDiminishedFourth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalDiminishedFourth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceMajorThird,
 		names: &intervalNameExtended{
-			name:      IntervalNameModifiedDiminishedFourth,
-			shortName: IntervalNameModifiedDiminishedFourthShort,
+			name:      IntervalNameDiminishedFourth,
+			shortName: IntervalNameDiminishedFourthShort,
 		},
 		halfTones: IntervalHalfTones4,
 	}
 }
 
-func IntervalAugmentedThird() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalAugmentedThird() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonancePerfectFourth,
 		names: &intervalNameExtended{
-			name:      IntervalNameModifiedAugmentedThird,
-			shortName: IntervalNameModifiedAugmentedThirdShort,
+			name:      IntervalNameAugmentedThird,
+			shortName: IntervalNameAugmentedThirdShort,
 		},
 		halfTones: IntervalHalfTones5,
 	}
 }
 
-func IntervalDiminishedFifth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalDiminishedFifth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceTritone,
 		names: &intervalNameExtended{
-			name:      IntervalNameModifiedDiminishedFifth,
-			shortName: IntervalNameModifiedDiminishedFifthShort,
+			name:      IntervalNameDiminishedFifth,
+			shortName: IntervalNameDiminishedFifthShort,
 		},
 		halfTones: IntervalHalfTones6,
 	}
 }
 
-func IntervalAugmentedFourth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalAugmentedFourth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceTritone,
 		names: &intervalNameExtended{
-			name:      IntervalNameModifiedAugmentedFourth,
-			shortName: IntervalNameModifiedAugmentedFourthShort,
+			name:      IntervalNameAugmentedFourth,
+			shortName: IntervalNameAugmentedFourthShort,
 		},
 		halfTones: IntervalHalfTones6,
 	}
 }
 
-func IntervalDiminishedSixth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalDiminishedSixth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonancePerfectFifth,
 		names: &intervalNameExtended{
-			name:      IntervalNameModifiedDiminishedSixth,
-			shortName: IntervalNameModifiedDiminishedSixthShort,
+			name:      IntervalNameDiminishedSixth,
+			shortName: IntervalNameDiminishedSixthShort,
 		},
 		halfTones: IntervalHalfTones7,
 	}
 }
 
-func IntervalAugmentedFifth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalAugmentedFifth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceMinorSixth,
 		names: &intervalNameExtended{
-			name:      IntervalNameModifiedAugmentedFifth,
-			shortName: IntervalNameModifiedAugmentedFifthShort,
+			name:      IntervalNameAugmentedFifth,
+			shortName: IntervalNameAugmentedFifthShort,
 		},
 		halfTones: IntervalHalfTones8,
 	}
 }
 
-func IntervalDiminishedSeventh() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalDiminishedSeventh() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceMajorSixth,
 		names: &intervalNameExtended{
-			name:      IntervalNameModifiedDiminishedSeventh,
-			shortName: IntervalNameModifiedDiminishedSeventhShort,
+			name:      IntervalNameDiminishedSeventh,
+			shortName: IntervalNameDiminishedSeventhShort,
 		},
 		halfTones: IntervalHalfTones9,
 	}
 }
 
-func IntervalAugmentedSixth() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalAugmentedSixth() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceMinorSeventh,
 		names: &intervalNameExtended{
-			name:      IntervalNameModifiedAugmentedSixth,
-			shortName: IntervalNameModifiedAugmentedSixthShort,
+			name:      IntervalNameAugmentedSixth,
+			shortName: IntervalNameAugmentedSixthShort,
 		},
 		halfTones: IntervalHalfTones10,
 	}
 }
 
-func IntervalDiminishedOctave() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalDiminishedOctave() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonanceMajorSeventh,
 		names: &intervalNameExtended{
-			name:      IntervalNameModifiedDiminishedOctave,
-			shortName: IntervalNameModifiedDiminishedOctaveShort,
+			name:      IntervalNameDiminishedOctave,
+			shortName: IntervalNameDiminishedOctaveShort,
 		},
 		halfTones: IntervalHalfTones11,
 	}
 }
 
-func IntervalAugmentedSeventh() *ChromaticInterval {
-	return &ChromaticInterval{
+func IntervalAugmentedSeventh() *IntervalChromatic {
+	return &IntervalChromatic{
 		Sonance: IntervalSonancePerfectOctave,
 		names: &intervalNameExtended{
-			name:      IntervalNameModifiedAugmentedSeventh,
-			shortName: IntervalNameModifiedAugmentedSeventhShort,
+			name:      IntervalNameAugmentedSeventh,
+			shortName: IntervalNameAugmentedSeventhShort,
 		},
 		halfTones: IntervalHalfTones12,
 	}
