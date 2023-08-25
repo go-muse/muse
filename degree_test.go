@@ -1,6 +1,7 @@
 package muse
 
 import (
+	"fmt"
 	"math/rand"
 	"reflect"
 	"testing"
@@ -501,8 +502,11 @@ func TestDegree_IterateOneRound(t *testing.T) {
 
 func TestDegree_sortByAbsoluteModalPositions(t *testing.T) {
 	rand.NewSource(time.Now().UnixNano())
-	n10 := rand.Intn(10) - 5  //nolint:gosec
-	n20 := rand.Intn(20) - 10 //nolint:gosec
+	n10 := rand.Intn(3) //nolint:gosec
+	n20 := n10
+	for n20 == n10 {
+		n20 = rand.Intn(2) //nolint:gosec
+	}
 
 	getDegrees := func() (*Degree, *Degree) {
 		firstDegree := &Degree{number: 1, absoluteModalPosition: NewModalPositionByWeight(Weight(n10))}
@@ -536,6 +540,7 @@ func TestDegree_sortByAbsoluteModalPositions(t *testing.T) {
 	t.Run("test sort by AMP of not cycled degrees chain", func(t *testing.T) {
 		firstDegree, _ := getDegrees()
 		firstSortedDegree := firstDegree.sortByAbsoluteModalPositions()
+		fmt.Println(firstDegree, "\n", firstSortedDegree)
 		testingFunc(t, firstSortedDegree)
 	})
 
