@@ -1,1 +1,9 @@
-.vscode/
+# IDE
+/.idea
+/.vscode
+
+# system files
+.DS_Store
+
+# vendor
+/vendor

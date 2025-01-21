@@ -10,48 +10,61 @@
 [![Buy me a coffee](https://custom-icon-badges.demolab.com/badge/buyme-acoffee-brightgreen?logo=buymeacoffee)](https://www.buymeacoffee.com/igormuse)
 
 ## Functionality
+#### Main functionality with high level of maintenance: 
 ### Notes:
 - [x] Comparison
 - [x] Alterations
 - [x] Octaves
 - [x] Durations
 - [x] MIDI numbering
-
-### Tracks:
-- [x] Adding notes as events
-- [x] Note timing calculation
-- [x] Getting sorted start/end events
-### Chords:
-- [x] Adding and removing Notes
-- [x] Setting the same duration for all the chord's notes
+- [x] Frequency
 
 ### Modes:
-- [x] Templates* of most commonly used modes
+- [x] Templates of most commonly used modes
 - [x] Creating a mode based on mode template and tonic
 - [x] Calculation of modal positions of degrees in seven-degree modes
 - [x] Finding modes from an incoming set of degrees or notes
+
 ### Scales:
 - [x] Generating scales
+
 ### Intervals:
 - [x] Templates of intervals within an octave
 - [x] Identifying the interval between two degrees
 - [x] Acoustic and Chromatic intervals
 
-\* In this context, mode templates are a set of intervals that determine the arrangement of degrees in a mode.
+<br/>
+
+#### Experimental functionality with low level of maintenance:
+
+### Chords:
+- [x] Adding and removing Notes
+- [x] Setting the same duration for all the chord's notes
+
+### Tracks:
+- [x] Adding notes as events
+- [x] Note timing calculation
+- [x] Getting sorted start/end events
+<br/>
 
 ## Concept
 Definitions may differ from conventional.
 
+**Note** is the representation of a musical sound. It's name represent a pitch class.
+
+**Degree** is a position of a note within a mode, possessing modal characteristics.
+
 **Mode** is a set of degrees within octave spaced apart by a certain number of semitones.
 
-**Degree** is a position of a note within a mode, possessing modal characteristics. 
+**Mode Template** is a set of intervals that determine the arrangement of degrees in a mode.
 
-**Note** is the representation of a musical sound. It's name represent a pitch class.
+**Modal position** is a characteristic of functional relationship between mode degrees. **Relative modal position** based on its relationship with the main tone (tonal center), while **absolute modal position** based on its relationships with all degrees of the mode.
 
 **Scale** is the set of musical notes got from the mode and ordered by fundamental frequency or pitch.
 
 **Interval** is the ratio of two musical sounds in pitch. 
-Chromatic interval means the ratio of two notes, diatonic interval means the ratio of two degrees.
+
+**Chromatic interval** means the ratio of two notes, **diatonic interval** means the ratio of two degrees.
 
 **Chord** is a set of notes of the same duration.
 
@@ -59,16 +72,16 @@ Chromatic interval means the ratio of two notes, diatonic interval means the rat
 
 ![Concept pic](/img/concept.jpg)
 
-## Musician's usecases
+## Musician's use cases
 
 Q: How can I find out the set of notes in a chosen mode constructed from a given tonic?\
-A: You need to create new mode and get it's scale. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Mode.GenerateScale)
+A: You need to create new mode and get its scale. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Mode.GenerateScale)
 
 Q: How to determine the next note by interval?\
-A: You can do it by interval's name. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MakeNoteByIntervalName)
+A: You can do it by interval's name. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MakeNoteByName)
 
 Q: How to determine the next degree by interval?\
-A: You can do it by interval's name. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MakeDegreeByIntervalName)
+A: You can do it by interval's name. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-MakeDegreeByName)
 
 Q: How to know interval by two notes?\
 A: You need to create interval from that notes. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NewIntervalChromatic)
@@ -80,7 +93,7 @@ Q: How to get notes from a mode sorted by their modal positions?\
 A: You need to create a mode from the selected tonic and call sorting function. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Mode.SortByAbsoluteModalPositions)
 
 Q: How to find a mode by pattern?\
-A: There is the storage of mode names and their templates. You can find them by specifying your template. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-ModeTemplatesStore.FindModeTemplatesByPattern) Then you can sort them by mode names [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-ModeNamesAndTemplates.SortByModeName) or by templates(patterns) [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-ModeNamesAndTemplates.SortByModeTemplate).
+A: There is the storage of mode names and their templates. You can find them by specifying your template. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-ModeTemplatesStore.FindModeTemplatesByPattern) Then you can sort them by mode names [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NamesAndTemplates.SortByName) or by templates(patterns) [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NamesAndTemplates.SortByModeTemplate).
 
 Q: How can I find a mode based on a given set of notes?\
 A: You can find them in the storage of mode names and their templates by specifying your set of notes. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-ModeTemplatesStore.FindModeTemplatesByNotes).
@@ -112,10 +125,7 @@ Q: How to use chords?\
 A: Chord is a set of notes with the same duration  [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NewChord). You can add your notes to the chord, their durations will be set to chord's duration automatically [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Chord.AddNotes).
 
 ---
-<font size="2">This is not very stable version.
-Public function names and parameters can be changed.
-Bugs are OK.\
-Feel free to contact me\
+<font size="2">Feel free to contact me\
 </font>
 [![GitHub](https://custom-icon-badges.demolab.com/badge/-email-white?logo=gmail)](mailto:igor.georgia.sx@gmail.com)
-[![GitHub](https://custom-icon-badges.demolab.com/badge/-@Igorstx-white?logo=telegram)](https://t.me/Igorstx)
+[![GitHub](https://custom-icon-badges.demolab.com/badge/-@Igorxst-white?logo=telegram)](https://t.me/Igorxst)
