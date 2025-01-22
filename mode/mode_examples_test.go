@@ -80,3 +80,14 @@ func ExampleMode_IterateOneRound() {
 	// Degree Number: 6, Half tones from prime: 8, Note: F
 	// Degree Number: 7, Half tones from prime: 10, Note: G
 }
+
+// Generate scale from mode.
+func ExampleMode_GenerateScale() {
+	// If we set mode's name and note from muse, we can be sure that it won't return error.
+	mode := mode.MustMakeNewMode(mode.NameLydianDominant, note.EFLAT)
+
+	scale := mode.GenerateScale(false)
+
+	fmt.Println(scale)
+	// Output: [Eb F G A Bb C Db]
+}
