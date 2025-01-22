@@ -62,9 +62,7 @@ Definitions may differ from conventional.
 
 **Scale** is the set of musical notes got from the mode and ordered by fundamental frequency or pitch.
 
-**Interval** is the ratio of two musical sounds in pitch. 
-
-**Chromatic interval** means the ratio of two notes, **diatonic interval** means the ratio of two degrees.
+**Interval** is the ratio of two musical sounds in pitch. **Chromatic interval** means the ratio of two notes, **diatonic interval** means the ratio of two degrees.
 
 **Chord** is a set of notes of the same duration.
 
@@ -84,42 +82,42 @@ Q: How to determine the next degree by interval?\
 A: You can do it by interval's name. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/interval#example-MakeDegreeByName)
 
 Q: How to know interval by two notes?\
-A: You need to create interval from that notes. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/interval#example-NewIntervalChromatic)
+A: You need to create interval from that notes. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/interval#example-NewChromatic)
 
 Q: How to know interval by two degrees?\
-A: You need to create interval from that degrees. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/interval#example-NewIntervalByDegrees)
+A: You need to create interval from that degrees. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/interval#example-NewDiatonic)
 
 Q: How to get notes from a mode sorted by their modal positions?\
 A: You need to create a mode from the selected tonic and call sorting function. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/mode#example-Mode.SortByAbsoluteModalPositions)
 
 Q: How to find a mode by pattern?\
-A: There is the storage of mode names and their templates. You can find them by specifying your template. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/mode#example-ModeTemplatesStore.FindModeTemplatesByPattern) Then you can sort them by mode names [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NamesAndTemplates.SortByName) or by templates(patterns) [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NamesAndTemplates.SortByModeTemplate).
+A: There is the storage of mode names and their templates. You can find them by specifying your template. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/mode#example-TemplatesStore.FindModeTemplatesByPattern) Then you can sort them by mode names [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/mode#example-NamesAndTemplates.SortByName) or by templates(patterns) [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/mode#example-NamesAndTemplates.SortByModeTemplate).
 
 Q: How can I find a mode based on a given set of notes?\
-A: You can find them in the storage of mode names and their templates by specifying your set of notes. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/mode#example-ModeTemplatesStore.FindModeTemplatesByNotes).
+A: You can find them in the storage of mode names and their templates by specifying your set of notes. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/mode#example-TemplatesStore.FindModeTemplatesByNotes).
 
 ## Examples
 
 Q: How to create a note?\
-A: It is preferable to create a note by its name, taken from the library [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/note#example-NoteName.NewNote). Also, there are other ways to create notes [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note).
+A: It is preferable to create a note by its name, taken from the library [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/note#example-Name.NewNote). Also, there are other ways to create notes [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/note#example-Note).
 
 Q: How to specify an octave to a note?\
-A: You can create an octave [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/octave#example-Octave) and set it to your note [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse/note#example-Note.SetOctave) [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-Note.SetOctave).
+A: You can create an octave [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/octave#example-Octave) and set it to your note [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse/note#example-Note.SetOctave) [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse/note#example-Note.SetOctave).
 
 Q: How to know MIDI number of a note?\
-A: For this, you need to assign an octave to the note then call the method to get the midi number [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/note#example-Note.MIDINumber). Also, you can create a note from known midi number [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse#example-NewNoteFromMIDINumber).
+A: For this, you need to assign an octave to the note then call the method to get the midi number [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/note#example-Note.MIDINumber). Also, you can create a note from known midi number [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/note#example-NewNoteFromMIDINumber).
 
 Q: How to set a note's duration?\
-A: There are two types of durations. The first type is a relative duration, based on the [note value](https://en.wikipedia.org/wiki/Note_value) [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/duration#example-NewRelative). Eventually, knowing the bpm, unit, and time signature, you'll be able to get the absolute time duration of the note [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse/duration#example-Duration.TimeDuration), [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse/note#example-Note.GetTimeDuration). The second type is absolute duration. You can set your time.Duration as absolute duration [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/note#example-Note.SetDurationAbs). These types are separate values and do not affect each other.
+A: There are two types of durations. The first type is a relative duration, based on the [note value](https://en.wikipedia.org/wiki/Note_value) [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/duration#example-NewRelative). Eventually, knowing the bpm, unit, and time signature, you'll be able to get the absolute time duration of the note [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse/duration#example-Relative.GetTimeDuration), [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse/note#example-Note.GetTimeDuration). The second type is absolute duration. You can set your time.Duration as absolute duration [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/note#example-Note.SetDurationAbs). These types are separate values and do not affect each other.
 
 Q: How to make modes?\
 A: You can make it by specifying correct names (from the muse package) [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse/mode#example-MakeNewMode) [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse/mode#example-MustMakeNewMode) or you can create custom mode. [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/mode#example-MakeNewCustomMode)
 
 Q: How to iterate mode?\
-A: You can iterate through degrees  [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse/mode#example-Mode.IterateOneRound) [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse/degree#example-DegreesIterator.GetAllDegrees) or notes [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/degree#example-DegreesIterator.GetAllNotes) of modes.
+A: You can iterate through degrees  [![example](https://img.shields.io/badge/example-link1-blue)](https://pkg.go.dev/github.com/go-muse/muse/mode#example-Mode.IterateOneRound) [![example](https://img.shields.io/badge/example-link2-blue)](https://pkg.go.dev/github.com/go-muse/muse/degree#example-Iterator.GetAllDegrees) or notes [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/degree#example-Iterator.GetAllNotes) of modes.
 
 Q: Are there already existing scales in the library?\
-A: Yes, there is mode templates store [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/mode#example-InitModeTemplatesStore). It contains mode names and templates.
+A: Yes, there is mode templates store [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/mode#example-InitTemplatesStore). It contains mode names and templates.
 
 Q: How to use chords?\
 A: Chord is a set of notes with the same duration  [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/chord#example-NewChord). You can add your notes to the chord, their durations will be set to chord's duration automatically [![example](https://img.shields.io/badge/example-link-blue)](https://pkg.go.dev/github.com/go-muse/muse/chord#example-Chord.AddNotes).

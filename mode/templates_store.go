@@ -152,7 +152,7 @@ func (nat NamesAndTemplates) SortByName(desc bool) NamesAndTemplates {
 }
 
 // SortByTemplate sorts the slice with mode names and templates by templates.
-func (nat NamesAndTemplates) SortByModeTemplate(desc bool) NamesAndTemplates {
+func (nat NamesAndTemplates) SortByTemplate(desc bool) NamesAndTemplates {
 	sort.Slice(nat[:], func(i, j int) bool {
 		for x := range nat[i].ModeTemplate {
 			if nat[i].ModeTemplate[x] == nat[j].ModeTemplate[x] {

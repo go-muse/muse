@@ -79,12 +79,12 @@ func ExampleNamesAndTemplates_SortByName() {
 }
 
 // You can get the mode templates store as slice and sort it by mode Templates.
-// Also you can specify sorting order.
-func ExampleNamesAndTemplates_SortByModeTemplate() {
+// Also, you can specify sorting order.
+func ExampleNamesAndTemplates_SortByTemplate() {
 	mts := mode.InitTemplatesStore()
 
 	slc := mts.AsSlice()
-	slc.SortByModeTemplate(false)
+	slc.SortByTemplate(false)
 
 	for _, info := range slc {
 		fmt.Println(info.ModeTemplate, info.Name)
@@ -145,7 +145,7 @@ func ExampleTemplatesStore_FindModeTemplatesByPattern() {
 	myPattern := mode.Template{2, 1, 3, 1, 2}
 
 	// result is the same TemplatesStore instance, but with resulting templates only
-	result := mts.FindModeTemplatesByPattern(myPattern).AsSlice().SortByModeTemplate(false)
+	result := mts.FindModeTemplatesByPattern(myPattern).AsSlice().SortByTemplate(false)
 
 	for _, info := range result {
 		fmt.Println(info.ModeTemplate, info.Name)
