@@ -50,7 +50,7 @@
 ## Concept
 Definitions may differ from conventional.
 
-**Note** is the representation of a musical sound. It's name represent a pitch class.
+**Note** is the representation of a musical sound. It's name represent a pitch class. **Note value** is the duration relative to the bar, **note duration** is the duration in time units.
 
 **Degree** is a position of a note within a mode, possessing modal characteristics.
 
