@@ -364,7 +364,7 @@ func TestNoteIsEqual(t *testing.T) {
 }
 
 func TestNoteCopy(t *testing.T) {
-	note1 := C.MustNewNote().SetOctave(octave.MustNewByNumber(-1)).SetDurationAbs(0).SetDurationRel(duration.NewRelative(duration.NameHalf).SetDots(1))
+	note1 := C.MustNewNote().SetOctave(octave.MustNewByNumber(-1)).SetDuration(0).SetValue(duration.NewRelative(duration.NameHalf).SetDots(1))
 	note2 := note1.Copy()
 
 	// Test the pointer address is not the same
@@ -584,23 +584,23 @@ func TestNoteSetDurationRel(t *testing.T) {
 			want: duration.NewRelative(duration.NameEighth),
 		},
 		{
-			note: C.MustNewNote().SetDurationRel(duration.NewRelative(duration.NameDoubleWhole)).
-				SetOctave(octave.MustNewByNumber(-1)).SetDurationAbs(0).SetDurationRel(duration.NewRelative(duration.NameHalf).SetDots(1)),
+			note: C.MustNewNote().SetValue(duration.NewRelative(duration.NameDoubleWhole)).
+				SetOctave(octave.MustNewByNumber(-1)).SetDuration(0).SetValue(duration.NewRelative(duration.NameHalf).SetDots(1)),
 
 			want: duration.NewRelative(duration.NameEighth),
 		},
 		{
-			note: newNote(C).SetDurationRel(duration.NewRelative(duration.NameDoubleWhole)),
+			note: newNote(C).SetValue(duration.NewRelative(duration.NameDoubleWhole)),
 			want: duration.NewRelative(duration.NameEighth),
 		},
 		{
-			note: C.MustNewNote().SetDurationRel(duration.NewRelative(duration.NameDoubleWhole).SetDots(3).SetTuplet(tuplet.New(1, 2))),
+			note: C.MustNewNote().SetValue(duration.NewRelative(duration.NameDoubleWhole).SetDots(3).SetTuplet(tuplet.New(1, 2))),
 			want: duration.NewRelative(duration.NameEighth),
 		},
 	}
 
 	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.SetDurationRel(testCase.want).durationRel)
+		assert.Equal(t, testCase.want, testCase.note.SetValue(testCase.want).value)
 	}
 }
 
@@ -614,17 +614,17 @@ func TestNote_DurationRel(t *testing.T) {
 			want: nil,
 		},
 		{
-			note: C.MustNewNote().SetDurationRel(duration.NewRelative(duration.NameEighth)),
+			note: C.MustNewNote().SetValue(duration.NewRelative(duration.NameEighth)),
 			want: duration.NewRelative(duration.NameEighth),
 		},
 		{
-			note: newNote(C).SetDurationRel(duration.NewRelative(duration.NameEighth)),
+			note: newNote(C).SetValue(duration.NewRelative(duration.NameEighth)),
 			want: duration.NewRelative(duration.NameEighth),
 		},
 	}
 
 	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.DurationRel())
+		assert.Equal(t, testCase.want, testCase.note.Value())
 	}
 }
 
@@ -638,21 +638,21 @@ func TestNoteSetDurationAbs(t *testing.T) {
 			want: time.Second,
 		},
 		{
-			note: newNote(D).SetDurationRel(duration.NewRelative(duration.NameDoubleWhole).SetDots(3).SetTuplet(tuplet.New(1, 2))),
+			note: newNote(D).SetValue(duration.NewRelative(duration.NameDoubleWhole).SetDots(3).SetTuplet(tuplet.New(1, 2))),
 			want: time.Second,
 		},
 		{
-			note: newNote(E).SetDurationRel(duration.NewRelative(duration.NameDoubleWhole)),
+			note: newNote(E).SetValue(duration.NewRelative(duration.NameDoubleWhole)),
 			want: time.Second,
 		},
 		{
-			note: F.MustMakeNote().SetDurationRel(duration.NewRelative(duration.NameDoubleWhole).SetDots(3).SetTuplet(tuplet.New(1, 2))),
+			note: F.MustMakeNote().SetValue(duration.NewRelative(duration.NameDoubleWhole).SetDots(3).SetTuplet(tuplet.New(1, 2))),
 			want: time.Second,
 		},
 	}
 
 	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.SetDurationAbs(testCase.want).durationAbs)
+		assert.Equal(t, testCase.want, testCase.note.SetDuration(testCase.want).duration)
 	}
 }
 
@@ -666,33 +666,33 @@ func TestNoteDurationAbs(t *testing.T) {
 			want: time.Duration(0),
 		},
 		{
-			note: C.MustMakeNote().SetDurationRel(duration.NewRelative(duration.NameEighth)),
+			note: C.MustMakeNote().SetValue(duration.NewRelative(duration.NameEighth)),
 			want: time.Duration(0),
 		},
 		{
-			note: newNote(C).SetDurationRel(duration.NewRelative(duration.NameEighth)),
+			note: newNote(C).SetValue(duration.NewRelative(duration.NameEighth)),
 			want: time.Duration(0),
 		},
 		{
-			note: C.MustNewNote().SetDurationRel(duration.NewRelative(duration.NameDoubleWhole).SetDots(3).SetTuplet(tuplet.New(1, 2))),
+			note: C.MustNewNote().SetValue(duration.NewRelative(duration.NameDoubleWhole).SetDots(3).SetTuplet(tuplet.New(1, 2))),
 			want: time.Duration(0),
 		},
 		{
-			note: C.MustMakeNote().SetDurationRel(duration.NewRelative(duration.NameEighth)).SetDurationAbs(time.Second),
+			note: C.MustMakeNote().SetValue(duration.NewRelative(duration.NameEighth)).SetDuration(time.Second),
 			want: time.Second,
 		},
 		{
-			note: newNote(C).SetDurationRel(duration.NewRelative(duration.NameEighth)).SetDurationAbs(time.Second),
+			note: newNote(C).SetValue(duration.NewRelative(duration.NameEighth)).SetDuration(time.Second),
 			want: time.Second,
 		},
 		{
-			note: C.MustNewNote().SetDurationRel(duration.NewRelative(duration.NameDoubleWhole).SetDots(3).SetTuplet(tuplet.New(1, 2))).SetDurationAbs(time.Second),
+			note: C.MustNewNote().SetValue(duration.NewRelative(duration.NameDoubleWhole).SetDots(3).SetTuplet(tuplet.New(1, 2))).SetDuration(time.Second),
 			want: time.Second,
 		},
 	}
 
 	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.DurationAbs(), "absolute duration: %v", testCase.note.DurationAbs())
+		assert.Equal(t, testCase.want, testCase.note.Duration(), "absolute duration: %v", testCase.note.Duration())
 	}
 }
 
@@ -726,58 +726,58 @@ func TestNoteGetPartOfBarByRel(t *testing.T) {
 		want          decimal.Decimal
 	}{
 		{
-			note:          C.MustMakeNote().SetDurationRel(duration.NewRelative(duration.NameWhole)),
+			note:          C.MustMakeNote().SetValue(duration.NewRelative(duration.NameWhole)),
 			timeSignature: fraction.New(1, 1),
 			want:          decimal.NewFromInt(1),
 		},
 		{
-			note:          C.MustMakeNote().SetDurationRel(duration.NewRelative(duration.NameHalf)),
+			note:          C.MustMakeNote().SetValue(duration.NewRelative(duration.NameHalf)),
 			timeSignature: fraction.New(1, 2),
 			want:          decimal.NewFromInt(1),
 		},
 		{
-			note:          C.MustMakeNote().SetDurationRel(duration.NewRelative(duration.NameWhole)),
+			note:          C.MustMakeNote().SetValue(duration.NewRelative(duration.NameWhole)),
 			timeSignature: fraction.New(1, 2),
 			want:          decimal.NewFromFloat(0.5),
 		},
 		{
-			note:          C.MustMakeNote().SetDurationRel(duration.NewRelative(duration.NameHalf)),
+			note:          C.MustMakeNote().SetValue(duration.NewRelative(duration.NameHalf)),
 			timeSignature: fraction.New(1, 1),
 			want:          decimal.NewFromInt(2),
 		},
 		{
-			note:          C.MustMakeNote().SetDurationRel(duration.NewRelative(duration.NameWhole).SetDots(1)),
+			note:          C.MustMakeNote().SetValue(duration.NewRelative(duration.NameWhole).SetDots(1)),
 			timeSignature: fraction.New(1, 1),
 			want:          decimal.NewFromFloat(1.5),
 		},
 		{
-			note:          C.MustMakeNote().SetDurationRel(duration.NewRelative(duration.NameWhole).SetDots(2)),
+			note:          C.MustMakeNote().SetValue(duration.NewRelative(duration.NameWhole).SetDots(2)),
 			timeSignature: fraction.New(1, 1),
 			want:          decimal.NewFromFloat(1.75),
 		},
 		{
-			note:          C.MustMakeNote().SetDurationRel(duration.NewRelative(duration.NameWhole).SetTupletDuplet()),
+			note:          C.MustMakeNote().SetValue(duration.NewRelative(duration.NameWhole).SetTupletDuplet()),
 			timeSignature: fraction.New(1, 1),
 			want:          decimal.NewFromFloat(1.5),
 		},
 		{
-			note:          C.MustMakeNote().SetDurationRel(duration.NewRelative(duration.NameWhole).SetTupletDuplet().AddDot()),
+			note:          C.MustMakeNote().SetValue(duration.NewRelative(duration.NameWhole).SetTupletDuplet().AddDot()),
 			timeSignature: fraction.New(1, 1),
 			want:          decimal.NewFromFloat(2.25),
 		},
 		{
-			note:          C.MustMakeNote().SetDurationRel(duration.NewRelative(duration.NameWhole).SetTupletTriplet()),
+			note:          C.MustMakeNote().SetValue(duration.NewRelative(duration.NameWhole).SetTupletTriplet()),
 			timeSignature: fraction.New(1, 1),
 			want:          decimal.NewFromFloat(0.6666666666666667),
 		},
 		{
-			note:          C.MustNewNote().SetDurationRel(duration.NewRelative(duration.NameWhole).SetTupletTriplet().AddDot()),
+			note:          C.MustNewNote().SetValue(duration.NewRelative(duration.NameWhole).SetTupletTriplet().AddDot()),
 			timeSignature: fraction.New(1, 1),
 			want:          decimal.NewFromFloat(1),
 		},
 	}
 
 	for _, testCase := range testCases {
-		assert.True(t, testCase.want.Equal(testCase.note.GetPartOfBarByRel(testCase.timeSignature)), "expected: %+v, actual: %+v", testCase.want, testCase.note.durationRel.GetPartOfBar(testCase.timeSignature))
+		assert.True(t, testCase.want.Equal(testCase.note.GetPartOfBarByValue(testCase.timeSignature)), "expected: %+v, actual: %+v", testCase.want, testCase.note.value.GetPartOfBar(testCase.timeSignature))
 	}
 }

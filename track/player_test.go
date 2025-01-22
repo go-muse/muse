@@ -161,7 +161,7 @@ func TestTrack_Play(t *testing.T) {
 	track.events = []*Event{
 		{
 			startTime:  1,
-			note:       note.C.MustNewNote().SetDurationAbs(1),
+			note:       note.C.MustNewNote().SetDuration(1),
 			isAbsolute: true,
 		},
 	}
@@ -174,16 +174,16 @@ func TestTrack_Play(t *testing.T) {
 	testCases := []testCase{
 		{
 			events: []*Event{
-				{startTime: 1, note: note.C.MustNewNote().SetDurationAbs(3), isAbsolute: true},
+				{startTime: 1, note: note.C.MustNewNote().SetDuration(3), isAbsolute: true},
 			},
 			want: []*PlayEvent{
 				{
-					Event:     &Event{startTime: 1, note: note.C.MustNewNote().SetDurationAbs(3), isAbsolute: true},
+					Event:     &Event{startTime: 1, note: note.C.MustNewNote().SetDuration(3), isAbsolute: true},
 					eventType: EventTypeStart,
 					time:      1,
 				},
 				{
-					Event:     &Event{startTime: 1, note: note.C.MustNewNote().SetDurationAbs(3), isAbsolute: true},
+					Event:     &Event{startTime: 1, note: note.C.MustNewNote().SetDuration(3), isAbsolute: true},
 					eventType: EventTypeEnd,
 					time:      4,
 				},
@@ -191,27 +191,27 @@ func TestTrack_Play(t *testing.T) {
 		},
 		{
 			events: []*Event{
-				{startTime: 1, note: note.C.MustNewNote().SetDurationAbs(3), isAbsolute: true},
-				{startTime: 2, note: note.D.MustNewNote().SetDurationAbs(1), isAbsolute: true},
+				{startTime: 1, note: note.C.MustNewNote().SetDuration(3), isAbsolute: true},
+				{startTime: 2, note: note.D.MustNewNote().SetDuration(1), isAbsolute: true},
 			},
 			want: []*PlayEvent{
 				{
-					Event:     &Event{startTime: 1, note: note.C.MustNewNote().SetDurationAbs(3), isAbsolute: true},
+					Event:     &Event{startTime: 1, note: note.C.MustNewNote().SetDuration(3), isAbsolute: true},
 					eventType: EventTypeStart,
 					time:      1,
 				},
 				{
-					Event:     &Event{startTime: 2, note: note.D.MustNewNote().SetDurationAbs(1), isAbsolute: true},
+					Event:     &Event{startTime: 2, note: note.D.MustNewNote().SetDuration(1), isAbsolute: true},
 					eventType: EventTypeStart,
 					time:      2,
 				},
 				{
-					Event:     &Event{startTime: 2, note: note.D.MustNewNote().SetDurationAbs(1), isAbsolute: true},
+					Event:     &Event{startTime: 2, note: note.D.MustNewNote().SetDuration(1), isAbsolute: true},
 					eventType: EventTypeEnd,
 					time:      3,
 				},
 				{
-					Event:     &Event{startTime: 1, note: note.C.MustNewNote().SetDurationAbs(3), isAbsolute: true},
+					Event:     &Event{startTime: 1, note: note.C.MustNewNote().SetDuration(3), isAbsolute: true},
 					eventType: EventTypeEnd,
 					time:      4,
 				},

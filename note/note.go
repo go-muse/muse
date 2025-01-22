@@ -15,10 +15,10 @@ import (
 // Note is the representation of a musical sound.
 // Each note has a name (i.e., pitch class) and is characterized by octave and duration.
 type Note struct {
-	name        Name
-	octave      *octave.Octave
-	durationAbs time.Duration
-	durationRel *duration.Relative
+	name     Name
+	octave   *octave.Octave
+	duration time.Duration
+	value    *duration.Relative
 }
 
 // New creates new note with a given name and octave number.
@@ -135,7 +135,7 @@ func (n *Note) Copy() *Note {
 		return nil
 	}
 
-	return &Note{name: n.Name(), octave: n.octave, durationAbs: n.durationAbs, durationRel: n.durationRel}
+	return &Note{name: n.Name(), octave: n.octave, duration: n.duration, value: n.value}
 }
 
 // AlterUp alters the note upwards.
@@ -237,62 +237,62 @@ func (n *Note) SetOctave(octave *octave.Octave) *Note {
 	return n
 }
 
-// SetDurationAbs sets absolute duration to the note and returns the note.
-func (n *Note) SetDurationAbs(duration time.Duration) *Note {
+// SetDuration sets absolute duration to the note and returns the note.
+func (n *Note) SetDuration(duration time.Duration) *Note {
 	if n == nil {
 		return nil
 	}
 
-	n.durationAbs = duration
+	n.duration = duration
 
 	return n
 }
 
-// SetDurationRel sets relative duration to the note and returns the note.
-func (n *Note) SetDurationRel(duration *duration.Relative) *Note {
+// SetValue sets relative duration to the note and returns the note.
+func (n *Note) SetValue(duration *duration.Relative) *Note {
 	if n == nil {
 		return nil
 	}
 
-	n.durationRel = duration
+	n.value = duration
 
 	return n
 }
 
-// DurationAbs returns absolute duration of the note.
-func (n *Note) DurationAbs() time.Duration {
+// Duration returns absolute duration of the note.
+func (n *Note) Duration() time.Duration {
 	if n == nil {
 		return 0
 	}
 
-	return n.durationAbs
+	return n.duration
 }
 
-// DurationRel returns relative duration of the note.
-func (n *Note) DurationRel() *duration.Relative {
+// Value returns relative duration of the note.
+func (n *Note) Value() *duration.Relative {
 	if n == nil {
 		return nil
 	}
 
-	return n.durationRel
+	return n.value
 }
 
 // GetTimeDuration calculates and returns time.Duration of the note based on bpm rate, unit and time signature.
 func (n *Note) GetTimeDuration(amountOfBars decimal.Decimal) time.Duration {
-	if n == nil || n.durationRel == nil {
+	if n == nil || n.value == nil {
 		return 0
 	}
 
-	return n.durationRel.GetTimeDuration(amountOfBars)
+	return n.value.GetTimeDuration(amountOfBars)
 }
 
-// GetPartOfBarByRel calculates which part of the bar is occupied by a note with relative duration.
-func (n *Note) GetPartOfBarByRel(timeSignature *fraction.Fraction) decimal.Decimal {
-	if n == nil || n.durationRel == nil {
+// GetPartOfBarByValue calculates which part of the bar is occupied by a note with its value (relative duration).
+func (n *Note) GetPartOfBarByValue(timeSignature *fraction.Fraction) decimal.Decimal {
+	if n == nil || n.value == nil {
 		return decimal.Zero
 	}
 
-	return n.durationRel.GetPartOfBar(timeSignature)
+	return n.value.GetPartOfBar(timeSignature)
 }
 
 // newNoteWithOctave creates new note with a given name and octave without any restrictions.
@@ -302,5 +302,5 @@ func newNoteWithOctave(name Name, octave *octave.Octave) *Note {
 
 // newNote creates new note with a given name without any restrictions.
 func newNote(name Name) *Note {
-	return &Note{name: name, octave: nil, durationAbs: 0, durationRel: nil}
+	return &Note{name: name, octave: nil, duration: 0, value: nil}
 }

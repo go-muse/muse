@@ -184,7 +184,7 @@ func (t *Track) GetStartAndEnd(event *Event) (time.Duration, time.Duration) {
 	}
 
 	if event.isAbsolute {
-		return event.startTime, event.startTime + event.note.DurationAbs()
+		return event.startTime, event.startTime + event.note.Duration()
 	}
 
 	return event.startTime, event.startTime + event.note.GetTimeDuration(t.GetAmountOfBars())
@@ -197,7 +197,7 @@ func (t *Track) GetEnd(event *Event) time.Duration {
 	}
 
 	if event.isAbsolute {
-		return event.startTime + event.note.DurationAbs()
+		return event.startTime + event.note.Duration()
 	}
 
 	return event.startTime + event.note.GetTimeDuration(t.GetAmountOfBars())
