@@ -12,9 +12,9 @@ import (
 // When a note is added to a chord, it is assigned the duration of the chord.
 // When the duration of the chord changes, all notes in the chord are assigned the duration of the chord.
 type Chord struct {
-	notes       note.Notes
-	durationAbs time.Duration
-	durationRel *duration.Relative
+	notes    note.Notes
+	duration time.Duration
+	value    *duration.Relative
 }
 
 // NewChord creates a new chord with the specified notes.
@@ -35,7 +35,7 @@ func (c *Chord) String() string {
 		return "nil chord"
 	}
 
-	return fmt.Sprintf("notes: %+v, duration name: %+v, custom duration: %+v", c.notes, c.durationRel.Name(), c.durationAbs)
+	return fmt.Sprintf("notes: %+v, duration name: %+v, custom duration: %+v", c.notes, c.value.Name(), c.duration)
 }
 
 // AddNote adds a note to the chord, replacing it in case of a match.
@@ -44,8 +44,8 @@ func (c *Chord) AddNote(n *note.Note) *Chord {
 		return c
 	}
 
-	n.SetDurationAbs(c.durationAbs)
-	n.SetDurationRel(c.durationRel)
+	n.SetDuration(c.duration)
+	n.SetValue(c.value)
 
 	for _, chordNote := range c.notes {
 		if chordNote.IsEqual(n) {
@@ -72,8 +72,8 @@ func (c *Chord) AddNotes(notes ...*note.Note) *Chord {
 			}
 		}
 
-		note.SetDurationAbs(c.durationAbs)
-		note.SetDurationRel(c.durationRel)
+		note.SetDuration(c.duration)
+		note.SetValue(c.value)
 		c.notes = append(c.notes, note)
 
 	NEXT:
@@ -93,52 +93,52 @@ func (c *Chord) Notes() note.Notes {
 	return c.notes
 }
 
-// SetDurationAbs sets custom duration to the chord and returns the chord.
-func (c *Chord) SetDurationAbs(d time.Duration) *Chord {
+// SetDuration sets custom duration to the chord and returns the chord.
+func (c *Chord) SetDuration(d time.Duration) *Chord {
 	if c == nil {
 		return c
 	}
 
-	c.durationAbs = d
+	c.duration = d
 
 	for i := range c.notes {
-		c.notes[i].SetDurationAbs(c.durationAbs)
+		c.notes[i].SetDuration(c.duration)
 	}
 
 	return c
 }
 
-// GetDurationAbs returns custom duration of the chord.
-func (c *Chord) GetDurationAbs() time.Duration {
+// Duration returns custom (absolute) duration of the chord.
+func (c *Chord) Duration() time.Duration {
 	if c == nil {
 		return 0
 	}
 
-	return c.durationAbs
+	return c.duration
 }
 
-// SetDurationRel sets duration to the chord and returns the chord.
-func (c *Chord) SetDurationRel(dr *duration.Relative) *Chord {
+// SetValue sets relative duration to the chord and returns the chord.
+func (c *Chord) SetValue(dr *duration.Relative) *Chord {
 	if c == nil {
 		return c
 	}
 
-	c.durationRel = dr
+	c.value = dr
 
 	for i := range c.notes {
-		c.notes[i].SetDurationRel(c.durationRel)
+		c.notes[i].SetValue(c.value)
 	}
 
 	return c
 }
 
-// DurationRel returns duration of the chord.
-func (c *Chord) DurationRel() *duration.Relative {
+// Value returns relative duration of the chord.
+func (c *Chord) Value() *duration.Relative {
 	if c == nil {
 		return nil
 	}
 
-	return c.durationRel
+	return c.value
 }
 
 // Empty removes all the notes from the chord.
