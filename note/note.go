@@ -2,7 +2,6 @@ package note
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/shopspring/decimal"
@@ -21,286 +20,190 @@ type Note struct {
 	value    *duration.Relative
 }
 
-// New creates new note with a given name and octave number.
-func New(noteName Name) (*Note, error) {
-	if err := noteName.Validate(); err != nil {
-		return nil, err
-	}
-
-	return newNote(noteName), nil
+// New constructs a Note from a Name.
+func New(name Name) Note {
+	return Note{name: name}
 }
 
-// NewNoteWithOctave creates new note with a given name and octave number.
-func NewNoteWithOctave(noteName Name, octaveNumber octave.Number) (*Note, error) {
-	if err := noteName.Validate(); err != nil {
-		return nil, err
-	}
+// Name returns the note's spelled name.
+func (n Note) Name() Name {
+	return n.name
+}
 
-	oct, err := octave.NewByNumber(octaveNumber)
+// String returns the note's ASCII spelling.
+func (n Note) String() string {
+	return n.name.String()
+}
+
+// NewFromString creates a new note from the given string.
+// The string should contain a note name (e.g., "C", "Db", "F##").
+// Returns an error if the string format is invalid.
+func NewFromString(s string) (Note, error) {
+	name, err := NewNameFromString(s)
 	if err != nil {
-		return nil, fmt.Errorf("create octave with octave number: '%d': %w", octaveNumber, err)
+		return Note{}, err
 	}
 
-	return newNoteWithOctave(noteName, oct), nil
+	return New(name), nil
 }
 
-// MustNewNoteWithOctave creates new note with panic in case of invalid note name or octave.
-func MustNewNoteWithOctave(noteName Name, octaveNumber octave.Number) *Note {
-	note, err := NewNoteWithOctave(noteName, octaveNumber)
+// MustNewFromString creates a new note from the given string and panics on error.
+// The string should contain a note name (e.g., "C", "Db", "F##").
+// Use this function when you are certain the input is valid.
+func MustNewFromString(s string) Note {
+	n, err := NewFromString(s)
 	if err != nil {
 		panic(err)
 	}
 
-	return note
+	return n
 }
 
-// MustNewNote creates new note with panic in case of invalid note name.
-func MustNewNote(noteName Name) *Note {
-	if err := noteName.Validate(); err != nil {
-		panic(err)
-	}
-
-	return newNote(noteName)
-}
-
-// NewNoteFromString creates a new note from the given string.
-func NewNoteFromString(s string) (*Note, error) {
-	return New(Name(s))
-}
-
-// MustNewNotesFromNoteNames creates a slice of Notes.
-func MustNewNotesFromNoteNames(noteNames ...Name) Notes {
-	notes := make(Notes, 0, len(noteNames))
-	for _, noteName := range noteNames {
-		notes = append(notes, MustNewNote(noteName))
+// NewFromNoteNames creates a slice of Notes.
+func NewFromNoteNames(names ...Name) Notes {
+	notes := make(Notes, 0, len(names))
+	for _, name := range names {
+		notes = append(notes, New(name))
 	}
 
 	return notes
 }
 
-// Name returns name of the note.
-func (n *Note) Name() Name {
-	if n != nil {
-		return n.name
+// NewWithOctave creates new note with a given name and octave number.
+func NewWithOctave(name Name, octaveNumber octave.Number) (Note, error) {
+	oct, err := octave.NewByNumber(octaveNumber)
+	if err != nil {
+		return Note{}, fmt.Errorf("create octave with octave number: '%d': %w", octaveNumber, err)
 	}
 
-	return ""
+	return Note{name: name, octave: oct}, nil
+}
+
+// MustNewWithOctave creates new note with panic in case of invalid note name or octave.
+func MustNewWithOctave(name Name, octaveNumber octave.Number) Note {
+	n, err := NewWithOctave(name, octaveNumber)
+	if err != nil {
+		panic(err)
+	}
+
+	return n
 }
 
 // Octave returns octave of the note.
-func (n *Note) Octave() *octave.Octave {
-	if n != nil {
-		return n.octave
-	}
-
-	return nil
+func (n Note) Octave() *octave.Octave {
+	return n.octave
 }
 
-// IsEqualByName compares notes by name.
-func (n *Note) IsEqualByName(note *Note) bool {
-	if n == nil || note == nil {
+// EqualByName compares notes by name.
+func (n Note) EqualByName(other Note) bool {
+	return n.name.EqualSpelling(other.name)
+}
+
+// EqualByOctave compares notes by octave.
+// If both octaves are nil, they are considered equal.
+func (n Note) EqualByOctave(other Note) bool {
+	if n.octave == nil && other.octave == nil {
+		return true
+	}
+
+	if n.octave == nil || other.octave == nil {
 		return false
 	}
 
-	return note.Name() == n.Name()
+	return n.octave.IsEqual(other.octave)
 }
 
-// IsEqualByOctave compares notes by name.
-func (n *Note) IsEqualByOctave(note *Note) bool {
-	if n == nil || note == nil {
-		return false
-	}
-
-	return note.Octave().IsEqual(n.octave)
+// Equal compares notes by all parameters.
+func (n Note) Equal(other Note) bool {
+	return n.EqualByName(other) && n.EqualByOctave(other)
 }
 
-// IsEqual compares notes by all parameters.
-func (n *Note) IsEqual(note *Note) bool {
-	if n == nil || note == nil {
-		return false
+// Copy creates a deep copy of Note with respect to direct pointer fields.
+// It clones octave and value objects (if present) by value-copying the pointed structs.
+func (n Note) Copy() Note {
+	out := n
+
+	if n.octave != nil {
+		o := *n.octave
+		out.octave = &o
 	}
 
-	if !note.IsEqualByName(n) || !note.IsEqualByOctave(n) {
-		return false
+	if n.value != nil {
+		v := *n.value
+		out.value = &v
 	}
 
-	return true
-}
-
-// Copy creates full copy of the current Note.
-// The method returns a pointer to the new Note containing the same attribute values
-// as the original Note that the function was called on.
-func (n *Note) Copy() *Note {
-	if n == nil {
-		return nil
-	}
-
-	return &Note{name: n.Name(), octave: n.octave, duration: n.duration, value: n.value}
+	return out
 }
 
 // AlterUp alters the note upwards.
-func (n *Note) AlterUp() *Note {
-	if n == nil {
-		return nil
-	}
-
-	if len(n.name) > 1 && strings.HasSuffix(n.name.String(), string(AccidentalFlat)) {
-		n.name = n.name[:len(n.name)-len(AccidentalFlat)]
-
-		return n
-	}
-
-	n.name = Name(fmt.Sprintf("%s%s", n.name, AccidentalSharp))
-
+func (n Note) AlterUp() Note {
+	n.name = n.name.AlterUp()
 	return n
 }
 
 // AlterDown alters the note downwards.
-func (n *Note) AlterDown() *Note {
-	if n == nil {
-		return nil
-	}
-
-	if len(n.name) > 1 && strings.HasSuffix(n.name.String(), string(AccidentalSharp)) {
-		n.name = n.name[:len(n.name)-len(AccidentalSharp)]
-
-		return n
-	}
-
-	n.name = Name(fmt.Sprintf("%s%s", n.name, AccidentalFlat))
-
+func (n Note) AlterDown() Note {
+	n.name = n.name.AlterDown()
 	return n
 }
 
 // AlterUpBy alters the note up by the specified number of times.
-func (n *Note) AlterUpBy(i uint8) *Note {
-	if n == nil {
-		return nil
-	}
-
-	for ; i > 0; i-- {
-		n.AlterUp()
-	}
-
+func (n Note) AlterUpBy(i uint8) Note {
+	n.name = n.name.AlterUpBy(i)
 	return n
 }
 
 // AlterDownBy alters the note down by the specified number of times.
-func (n *Note) AlterDownBy(i uint8) *Note {
-	if n == nil {
-		return nil
-	}
-
-	for ; i > 0; i-- {
-		n.AlterDown()
-	}
-
+func (n Note) AlterDownBy(i uint8) Note {
+	n.name = n.name.AlterDownBy(i)
 	return n
 }
 
 // BaseName returns note name without accidentals.
-func (n *Note) BaseName() Name {
-	return n.name[0:1]
+func (n Note) BaseName() string {
+	return n.name.BaseName()
 }
 
-// GetAlterationShift returns information about alteration of the note (up or down). Sign means direction of alteration.
-func (n *Note) GetAlterationShift() int8 {
-	var shift int8
-
-	if len(n.name) <= 1 {
-		return 0
-	}
-
-	if strings.HasSuffix(n.name.String(), string(AccidentalSharp)) {
-		for i := len(n.name[1:]); i > 0; i-- {
-			shift++
-		}
-
-		return shift
-	}
-
-	if strings.HasSuffix(n.name.String(), string(AccidentalFlat)) {
-		for i := len(n.name[1:]); i > 0; i-- {
-			shift--
-		}
-
-		return shift
-	}
-
-	return shift
+// AlterationShift returns information about alteration of the note (up or down). Sign means direction of alteration.
+func (n Note) AlterationShift() int8 {
+	return n.name.AlterationShift()
 }
 
 // SetOctave sets the specified octave to the note and returns the note.
-func (n *Note) SetOctave(octave *octave.Octave) *Note {
+func (n Note) SetOctave(octave *octave.Octave) Note {
 	n.octave = octave
-
 	return n
 }
 
 // SetDuration sets absolute duration to the note and returns the note.
-func (n *Note) SetDuration(duration time.Duration) *Note {
-	if n == nil {
-		return nil
-	}
-
-	n.duration = duration
-
+func (n Note) SetDuration(d time.Duration) Note {
+	n.duration = d
 	return n
 }
 
 // SetValue sets relative duration to the note and returns the note.
-func (n *Note) SetValue(duration *duration.Relative) *Note {
-	if n == nil {
-		return nil
-	}
-
-	n.value = duration
-
+func (n Note) SetValue(v *duration.Relative) Note {
+	n.value = v
 	return n
 }
 
 // Duration returns absolute duration of the note.
-func (n *Note) Duration() time.Duration {
-	if n == nil {
-		return 0
-	}
-
+func (n Note) Duration() time.Duration {
 	return n.duration
 }
 
 // Value returns relative duration of the note.
-func (n *Note) Value() *duration.Relative {
-	if n == nil {
-		return nil
-	}
-
+func (n Note) Value() *duration.Relative {
 	return n.value
 }
 
 // GetTimeDuration calculates and returns time.Duration of the note based on bpm rate, unit and time signature.
-func (n *Note) GetTimeDuration(amountOfBars decimal.Decimal) time.Duration {
-	if n == nil || n.value == nil {
-		return 0
-	}
-
+func (n Note) GetTimeDuration(amountOfBars decimal.Decimal) time.Duration {
 	return n.value.GetTimeDuration(amountOfBars)
 }
 
 // GetPartOfBarByValue calculates which part of the bar is occupied by a note with its value (relative duration).
-func (n *Note) GetPartOfBarByValue(timeSignature *fraction.Fraction) decimal.Decimal {
-	if n == nil || n.value == nil {
-		return decimal.Zero
-	}
-
+func (n Note) GetPartOfBarByValue(timeSignature *fraction.Fraction) decimal.Decimal {
 	return n.value.GetPartOfBar(timeSignature)
-}
-
-// newNoteWithOctave creates new note with a given name and octave without any restrictions.
-func newNoteWithOctave(name Name, octave *octave.Octave) *Note {
-	return &Note{name: name, octave: octave}
-}
-
-// newNote creates new note with a given name without any restrictions.
-func newNote(name Name) *Note {
-	return &Note{name: name, octave: nil, duration: 0, value: nil}
 }

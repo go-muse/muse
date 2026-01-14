@@ -3,7 +3,7 @@ package note
 import "fmt"
 
 // Notes is slice of Note.
-type Notes []*Note
+type Notes []Note
 
 // String is stringer for Note.
 func (ns Notes) String() string {
@@ -28,4 +28,23 @@ func (ns Notes) Uniques() Notes {
 	}
 
 	return uniqueNotes
+}
+
+// GetNotesWithAlterations returns the provided notes, each altered upward and downward by the specified number of semitones.
+//
+// Parameters:
+//   - notes: The original set of notes to be altered.
+//   - alterations: The number of semitone steps to alter each note.
+//
+// Returns:
+//   - A slice of Note objects with the applied alterations.
+func GetNotesWithAlterations(notes Notes, alterations uint8) (result Notes) {
+	var i uint8
+	for _, n := range notes {
+		for i = alterations; i > 0; i-- {
+			result = append(result, n.Copy().AlterUpBy(i), n.Copy().AlterDownBy(i))
+		}
+	}
+
+	return
 }

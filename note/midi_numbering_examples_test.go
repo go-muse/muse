@@ -10,7 +10,7 @@ import (
 // Getting MIDI number of the note.
 func ExampleNote_MIDINumber() {
 	// creating a note with octave
-	n := note.MustNewNoteWithOctave(note.GSHARP, octave.Number2)
+	n := note.MustNewWithOctave(note.GSHARP, octave.Number2)
 
 	fmt.Println(n.MIDINumber())
 	// Output: 44

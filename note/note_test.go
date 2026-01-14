@@ -1,783 +1,659 @@
 package note
 
 import (
+	"errors"
 	"testing"
 	"time"
 
-	"github.com/shopspring/decimal"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-
-	"github.com/go-muse/muse/common/fraction"
 	"github.com/go-muse/muse/duration"
 	"github.com/go-muse/muse/octave"
-	"github.com/go-muse/muse/tuplet"
 )
 
-func Test_NewNote(t *testing.T) {
-	expectedNoteName := C
-	assert.Equal(t, expectedNoteName, newNote(C).name)
+func TestNew(t *testing.T) {
+	tests := []Name{C, CSHARP, DFLAT, E, FSHARP, GFLAT, A, BSHARP, CFLAT2, DSHARP2}
+
+	for _, name := range tests {
+		t.Run(name.String(), func(t *testing.T) {
+			note := New(name)
+			if !note.Name().EqualSpelling(name) {
+				t.Fatalf("New(%v).Name(): got %v, want %v", name, note.Name(), name)
+			}
+			if note.Octave() != nil {
+				t.Fatalf("New(%v).Octave(): got %v, want nil", name, note.Octave())
+			}
+		})
+	}
 }
 
-func TestNewNote(t *testing.T) {
-	t.Run("TestNewNote: valid note name", func(t *testing.T) {
-		noteNames := []Name{
-			C,
-			CFLAT,
-			CFLAT2,
-			CSHARP,
-			CSHARP2,
-			D,
-			DFLAT,
-			DFLAT2,
-			DSHARP,
-			DSHARP2,
-			E,
-			EFLAT,
-			EFLAT2,
-			ESHARP,
-			ESHARP2,
-			F,
-			FFLAT,
-			FFLAT2,
-			FSHARP,
-			FSHARP2,
-			G,
-			GFLAT,
-			GFLAT2,
-			GSHARP,
-			GSHARP2,
-			A,
-			AFLAT,
-			AFLAT2,
-			ASHARP,
-			ASHARP2,
-			B,
-			BFLAT,
-			BFLAT2,
-			BSHARP,
-			BSHARP2,
-		}
-		var newNote *Note
-		var err error
-		for _, noteName := range noteNames {
-			// setup: create a Note with a valid name
-			newNote, err = New(noteName)
-			require.NoError(t, err)
-			assert.NotNil(t, newNote, "expected note from note name %s", noteName)
+func TestNote_String(t *testing.T) {
+	tests := []struct {
+		note Note
+		want string
+	}{
+		{New(C), "C"},
+		{New(CSHARP), "C#"},
+		{New(DFLAT), "Db"},
+		{New(ESHARP2), "E##"},
+		{New(FFLAT2), "Fbb"},
+	}
 
-			// assert that the returned name matches the expected name
-			if newNote.name != noteName {
-				t.Errorf("Expected note name to be '%s', but got '%s'", noteName, newNote.name)
+	for _, tt := range tests {
+		t.Run(tt.want, func(t *testing.T) {
+			if got := tt.note.String(); got != tt.want {
+				t.Fatalf("String(): got %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNewFromString(t *testing.T) {
+	tests := []struct {
+		in      string
+		want    Name
+		wantErr bool
+	}{
+		{"C", C, false},
+		{"C#", CSHARP, false},
+		{"Db", DFLAT, false},
+		{"E##", ESHARP2, false},
+		{"Fbb", FFLAT2, false},
+		{"c", C, false},
+		{"d#", DSHARP, false},
+		{"", Name{}, true},
+		{"H", Name{}, true},
+		{"C#b", Name{}, true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.in, func(t *testing.T) {
+			got, err := NewFromString(tt.in)
+			if tt.wantErr {
+				if err == nil {
+					t.Fatalf("NewFromString(%q): expected error, got nil", tt.in)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("NewFromString(%q): unexpected error: %v", tt.in, err)
+			}
+			if !got.Name().EqualSpelling(tt.want) {
+				t.Fatalf("NewFromString(%q): got %v, want %v", tt.in, got.Name(), tt.want)
+			}
+		})
+	}
+}
+
+func TestMustNewFromString(t *testing.T) {
+	t.Run("Valid", func(t *testing.T) {
+		tests := []struct {
+			in   string
+			want Name
+		}{
+			{"C", C},
+			{"C#", CSHARP},
+			{"Db", DFLAT},
+		}
+
+		for _, tt := range tests {
+			got := MustNewFromString(tt.in)
+			if !got.Name().EqualSpelling(tt.want) {
+				t.Fatalf("MustNewFromString(%q): got %v, want %v", tt.in, got.Name(), tt.want)
 			}
 		}
 	})
 
-	t.Run("TestNewNote: invalid note name", func(t *testing.T) {
-		// setup: create a Note with invalid name
-		expectedName := Name("Hello")
-		newNote, err := New(expectedName)
-		// assert that the returned error matches the expected error
-		require.ErrorIs(t, err, ErrNoteNameUnknown)
-		assert.Nil(t, newNote)
+	t.Run("Invalid_Panics", func(t *testing.T) {
+		invalidInputs := []string{"", "H", "C#b"}
+		for _, in := range invalidInputs {
+			func() {
+				defer func() {
+					if r := recover(); r == nil {
+						t.Fatalf("MustNewFromString(%q): expected panic, got none", in)
+					}
+				}()
+				_ = MustNewFromString(in)
+			}()
+		}
 	})
 }
 
-func TestNewNoteWithOctave(t *testing.T) {
-	t.Run("TestNewNoteWithOctave: valid note name", func(t *testing.T) {
-		noteNames := []Name{
-			C,
-			CFLAT,
-			CFLAT2,
-			CSHARP,
-			CSHARP2,
-			D,
-			DFLAT,
-			DFLAT2,
-			DSHARP,
-			DSHARP2,
-			E,
-			EFLAT,
-			EFLAT2,
-			ESHARP,
-			ESHARP2,
-			F,
-			FFLAT,
-			FFLAT2,
-			FSHARP,
-			FSHARP2,
-			G,
-			GFLAT,
-			GFLAT2,
-			GSHARP,
-			GSHARP2,
-			A,
-			AFLAT,
-			AFLAT2,
-			ASHARP,
-			ASHARP2,
-			B,
-			BFLAT,
-			BFLAT2,
-			BSHARP,
-			BSHARP2,
-		}
-		var newNote *Note
-		var err error
-		for _, noteName := range noteNames {
-			// setup: create a Note with a valid name
-			newNote, err = NewNoteWithOctave(noteName, octave.NumberDefault)
-			require.NoError(t, err)
-			assert.NotNil(t, newNote, "expected note from note name %s", noteName)
+func TestNewFromNoteNames(t *testing.T) {
+	tests := []struct {
+		name  string
+		names []Name
+		want  int
+	}{
+		{"Empty", []Name{}, 0},
+		{"One", []Name{C}, 1},
+		{"Three", []Name{C, D, E}, 3},
+		{"Seven", []Name{C, D, E, F, G, A, B}, 7},
+	}
 
-			// assert that the returned name matches the expected name
-			if newNote.name != noteName {
-				t.Errorf("Expected note name to be '%s', but got '%s'", noteName, newNote.name)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			notes := NewFromNoteNames(tt.names...)
+			if got := len(notes); got != tt.want {
+				t.Fatalf("NewFromNoteNames(): got %d notes, want %d", got, tt.want)
+			}
+			for i, n := range notes {
+				if !n.Name().EqualSpelling(tt.names[i]) {
+					t.Fatalf("NewFromNoteNames()[%d]: got %v, want %v", i, n.Name(), tt.names[i])
+				}
+			}
+		})
+	}
+}
+
+func TestNewWithOctave(t *testing.T) {
+	tests := []struct {
+		name       string
+		noteName   Name
+		octaveNum  octave.Number
+		wantOctave octave.Number
+		wantErr    bool
+	}{
+		{"C4", C, 4, 4, false},
+		{"A-1", A, -1, -1, false},
+		{"G9", G, 9, 9, false},
+		{"C0", C, 0, 0, false},
+		{"InvalidOctave", C, 15, 0, true},
+		{"InvalidOctaveNeg", C, -5, 0, true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := NewWithOctave(tt.noteName, tt.octaveNum)
+			if tt.wantErr {
+				if err == nil {
+					t.Fatalf("NewWithOctave(%v, %d): expected error, got nil", tt.noteName, tt.octaveNum)
+				}
+				if !errors.Is(err, octave.ErrOctaveNumberUnknown) {
+					t.Fatalf("NewWithOctave(): expected ErrOctaveNumberUnknown, got %v", err)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("NewWithOctave(%v, %d): unexpected error: %v", tt.noteName, tt.octaveNum, err)
+			}
+			if !got.Name().EqualSpelling(tt.noteName) {
+				t.Fatalf("NewWithOctave().Name(): got %v, want %v", got.Name(), tt.noteName)
+			}
+			if got.Octave() == nil {
+				t.Fatalf("NewWithOctave().Octave(): got nil, want %d", tt.wantOctave)
+			}
+			if got.Octave().Number() != tt.wantOctave {
+				t.Fatalf("NewWithOctave().Octave().Number(): got %d, want %d", got.Octave().Number(), tt.wantOctave)
+			}
+		})
+	}
+}
+
+func TestMustNewWithOctave(t *testing.T) {
+	t.Run("Valid", func(t *testing.T) {
+		tests := []struct {
+			name      Name
+			octaveNum octave.Number
+		}{
+			{C, 4},
+			{CSHARP, 0},
+			{DFLAT, -1},
+		}
+
+		for _, tt := range tests {
+			note := MustNewWithOctave(tt.name, tt.octaveNum)
+			if !note.Name().EqualSpelling(tt.name) {
+				t.Fatalf("MustNewWithOctave().Name(): got %v, want %v", note.Name(), tt.name)
+			}
+			if note.Octave().Number() != tt.octaveNum {
+				t.Fatalf("MustNewWithOctave().Octave(): got %d, want %d", note.Octave().Number(), tt.octaveNum)
 			}
 		}
 	})
 
-	t.Run("TestNewNoteWithOctave: invalid note name", func(t *testing.T) {
-		// setup: create a Note with invalid name
-		expectedName := Name("Hello")
-		newNote, err := NewNoteWithOctave(expectedName, octave.NumberDefault)
-		// assert that the returned error matches the expected error
-		require.ErrorIs(t, err, ErrNoteNameUnknown)
-		assert.Nil(t, newNote)
-	})
-
-	t.Run("TestNewNoteWithOctave: invalid octave number", func(t *testing.T) {
-		// setup: create a Note with invalid octave number
-		expectedName := C
-		newNote, err := NewNoteWithOctave(expectedName, 15)
-		// assert that the returned error matches the expected error
-		require.ErrorIs(t, err, octave.ErrOctaveNumberUnknown)
-		assert.Nil(t, newNote)
-	})
-}
-
-func TestMustNewNoteWithOctave(t *testing.T) {
-	t.Run("TestMustNewNoteWithOctave: valid note name", func(t *testing.T) {
-		noteNames := []Name{
-			C,
-			CFLAT,
-			CFLAT2,
-			CSHARP,
-			CSHARP2,
-			D,
-			DFLAT,
-			DFLAT2,
-			DSHARP,
-			DSHARP2,
-			E,
-			EFLAT,
-			EFLAT2,
-			ESHARP,
-			ESHARP2,
-			F,
-			FFLAT,
-			FFLAT2,
-			FSHARP,
-			FSHARP2,
-			G,
-			GFLAT,
-			GFLAT2,
-			GSHARP,
-			GSHARP2,
-			A,
-			AFLAT,
-			AFLAT2,
-			ASHARP,
-			ASHARP2,
-			B,
-			BFLAT,
-			BFLAT2,
-			BSHARP,
-			BSHARP2,
-		}
-		var newNote *Note
-		for _, noteName := range noteNames {
-			// assert that the function works without panic
-			assert.NotPanics(t, func() { newNote = MustNewNoteWithOctave(noteName, octave.NumberDefault) }) //nolint:scopelint
-
-			// assert that the returned name matches the expected name
-			if newNote.name != noteName {
-				t.Errorf("Expected note name to be '%s', but got '%s'", noteName, newNote.name)
+	t.Run("InvalidOctave_Panics", func(t *testing.T) {
+		defer func() {
+			if r := recover(); r == nil {
+				t.Fatalf("MustNewWithOctave() with invalid octave: expected panic, got none")
 			}
+		}()
+		_ = MustNewWithOctave(C, 15)
+	})
+}
+
+func TestNote_EqualByName(t *testing.T) {
+	tests := []struct {
+		name  string
+		a, b  Note
+		equal bool
+	}{
+		{"SameNatural", New(C), New(C), true},
+		{"SameSharp", New(CSHARP), New(CSHARP), true},
+		{"DifferentLetter", New(C), New(D), false},
+		{"DifferentAccidental", New(CSHARP), New(CFLAT), false},
+		{"WithOctaveSameName", MustNewWithOctave(C, 4), MustNewWithOctave(C, 5), true},
+		{"EnharmonicDifferent", New(CSHARP), New(DFLAT), false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.a.EqualByName(tt.b); got != tt.equal {
+				t.Fatalf("EqualByName(): got %v, want %v", got, tt.equal)
+			}
+		})
+	}
+}
+
+func TestNote_EqualByOctave(t *testing.T) {
+	tests := []struct {
+		name  string
+		a, b  Note
+		equal bool
+	}{
+		{"BothNilOctave", New(C), New(D), true},
+		{"SameOctave", MustNewWithOctave(C, 4), MustNewWithOctave(D, 4), true},
+		{"DifferentOctave", MustNewWithOctave(C, 4), MustNewWithOctave(C, 5), false},
+		{"OneNilOctave", New(C), MustNewWithOctave(C, 4), false},
+		{"OtherNilOctave", MustNewWithOctave(C, 4), New(C), false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.a.EqualByOctave(tt.b); got != tt.equal {
+				t.Fatalf("EqualByOctave(): got %v, want %v", got, tt.equal)
+			}
+		})
+	}
+}
+
+func TestNote_Equal(t *testing.T) {
+	tests := []struct {
+		name  string
+		a, b  Note
+		equal bool
+	}{
+		{"SameNameNilOctave", New(C), New(C), true},
+		{"SameNameSameOctave", MustNewWithOctave(C, 4), MustNewWithOctave(C, 4), true},
+		{"DifferentName", New(C), New(D), false},
+		{"DifferentOctave", MustNewWithOctave(C, 4), MustNewWithOctave(C, 5), false},
+		{"SameNameMixedOctave", New(C), MustNewWithOctave(C, 4), false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.a.Equal(tt.b); got != tt.equal {
+				t.Fatalf("Equal(): got %v, want %v", got, tt.equal)
+			}
+		})
+	}
+}
+
+func TestNote_Copy(t *testing.T) {
+	t.Run("BasicCopy", func(t *testing.T) {
+		original := MustNewWithOctave(CSHARP, 4)
+		copy := original.Copy()
+
+		if !copy.Equal(original) {
+			t.Fatalf("Copy() should be equal to original")
+		}
+
+		// Modify copy's octave shouldn't affect original
+		if copy.Octave() == original.Octave() {
+			t.Fatalf("Copy() should have different octave pointer")
 		}
 	})
 
-	t.Run("TestMustNewNoteWithOctave: invalid note name", func(t *testing.T) {
-		// setup: create a Note with invalid name
-		expectedName := Name("Hello")
-		// assert that the function works without panic
-		assert.Panics(t, func() { _ = MustNewNoteWithOctave(expectedName, octave.NumberDefault) })
+	t.Run("CopyWithDuration", func(t *testing.T) {
+		original := New(C).SetDuration(time.Second).SetValue(duration.NewRelative(duration.NameHalf))
+		copy := original.Copy()
+
+		if copy.Duration() != original.Duration() {
+			t.Fatalf("Copy().Duration(): got %v, want %v", copy.Duration(), original.Duration())
+		}
+		if copy.Value() == nil {
+			t.Fatalf("Copy().Value(): got nil")
+		}
 	})
-}
 
-func TestNoteName(t *testing.T) {
-	// setup: create a Note with a known name
-	expectedName := C
-	note := &Note{name: expectedName}
+	t.Run("CopyNilOctave", func(t *testing.T) {
+		original := New(C)
+		copy := original.Copy()
 
-	// execute the Name() method
-	actualName := note.Name()
-
-	// assert that the returned name matches the expected name
-	assert.Equal(t, expectedName, actualName, "expected note name: %s, actual: %s", expectedName, actualName)
-}
-
-func TestNoteIsEqualByName(t *testing.T) {
-	testCases := []struct {
-		note1, note2 *Note
-		want         bool
-	}{
-		{
-			note1: &Note{name: C},
-			note2: &Note{name: C},
-			want:  true,
-		},
-		{
-			note1: &Note{name: C},
-			note2: &Note{name: D},
-			want:  false,
-		},
-		{
-			note1: &Note{name: C},
-			note2: nil,
-			want:  false,
-		},
-		{
-			note1: nil,
-			note2: nil,
-			want:  false,
-		},
-	}
-
-	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note1.IsEqualByName(testCase.note2))
-	}
-}
-
-func TestNoteIsEqualByOctave(t *testing.T) {
-	testCases := []struct {
-		note1, note2 *Note
-		want         bool
-	}{
-		{
-			note1: &Note{name: C, octave: octave.MustNewByNumber(octave.Number0)},
-			note2: &Note{name: C, octave: octave.MustNewByNumber(octave.Number0)},
-			want:  true,
-		},
-		{
-			note1: &Note{name: C, octave: octave.MustNewByNumber(octave.Number0)},
-			note2: &Note{name: D, octave: octave.MustNewByNumber(octave.Number0)},
-			want:  true,
-		},
-		{
-			note1: &Note{name: C, octave: octave.MustNewByNumber(octave.Number0)},
-			note2: &Note{name: C, octave: octave.MustNewByNumber(octave.Number1)},
-			want:  false,
-		},
-		{
-			note1: &Note{name: C, octave: octave.MustNewByNumber(octave.Number0)},
-			note2: &Note{name: D, octave: octave.MustNewByNumber(octave.Number1)},
-			want:  false,
-		},
-		{
-			note1: &Note{name: C, octave: nil},
-			note2: &Note{name: C, octave: octave.MustNewByNumber(octave.Number1)},
-			want:  false,
-		},
-		{
-			note1: &Note{name: C, octave: nil},
-			note2: &Note{name: D, octave: octave.MustNewByNumber(octave.Number1)},
-			want:  false,
-		},
-		{
-			note1: &Note{name: C},
-			note2: &Note{name: D},
-			want:  false,
-		},
-		{
-			note1: &Note{name: C},
-			note2: nil,
-			want:  false,
-		},
-		{
-			note1: nil,
-			note2: nil,
-			want:  false,
-		},
-	}
-
-	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note1.IsEqualByOctave(testCase.note2))
-	}
-}
-
-func TestNoteIsEqual(t *testing.T) {
-	testCases := []struct {
-		note1, note2 *Note
-		want         bool
-	}{
-		{
-			note1: &Note{name: C, octave: octave.MustNewByNumber(octave.Number0)},
-			note2: &Note{name: C, octave: octave.MustNewByNumber(octave.Number0)},
-			want:  true,
-		},
-		{
-			note1: &Note{name: C, octave: octave.MustNewByNumber(octave.Number0)},
-			note2: &Note{name: D, octave: octave.MustNewByNumber(octave.Number0)},
-			want:  false,
-		},
-		{
-			note1: &Note{name: C, octave: octave.MustNewByNumber(octave.Number0)},
-			note2: &Note{name: C, octave: octave.MustNewByNumber(octave.Number1)},
-			want:  false,
-		},
-		{
-			note1: &Note{name: C, octave: nil},
-			note2: &Note{name: C, octave: octave.MustNewByNumber(octave.Number1)},
-			want:  false,
-		},
-		{
-			note1: &Note{name: C, octave: nil},
-			note2: &Note{name: C, octave: nil},
-			want:  false,
-		},
-		{
-			note1: &Note{name: C},
-			note2: nil,
-			want:  false,
-		},
-		{
-			note1: nil,
-			note2: nil,
-			want:  false,
-		},
-	}
-
-	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note1.IsEqual(testCase.note2))
-	}
-}
-
-func TestNoteCopy(t *testing.T) {
-	note1 := C.MustNewNote().SetOctave(octave.MustNewByNumber(-1)).SetDuration(0).SetValue(duration.NewRelative(duration.NameHalf).SetDots(1))
-	note2 := note1.Copy()
-
-	// Test the pointer address is not the same
-	if note1 == note2 {
-		t.Error("Expected new note instance, but got the same pointer address")
-	}
-
-	// Test the notes have the same name
-	if note1.Name() != note2.Name() {
-		t.Error("Expected new note with same name, but got different names")
-	}
-
-	// Test the notes have the same octave
-	if note1.Octave() != note2.Octave() {
-		t.Error("Expected new note with same octave, but got different octaves")
-	}
-
-	// Test nil input returns nil
-	if nilNote := (*Note)(nil).Copy(); nilNote != nil {
-		t.Error("Expected nil output for nil input, but got non-nil result")
-	}
+		if !copy.EqualByName(original) {
+			t.Fatalf("Copy() with nil octave should preserve name")
+		}
+		if copy.Octave() != nil {
+			t.Fatalf("Copy() with nil octave should have nil octave")
+		}
+	})
 }
 
 func TestNote_AlterUp(t *testing.T) {
-	// Test case when note is nil
-	var n *Note
-	if n.AlterUp() != nil {
-		t.Errorf("AlterUp on nil note should return nil")
+	tests := []struct {
+		in   Note
+		want Name
+	}{
+		{New(C), CSHARP},
+		{New(CSHARP), CSHARP2},
+		{New(CFLAT), C},
+		{New(CFLAT2), CFLAT},
+		{New(B), BSHARP},
 	}
 
-	// Test case when Name doesn't end with any symbols
-	n = &Note{name: B}
-	if n.AlterUp().name != BSHARP {
-		t.Errorf("AlterUp on note B should result in B#, got: %s", n.name)
-	}
-
-	// Test case when Name ends with AccidentalSharp
-	n = &Note{name: BSHARP}
-	if n.AlterUp().name != BSHARP2 {
-		t.Errorf("AlterUp on note B# should result in B##, got: %s", n.name)
-	}
-
-	// Test case when Name ends with AccidentalFlat
-	n = &Note{name: BFLAT}
-	if n.AlterUp().name != B {
-		t.Errorf("AlterUp on note Bb should result in B, got: %s", n.name)
-	}
-
-	// Test case when Name ends with AccidentalFlat twice
-	n = &Note{name: BFLAT2}
-	if n.AlterUp().name != BFLAT {
-		t.Errorf("AlterUp on note Bbb should result in Bb, got: %s", n.name)
+	for _, tt := range tests {
+		t.Run(tt.in.String()+"->"+tt.want.String(), func(t *testing.T) {
+			got := tt.in.AlterUp()
+			if !got.Name().EqualSpelling(tt.want) {
+				t.Fatalf("AlterUp(): got %v, want %v", got.Name(), tt.want)
+			}
+		})
 	}
 }
 
 func TestNote_AlterDown(t *testing.T) {
-	// Test case when note is nil
-	var n *Note
-	if n.AlterDown() != nil {
-		t.Errorf("AlterDown on nil note should return nil")
+	tests := []struct {
+		in   Note
+		want Name
+	}{
+		{New(C), CFLAT},
+		{New(CFLAT), CFLAT2},
+		{New(CSHARP), C},
+		{New(CSHARP2), CSHARP},
+		{New(B), BFLAT},
 	}
 
-	// Test case when Name doesn't end with any symbols
-	n = &Note{name: B}
-	if n.AlterDown().name != BFLAT {
-		t.Errorf("AlterDown on note B should result in Bb, got: %s", n.name)
-	}
-
-	// Test case when Name ends with AccidentalSharp
-	n = &Note{name: BSHARP}
-	if n.AlterDown().name != B {
-		t.Errorf("AlterDown on note B# should result in B, got: %s", n.name)
-	}
-
-	// Test case when Name ends with AccidentalFlat
-	n = &Note{name: BFLAT}
-	if n.AlterDown().name != BFLAT2 {
-		t.Errorf("AlterDown on note Bb should result in Bbb, got: %s", n.name)
-	}
-
-	// Test case when Name ends with AccidentalSharp twice
-	n = &Note{name: BSHARP2}
-	if n.AlterDown().name != BSHARP {
-		t.Errorf("AlterDown on note B## should result in Bb# got: %s", n.name)
+	for _, tt := range tests {
+		t.Run(tt.in.String()+"->"+tt.want.String(), func(t *testing.T) {
+			got := tt.in.AlterDown()
+			if !got.Name().EqualSpelling(tt.want) {
+				t.Fatalf("AlterDown(): got %v, want %v", got.Name(), tt.want)
+			}
+		})
 	}
 }
 
 func TestNote_AlterUpBy(t *testing.T) {
-	t.Run("Note_AlterUpBy: positive case 1", func(t *testing.T) {
-		n := newNote(C)
-		alteredNote := n.AlterUpBy(2)
-		expectedNote := newNote(CSHARP2)
-		if alteredNote != n || !alteredNote.IsEqualByName(expectedNote) {
-			t.Error("AlterUpBy should alter the note up by the provided value")
-		}
-	})
+	tests := []struct {
+		name  string
+		in    Note
+		steps uint8
+		want  Name
+	}{
+		{"CBy0", New(C), 0, C},
+		{"CBy1", New(C), 1, CSHARP},
+		{"CBy2", New(C), 2, CSHARP2},
+		{"CbbBy4", New(CFLAT2), 4, CSHARP2},
+	}
 
-	t.Run("Note_AlterUpBy: positive case 2", func(t *testing.T) {
-		n := newNote(CFLAT2)
-		alteredNote := n.AlterUpBy(4)
-		expectedNote := newNote(CSHARP2)
-		if alteredNote != n || !alteredNote.IsEqualByName(expectedNote) {
-			t.Error("AlterUpBy should alter the note up by the provided value")
-		}
-	})
-
-	t.Run("Note_AlterUpBy: zero times", func(t *testing.T) {
-		n := newNote(C)
-		if n.AlterUpBy(0) != n {
-			t.Error("AlterUpBy should return the same note for 0 alterations")
-		}
-	})
-
-	t.Run("Note_AlterUpBy: nil note", func(t *testing.T) {
-		var n *Note
-		if n.AlterUpBy(1) != nil {
-			t.Error("AlterUpBy should return nil for nil note")
-		}
-	})
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.in.AlterUpBy(tt.steps)
+			if !got.Name().EqualSpelling(tt.want) {
+				t.Fatalf("AlterUpBy(%d): got %v, want %v", tt.steps, got.Name(), tt.want)
+			}
+		})
+	}
 }
 
 func TestNote_AlterDownBy(t *testing.T) {
-	t.Run("Note_AlterDownBy: positive case 1", func(t *testing.T) {
-		n := newNote(C)
-		alteredNote := n.AlterDownBy(2)
-		expectedNote := newNote(CFLAT2)
-		if alteredNote != n || !alteredNote.IsEqualByName(expectedNote) {
-			t.Errorf("AlterDownBy expected: %s, actual: %s", expectedNote.Name(), alteredNote.Name())
-		}
-	})
+	tests := []struct {
+		name  string
+		in    Note
+		steps uint8
+		want  Name
+	}{
+		{"CBy0", New(C), 0, C},
+		{"CBy1", New(C), 1, CFLAT},
+		{"CBy2", New(C), 2, CFLAT2},
+		{"C##By4", New(CSHARP2), 4, CFLAT2},
+	}
 
-	t.Run("Note_AlterDownBy: positive case 2", func(t *testing.T) {
-		n := newNote(CSHARP2)
-		alteredNote := n.AlterDownBy(4)
-		expectedNote := newNote(CFLAT2)
-		if alteredNote != n || !alteredNote.IsEqualByName(expectedNote) {
-			t.Errorf("AlterDownBy expected: %s, actual: %s", expectedNote.Name(), alteredNote.Name())
-		}
-	})
-
-	t.Run("Note_AlterDownBy: zero times", func(t *testing.T) {
-		n := newNote(C)
-		if n.AlterDownBy(0) != n {
-			t.Error("AlterDownBy should return the same note for 0 alterations")
-		}
-	})
-
-	t.Run("Note_AlterDownBy: nil note", func(t *testing.T) {
-		var n *Note
-		if n.AlterDownBy(1) != nil {
-			t.Error("AlterDownBy should return nil for nil note")
-		}
-	})
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.in.AlterDownBy(tt.steps)
+			if !got.Name().EqualSpelling(tt.want) {
+				t.Fatalf("AlterDownBy(%d): got %v, want %v", tt.steps, got.Name(), tt.want)
+			}
+		})
+	}
 }
 
 func TestNote_BaseName(t *testing.T) {
-	testCases := []struct {
-		note *Note
-		want Name
+	tests := []struct {
+		note Note
+		want string
 	}{
-		{
-			note: newNote(CSHARP2),
-			want: C,
-		},
-		{
-			note: newNote(CSHARP),
-			want: C,
-		},
-		{
-			note: newNote(C),
-			want: C,
-		},
-		{
-			note: newNote(CFLAT),
-			want: C,
-		},
-		{
-			note: newNote(CFLAT2),
-			want: C,
-		},
+		{New(C), "C"},
+		{New(CSHARP), "C"},
+		{New(CFLAT), "C"},
+		{New(CSHARP2), "C"},
+		{New(CFLAT2), "C"},
+		{New(D), "D"},
+		{New(DSHARP), "D"},
 	}
 
-	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.BaseName(), "expected note name: %s, result: %s", testCase.want, testCase.note.BaseName())
+	for _, tt := range tests {
+		t.Run(tt.note.String(), func(t *testing.T) {
+			if got := tt.note.BaseName(); got != tt.want {
+				t.Fatalf("BaseName(): got %q, want %q", got, tt.want)
+			}
+		})
 	}
 }
 
-func TestNoteSetOctave(t *testing.T) {
-	expectedOctave := octave.MustNewByNumber(octave.NumberDefault)
+func TestNote_AlterationShift(t *testing.T) {
+	tests := []struct {
+		note  Note
+		shift int8
+	}{
+		{New(C), 0},
+		{New(CSHARP), 1},
+		{New(CSHARP2), 2},
+		{New(CFLAT), -1},
+		{New(CFLAT2), -2},
+	}
 
-	t.Run("TestNoteSetOctave: setting octave to the note without octave", func(t *testing.T) {
-		// create a note without octave
-		note1 := newNote(C)
-		// set the octave no the note
-		note1.SetOctave(expectedOctave)
-		// check that they are the same
-		assert.True(t, expectedOctave.IsEqual(note1.Octave()))
+	for _, tt := range tests {
+		t.Run(tt.note.String(), func(t *testing.T) {
+			if got := tt.note.AlterationShift(); got != tt.shift {
+				t.Fatalf("AlterationShift(): got %d, want %d", got, tt.shift)
+			}
+		})
+	}
+}
+
+func TestNote_SetOctave(t *testing.T) {
+	oct4 := octave.MustNewByNumber(4)
+	oct5 := octave.MustNewByNumber(5)
+
+	t.Run("SetToNil", func(t *testing.T) {
+		note := New(C)
+		note = note.SetOctave(oct4)
+		if note.Octave() == nil {
+			t.Fatalf("SetOctave(): octave should not be nil")
+		}
+		if note.Octave().Number() != 4 {
+			t.Fatalf("SetOctave(): got %d, want 4", note.Octave().Number())
+		}
 	})
 
-	t.Run("TestNoteSetOctave: setting octave to the note that already has an octave", func(t *testing.T) {
-		// create a note with an octave
-		note1 := newNoteWithOctave(C, octave.MustNewByNumber(octave.Number9))
-		// set new octave no the note
-		note1.SetOctave(expectedOctave)
-		// check that they are the same
-		assert.True(t, expectedOctave.IsEqual(note1.Octave()))
+	t.Run("ReplaceExisting", func(t *testing.T) {
+		note := MustNewWithOctave(C, 4)
+		note = note.SetOctave(oct5)
+		if note.Octave().Number() != 5 {
+			t.Fatalf("SetOctave(): got %d, want 5", note.Octave().Number())
+		}
+	})
+
+	t.Run("SetNil", func(t *testing.T) {
+		note := MustNewWithOctave(C, 4)
+		note = note.SetOctave(nil)
+		if note.Octave() != nil {
+			t.Fatalf("SetOctave(nil): octave should be nil")
+		}
 	})
 }
 
-func TestNoteSetDurationRel(t *testing.T) {
-	testCases := []struct {
-		note *Note
-		want *duration.Relative
+func TestNote_SetDuration(t *testing.T) {
+	tests := []struct {
+		name     string
+		duration time.Duration
 	}{
-		{
-			note: newNote(C),
-			want: duration.NewRelative(duration.NameEighth),
-		},
-		{
-			note: C.MustNewNote().SetValue(duration.NewRelative(duration.NameDoubleWhole)).
-				SetOctave(octave.MustNewByNumber(-1)).SetDuration(0).SetValue(duration.NewRelative(duration.NameHalf).SetDots(1)),
-
-			want: duration.NewRelative(duration.NameEighth),
-		},
-		{
-			note: newNote(C).SetValue(duration.NewRelative(duration.NameDoubleWhole)),
-			want: duration.NewRelative(duration.NameEighth),
-		},
-		{
-			note: C.MustNewNote().SetValue(duration.NewRelative(duration.NameDoubleWhole).SetDots(3).SetTuplet(tuplet.New(1, 2))),
-			want: duration.NewRelative(duration.NameEighth),
-		},
+		{"Zero", 0},
+		{"Second", time.Second},
+		{"Millisecond", time.Millisecond},
+		{"Minute", time.Minute},
 	}
 
-	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.SetValue(testCase.want).value)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			note := New(C).SetDuration(tt.duration)
+			if got := note.Duration(); got != tt.duration {
+				t.Fatalf("SetDuration(): got %v, want %v", got, tt.duration)
+			}
+		})
 	}
 }
 
-func TestNote_DurationRel(t *testing.T) {
-	testCases := []struct {
-		note *Note
-		want *duration.Relative
-	}{
-		{
-			note: newNote(C),
-			want: nil,
-		},
-		{
-			note: C.MustNewNote().SetValue(duration.NewRelative(duration.NameEighth)),
-			want: duration.NewRelative(duration.NameEighth),
-		},
-		{
-			note: newNote(C).SetValue(duration.NewRelative(duration.NameEighth)),
-			want: duration.NewRelative(duration.NameEighth),
-		},
+func TestNote_Duration(t *testing.T) {
+	t.Run("DefaultZero", func(t *testing.T) {
+		note := New(C)
+		if got := note.Duration(); got != 0 {
+			t.Fatalf("Duration(): got %v, want 0", got)
+		}
+	})
+
+	t.Run("AfterSet", func(t *testing.T) {
+		note := New(C).SetDuration(time.Second)
+		if got := note.Duration(); got != time.Second {
+			t.Fatalf("Duration(): got %v, want %v", got, time.Second)
+		}
+	})
+}
+
+func TestNote_SetValue(t *testing.T) {
+	values := []*duration.Relative{
+		duration.NewRelative(duration.NameWhole),
+		duration.NewRelative(duration.NameHalf),
+		duration.NewRelative(duration.NameQuarter),
+		duration.NewRelative(duration.NameEighth),
 	}
 
-	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.Value())
+	for _, v := range values {
+		t.Run(string(v.Name()), func(t *testing.T) {
+			note := New(C).SetValue(v)
+			if note.Value() != v {
+				t.Fatalf("SetValue(): got %v, want %v", note.Value(), v)
+			}
+		})
 	}
 }
 
-func TestNoteSetDurationAbs(t *testing.T) {
-	testCases := []struct {
-		note *Note
-		want time.Duration
+func TestNote_Value(t *testing.T) {
+	t.Run("DefaultNil", func(t *testing.T) {
+		note := New(C)
+		if got := note.Value(); got != nil {
+			t.Fatalf("Value(): got %v, want nil", got)
+		}
+	})
+
+	t.Run("AfterSet", func(t *testing.T) {
+		val := duration.NewRelative(duration.NameHalf)
+		note := New(C).SetValue(val)
+		if got := note.Value(); got != val {
+			t.Fatalf("Value(): got %v, want %v", got, val)
+		}
+	})
+}
+
+func TestNotes_String(t *testing.T) {
+	tests := []struct {
+		name  string
+		notes Notes
+		want  string
 	}{
-		{
-			note: newNote(C),
-			want: time.Second,
-		},
-		{
-			note: newNote(D).SetValue(duration.NewRelative(duration.NameDoubleWhole).SetDots(3).SetTuplet(tuplet.New(1, 2))),
-			want: time.Second,
-		},
-		{
-			note: newNote(E).SetValue(duration.NewRelative(duration.NameDoubleWhole)),
-			want: time.Second,
-		},
-		{
-			note: F.MustMakeNote().SetValue(duration.NewRelative(duration.NameDoubleWhole).SetDots(3).SetTuplet(tuplet.New(1, 2))),
-			want: time.Second,
-		},
+		{"Empty", Notes{}, "[]"},
+		{"One", Notes{New(C)}, "[C]"},
+		{"Three", Notes{New(C), New(D), New(E)}, "[C D E]"},
+		{"WithAccidentals", Notes{New(CSHARP), New(DFLAT)}, "[C# Db]"},
 	}
 
-	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.SetDuration(testCase.want).duration)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.notes.String(); got != tt.want {
+				t.Fatalf("String(): got %q, want %q", got, tt.want)
+			}
+		})
 	}
 }
 
-func TestNoteDurationAbs(t *testing.T) {
-	testCases := []struct {
-		note *Note
-		want time.Duration
+func TestNotes_Uniques(t *testing.T) {
+	tests := []struct {
+		name    string
+		notes   Notes
+		wantLen int
 	}{
-		{
-			note: newNote(C),
-			want: time.Duration(0),
-		},
-		{
-			note: C.MustMakeNote().SetValue(duration.NewRelative(duration.NameEighth)),
-			want: time.Duration(0),
-		},
-		{
-			note: newNote(C).SetValue(duration.NewRelative(duration.NameEighth)),
-			want: time.Duration(0),
-		},
-		{
-			note: C.MustNewNote().SetValue(duration.NewRelative(duration.NameDoubleWhole).SetDots(3).SetTuplet(tuplet.New(1, 2))),
-			want: time.Duration(0),
-		},
-		{
-			note: C.MustMakeNote().SetValue(duration.NewRelative(duration.NameEighth)).SetDuration(time.Second),
-			want: time.Second,
-		},
-		{
-			note: newNote(C).SetValue(duration.NewRelative(duration.NameEighth)).SetDuration(time.Second),
-			want: time.Second,
-		},
-		{
-			note: C.MustNewNote().SetValue(duration.NewRelative(duration.NameDoubleWhole).SetDots(3).SetTuplet(tuplet.New(1, 2))).SetDuration(time.Second),
-			want: time.Second,
-		},
+		{"Empty", Notes{}, 0},
+		{"NoDuplicates", Notes{New(C), New(D), New(E)}, 3},
+		{"AllDuplicates", Notes{New(C), New(C), New(C)}, 1},
+		{"SomeDuplicates", Notes{New(C), New(D), New(C), New(E), New(D)}, 3},
 	}
 
-	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.Duration(), "absolute duration: %v", testCase.note.Duration())
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			uniques := tt.notes.Uniques()
+			if got := len(uniques); got != tt.wantLen {
+				t.Fatalf("Uniques(): got %d, want %d", got, tt.wantLen)
+			}
+		})
 	}
 }
 
-func TestNoteGetAlterationShift(t *testing.T) {
-	baseNotes := GetNotesWithAlterations(GetSetFullChromatic(), 0)
+func TestGetSetFullChromatic(t *testing.T) {
+	notes := GetSetFullChromatic()
 
-	type testCase struct {
-		note *Note
-		want int8
+	// Should have 17 notes (C, Db, C#, D, Eb, D#, E, F, Gb, F#, G, Ab, G#, A, Bb, A#, B)
+	if got := len(notes); got != 17 {
+		t.Fatalf("GetSetFullChromatic(): got %d notes, want 17", got)
 	}
 
-	var testCases []testCase
+	// All should be valid
+	for _, n := range notes {
+		if !n.Name().IsValid() {
+			t.Fatalf("GetSetFullChromatic(): %v is not valid", n.Name())
+		}
+	}
+}
 
-	for _, note := range baseNotes {
-		for i := uint8(1); i <= 3; i++ {
-			testCases = append(testCases, testCase{note.Copy(), 0})
-			testCases = append(testCases, testCase{note.Copy().AlterUpBy(i), int8(i)})
-			testCases = append(testCases, testCase{note.Copy().AlterDownBy(i), -int8(i)})
+func TestGetSetFullChromaticDoubleAltered(t *testing.T) {
+	notes := GetSetFullChromaticDoubleAltered()
+
+	// Should have 27 notes
+	if got := len(notes); got != 27 {
+		t.Fatalf("GetSetFullChromaticDoubleAltered(): got %d notes, want 27", got)
+	}
+
+	// All should be valid
+	for _, n := range notes {
+		if !n.Name().IsValid() {
+			t.Fatalf("GetSetFullChromaticDoubleAltered(): %v is not valid", n.Name())
 		}
 	}
 
-	for _, testCase := range testCases {
-		assert.Equal(t, testCase.want, testCase.note.GetAlterationShift(), testCase.note)
+	// Should include double-altered notes
+	hasDoubleSharp := false
+	hasDoubleFlat := false
+	for _, n := range notes {
+		if n.AlterationShift() == 2 {
+			hasDoubleSharp = true
+		}
+		if n.AlterationShift() == -2 {
+			hasDoubleFlat = true
+		}
 	}
-}
-
-func TestNoteGetPartOfBarByRel(t *testing.T) {
-	testCases := []struct {
-		note          *Note
-		timeSignature *fraction.Fraction
-		want          decimal.Decimal
-	}{
-		{
-			note:          C.MustMakeNote().SetValue(duration.NewRelative(duration.NameWhole)),
-			timeSignature: fraction.New(1, 1),
-			want:          decimal.NewFromInt(1),
-		},
-		{
-			note:          C.MustMakeNote().SetValue(duration.NewRelative(duration.NameHalf)),
-			timeSignature: fraction.New(1, 2),
-			want:          decimal.NewFromInt(1),
-		},
-		{
-			note:          C.MustMakeNote().SetValue(duration.NewRelative(duration.NameWhole)),
-			timeSignature: fraction.New(1, 2),
-			want:          decimal.NewFromFloat(0.5),
-		},
-		{
-			note:          C.MustMakeNote().SetValue(duration.NewRelative(duration.NameHalf)),
-			timeSignature: fraction.New(1, 1),
-			want:          decimal.NewFromInt(2),
-		},
-		{
-			note:          C.MustMakeNote().SetValue(duration.NewRelative(duration.NameWhole).SetDots(1)),
-			timeSignature: fraction.New(1, 1),
-			want:          decimal.NewFromFloat(1.5),
-		},
-		{
-			note:          C.MustMakeNote().SetValue(duration.NewRelative(duration.NameWhole).SetDots(2)),
-			timeSignature: fraction.New(1, 1),
-			want:          decimal.NewFromFloat(1.75),
-		},
-		{
-			note:          C.MustMakeNote().SetValue(duration.NewRelative(duration.NameWhole).SetTupletDuplet()),
-			timeSignature: fraction.New(1, 1),
-			want:          decimal.NewFromFloat(1.5),
-		},
-		{
-			note:          C.MustMakeNote().SetValue(duration.NewRelative(duration.NameWhole).SetTupletDuplet().AddDot()),
-			timeSignature: fraction.New(1, 1),
-			want:          decimal.NewFromFloat(2.25),
-		},
-		{
-			note:          C.MustMakeNote().SetValue(duration.NewRelative(duration.NameWhole).SetTupletTriplet()),
-			timeSignature: fraction.New(1, 1),
-			want:          decimal.NewFromFloat(0.6666666666666667),
-		},
-		{
-			note:          C.MustNewNote().SetValue(duration.NewRelative(duration.NameWhole).SetTupletTriplet().AddDot()),
-			timeSignature: fraction.New(1, 1),
-			want:          decimal.NewFromFloat(1),
-		},
+	if !hasDoubleSharp {
+		t.Fatalf("GetSetFullChromaticDoubleAltered(): should include double-sharp notes")
 	}
-
-	for _, testCase := range testCases {
-		assert.True(t, testCase.want.Equal(testCase.note.GetPartOfBarByValue(testCase.timeSignature)), "expected: %+v, actual: %+v", testCase.want, testCase.note.value.GetPartOfBar(testCase.timeSignature))
+	if !hasDoubleFlat {
+		t.Fatalf("GetSetFullChromaticDoubleAltered(): should include double-flat notes")
 	}
 }
