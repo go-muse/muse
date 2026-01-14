@@ -16,7 +16,7 @@ import (
 type Note struct {
 	name     Name
 	octave   *octave.Octave
-	duration time.Duration
+	duration *time.Duration
 	value    *duration.Relative
 }
 
@@ -119,13 +119,18 @@ func (n Note) Equal(other Note) bool {
 }
 
 // Copy creates a deep copy of Note with respect to direct pointer fields.
-// It clones octave and value objects (if present) by value-copying the pointed structs.
+// It clones octave, duration and value objects (if present) by value-copying the pointed structs.
 func (n Note) Copy() Note {
 	out := n
 
 	if n.octave != nil {
 		o := *n.octave
 		out.octave = &o
+	}
+
+	if n.duration != nil {
+		d := *n.duration
+		out.duration = &d
 	}
 
 	if n.value != nil {
@@ -178,7 +183,7 @@ func (n Note) SetOctave(octave *octave.Octave) Note {
 
 // SetDuration sets absolute duration to the note and returns the note.
 func (n Note) SetDuration(d time.Duration) Note {
-	n.duration = d
+	n.duration = &d
 	return n
 }
 
@@ -189,8 +194,12 @@ func (n Note) SetValue(v *duration.Relative) Note {
 }
 
 // Duration returns absolute duration of the note.
+// Returns 0 if duration is not set.
 func (n Note) Duration() time.Duration {
-	return n.duration
+	if n.duration == nil {
+		return 0
+	}
+	return *n.duration
 }
 
 // Value returns relative duration of the note.

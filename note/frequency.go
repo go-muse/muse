@@ -4,6 +4,9 @@ import (
 	"github.com/go-muse/muse/tuning"
 )
 
+// referenceOctave is the octave number of the reference pitch A4.
+const referenceOctave = 4
+
 // StepsFromA4 returns the number of steps from A4 in the given tone system.
 // For 12-tone system, this is the number of semitones.
 // For 24-tone system, this is the number of quarter-tones (each semitone = 2 steps).
@@ -26,8 +29,8 @@ func (n Note) StepsFromA4(toneSystem tuning.ToneSystem) int {
 
 	// Add octave offset (octave 4 is the reference)
 	// Each octave is 12 semitones
-	octaveOffset := int(n.octave.Number()) - 4
-	stepsIn12Tone := stepsFromA + octaveOffset*12
+	octaveOffset := int(n.octave.Number()) - referenceOctave
+	stepsIn12Tone := stepsFromA + octaveOffset*tuning.SemitonesPerOctave
 
 	// Convert to the target tone system
 	// For 12-tone: multiply by 1
@@ -37,7 +40,7 @@ func (n Note) StepsFromA4(toneSystem tuning.ToneSystem) int {
 	}
 
 	// Scale to target tone system
-	return stepsIn12Tone * int(toneSystem) / 12
+	return stepsIn12Tone * int(toneSystem) / tuning.SemitonesPerOctave
 }
 
 // Frequency calculates and returns the frequency of the note using the given tuning.

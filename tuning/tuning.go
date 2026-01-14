@@ -1,5 +1,9 @@
 package tuning
 
+import (
+	"github.com/go-muse/muse/tuning/temperament"
+)
+
 // Standard reference frequencies for A4 in Hz.
 const (
 	// FreqA444 is used by some orchestras for a brighter sound.
@@ -44,7 +48,7 @@ func New(referenceFreq float64, temperament Temperament, toneSystem ToneSystem) 
 func Standard12TET() Tuning {
 	return Tuning{
 		ReferenceFreq: FreqA440,
-		Temperament:   NewEqualTemperament(),
+		Temperament:   temperament.NewEqual(),
 		ToneSystem:    TwelveTone,
 	}
 }
@@ -54,7 +58,7 @@ func Standard12TET() Tuning {
 func Baroque12TET() Tuning {
 	return Tuning{
 		ReferenceFreq: FreqA415,
-		Temperament:   NewEqualTemperament(),
+		Temperament:   temperament.NewEqual(),
 		ToneSystem:    TwelveTone,
 	}
 }
@@ -64,7 +68,7 @@ func Baroque12TET() Tuning {
 func Bright12TET() Tuning {
 	return Tuning{
 		ReferenceFreq: FreqA444,
-		Temperament:   NewEqualTemperament(),
+		Temperament:   temperament.NewEqual(),
 		ToneSystem:    TwelveTone,
 	}
 }
@@ -74,7 +78,7 @@ func Bright12TET() Tuning {
 func Verdi12TET() Tuning {
 	return Tuning{
 		ReferenceFreq: FreqA432,
-		Temperament:   NewEqualTemperament(),
+		Temperament:   temperament.NewEqual(),
 		ToneSystem:    TwelveTone,
 	}
 }
@@ -84,7 +88,7 @@ func Verdi12TET() Tuning {
 func JustIntonation12() Tuning {
 	return Tuning{
 		ReferenceFreq: FreqA440,
-		Temperament:   NewJustIntonation(),
+		Temperament:   temperament.NewJust(),
 		ToneSystem:    TwelveTone,
 	}
 }
@@ -94,7 +98,7 @@ func JustIntonation12() Tuning {
 func Pythagorean12() Tuning {
 	return Tuning{
 		ReferenceFreq: FreqA440,
-		Temperament:   NewPythagoreanTemperament(),
+		Temperament:   temperament.NewPythagorean(),
 		ToneSystem:    TwelveTone,
 	}
 }
@@ -104,7 +108,47 @@ func Pythagorean12() Tuning {
 func Meantone12() Tuning {
 	return Tuning{
 		ReferenceFreq: FreqA440,
-		Temperament:   NewMeantoneTemperament(),
+		Temperament:   temperament.NewMeantone(),
+		ToneSystem:    TwelveTone,
+	}
+}
+
+// WerckmeisterIII12 returns Werckmeister III well temperament:
+// A4 = 440 Hz, Werckmeister III, 12 tones per octave.
+func WerckmeisterIII12() Tuning {
+	return Tuning{
+		ReferenceFreq: FreqA440,
+		Temperament:   temperament.NewWerckmeisterIII(),
+		ToneSystem:    TwelveTone,
+	}
+}
+
+// KirnbergerIII12 returns Kirnberger III temperament:
+// A4 = 440 Hz, Kirnberger III, 12 tones per octave.
+func KirnbergerIII12() Tuning {
+	return Tuning{
+		ReferenceFreq: FreqA440,
+		Temperament:   temperament.NewKirnbergerIII(),
+		ToneSystem:    TwelveTone,
+	}
+}
+
+// Vallotti12 returns Vallotti temperament:
+// A4 = 440 Hz, Vallotti, 12 tones per octave.
+func Vallotti12() Tuning {
+	return Tuning{
+		ReferenceFreq: FreqA440,
+		Temperament:   temperament.NewVallotti(),
+		ToneSystem:    TwelveTone,
+	}
+}
+
+// Young12 returns Young's well temperament:
+// A4 = 440 Hz, Young, 12 tones per octave.
+func Young12() Tuning {
+	return Tuning{
+		ReferenceFreq: FreqA440,
+		Temperament:   temperament.NewYoung(),
 		ToneSystem:    TwelveTone,
 	}
 }
@@ -114,14 +158,14 @@ func Meantone12() Tuning {
 func QuarterTone24TET() Tuning {
 	return Tuning{
 		ReferenceFreq: FreqA440,
-		Temperament:   NewEqualTemperament(),
+		Temperament:   temperament.NewEqual(),
 		ToneSystem:    TwentyFourTone,
 	}
 }
 
 // Frequency calculates the frequency of a note given its steps from the reference note (A4).
 func (t Tuning) Frequency(stepsFromReference int) float64 {
-	return t.Temperament.Frequency(t.ReferenceFreq, stepsFromReference, t.ToneSystem)
+	return t.Temperament.Frequency(t.ReferenceFreq, stepsFromReference, int(t.ToneSystem))
 }
 
 // WithReferenceFreq returns a copy of the Tuning with a different reference frequency.

@@ -312,6 +312,24 @@ func TestNote_Copy(t *testing.T) {
 		if copy.Value() == nil {
 			t.Fatalf("Copy().Value(): got nil")
 		}
+		if copy.Value() == original.Value() {
+			t.Fatalf("Copy() should have different value pointer")
+		}
+	})
+
+	t.Run("CopyDurationPointerIndependence", func(t *testing.T) {
+		original := New(C).SetDuration(time.Second)
+		copy := original.Copy()
+
+		if copy.Duration() != original.Duration() {
+			t.Fatalf("Copy().Duration(): got %v, want %v", copy.Duration(), original.Duration())
+		}
+
+		// Modify copy's duration shouldn't affect original
+		copy = copy.SetDuration(time.Minute)
+		if original.Duration() != time.Second {
+			t.Fatalf("Modifying copy's duration affected original: got %v, want %v", original.Duration(), time.Second)
+		}
 	})
 
 	t.Run("CopyNilOctave", func(t *testing.T) {

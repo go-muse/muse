@@ -272,7 +272,7 @@ func (d *Degree) IsEqual(degree *Degree) bool {
 		return false
 	}
 	if (d.note != nil) && (degree.note != nil) {
-		if !d.note.IsEqualByName(degree.note) {
+		if !d.note.EqualByName(degree.note) {
 			return false
 		}
 	}

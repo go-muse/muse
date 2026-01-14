@@ -13,10 +13,10 @@ type Temperament interface {
 	//   - referenceFreq: frequency of the reference note in Hz (e.g., A4 = 440 Hz)
 	//   - stepsFromReference: number of steps from the reference note
 	//     (positive = higher, negative = lower)
-	//   - toneSystem: the number of equal divisions per octave
+	//   - stepsPerOctave: the number of equal divisions per octave (e.g., 12 for standard tuning)
 	//
 	// Returns the calculated frequency in Hz.
-	Frequency(referenceFreq float64, stepsFromReference int, toneSystem ToneSystem) float64
+	Frequency(referenceFreq float64, stepsFromReference int, stepsPerOctave int) float64
 
 	// Name returns the human-readable name of the temperament.
 	Name() string

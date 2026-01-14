@@ -42,9 +42,10 @@ func (n Note) MIDINumber() uint8 {
 // Uses modular arithmetic to handle edge cases like Cb (returns 11) and B# (returns 0).
 func (n Note) mustGetNoteNumberWithinOctave() uint8 {
 	semitone := int(n.name.Letter().Semitone()) + int(n.AlterationShift())
-	// Wrap around using modular arithmetic: ((x % 12) + 12) % 12
+	// Wrap around using modular arithmetic: ((x % N) + N) % N
 	// This handles both negative values (Cb -> 11) and overflow (B# -> 0)
-	semitone = ((semitone % 12) + 12) % 12
+	notesPerOctave := int(halftone.HalfTonesInOctave)
+	semitone = ((semitone % notesPerOctave) + notesPerOctave) % notesPerOctave
 	return uint8(semitone)
 }
 
