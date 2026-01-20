@@ -28,18 +28,18 @@ func NewVallotti() *Vallotti {
 // The Pythagorean comma divided by 6 gives the tempering for each of six fifths.
 // Pythagorean comma ≈ 23.46 cents, so each tempered fifth is narrowed by ~3.91 cents.
 var vallottiRatios = []float64{
-	1.0,        // 0: C (Unison)
-	1.05350,    // 1: C#/Db
-	1.11740,    // 2: D
-	1.18518,    // 3: D#/Eb
-	1.25283,    // 4: E
-	1.33333,    // 5: F (pure 4/3)
-	1.40625,    // 6: F#/Gb
-	1.49493,    // 7: G
-	1.58025,    // 8: G#/Ab
-	1.67044,    // 9: A
-	1.77778,    // 10: A#/Bb (pure 16/9)
-	1.87924,    // 11: B
+	1.0,           // 0: C (Unison)
+	1.05350,       // 1: C#/Db
+	1.11740,       // 2: D
+	1.18518,       // 3: D#/Eb
+	1.25283,       // 4: E
+	4.0 / 3.0,     // 5: F (pure 4/3)
+	1.40625,       // 6: F#/Gb
+	1.49493,       // 7: G
+	1.58025,       // 8: G#/Ab
+	1.67044,       // 9: A
+	16.0 / 9.0,    // 10: A#/Bb (pure 16/9)
+	1.87924,       // 11: B
 }
 
 // Frequency calculates the frequency using Vallotti temperament.

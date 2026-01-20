@@ -105,10 +105,11 @@ func TestPythagorean_Frequency_OctaveDown(t *testing.T) {
 func TestPythagorean_Frequency_NegativeSteps(t *testing.T) {
 	p := NewPythagorean()
 	refFreq := 440.0
-	// -7 steps = perfect fourth down (same as fifth up from lower octave)
+	// -7 steps = perfect fifth down (position 5 in lower octave)
 	got := p.Frequency(refFreq, -7, 12)
 	// -7 steps means position 5 in lower octave (12-7=5), with octave -1
-	want := (refFreq / 2) * (3.0 / 2.0) // Fifth in lower octave = 330 Hz
+	// Position 5 = perfect fourth ratio (4/3)
+	want := (refFreq / 2) * (4.0 / 3.0) // Fourth in lower octave = 293.33 Hz
 	if math.Abs(got-want) > 0.001 {
 		t.Errorf("Frequency(440, -7, 12) = %v, want %v", got, want)
 	}
