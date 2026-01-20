@@ -290,3 +290,25 @@ func (tswp TemplatesWithPrime) SortByPrimeNote(desc bool) TemplatesWithPrime {
 
 	return tswp
 }
+
+// SortByPrimeLetter sorts the slice with mode names and templates with prime notes by Prime note name.
+func (tswp TemplatesWithPrime) SortByPrimeLetter(desc bool) TemplatesWithPrime {
+	sort.Slice(tswp, func(i, j int) bool {
+		switch desc {
+		case true:
+			if !tswp[i].PrimeNote.EqualByName(tswp[j].PrimeNote) {
+				return tswp[i].PrimeNote.Name().String() > tswp[j].PrimeNote.Name().String()
+			}
+
+			return tswp[i].Name > tswp[j].Name
+		default:
+			if !tswp[i].PrimeNote.EqualByName(tswp[j].PrimeNote) {
+				return tswp[i].PrimeNote.Name().String() < tswp[j].PrimeNote.Name().String()
+			}
+
+			return tswp[i].Name < tswp[j].Name
+		}
+	})
+
+	return tswp
+}

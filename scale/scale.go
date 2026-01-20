@@ -31,7 +31,7 @@ func NewScaleFromNoteNames(noteNames ...note.Name) (Scale, error) {
 func MustNewScaleFromNoteNames(noteNames ...note.Name) Scale {
 	scale := make(Scale, 0, len(noteNames))
 	for _, noteName := range noteNames {
-		scale = append(scale, noteName.MustMakeNote())
+		scale = append(scale, noteName.NewNote())
 	}
 
 	return scale

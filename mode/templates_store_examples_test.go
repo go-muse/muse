@@ -174,7 +174,7 @@ func ExampleTemplatesStore_FindModeTemplatesByNotes() {
 		note.C.NewNote(), // duplicates are ok
 	}
 
-	result := mts.FindModeTemplatesByNotes(notes).SortByPrimeNote(false)
+	result := mts.FindModeTemplatesByNotes(notes).SortByPrimeLetter(false)
 
 	for _, r := range result {
 		fmt.Printf("mode name: %s, mode template: %+v, prime note: %+v, scale: %+v\n",

@@ -1,17 +1,15 @@
 package degree
 
 import (
-	"iter"
-
 	"github.com/go-muse/muse/note"
 )
 
 // Iterator is a function that yields degree nodes one by one.
-// It implements iter.Seq[*Node] for use with range loops.
-type Iterator = iter.Seq[*Node]
+// It can be used with range loops (Go 1.23+).
+type Iterator func(yield func(*Node) bool)
 
 // GetAllDegrees collects all degree nodes from an iterator into a slice.
-func GetAllDegrees(it Iterator) []*Node {
+func (it Iterator) GetAllDegrees() []*Node {
 	if it == nil {
 		return nil
 	}
@@ -25,7 +23,7 @@ func GetAllDegrees(it Iterator) []*Node {
 }
 
 // GetAllNotes collects all notes from degree nodes in an iterator.
-func GetAllNotes(it Iterator) note.Notes {
+func (it Iterator) GetAllNotes() note.Notes {
 	if it == nil {
 		return nil
 	}

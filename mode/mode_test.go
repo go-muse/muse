@@ -16,14 +16,14 @@ import (
 
 func TestInsertNote(t *testing.T) {
 	mode := Mode{}
-	note1 := note.C.MustMakeNote()
+	note1 := note.C.NewNote()
 
 	mode.InsertNote(note1, 0)
 	assert.True(t, mode.GetFirstDegree().Note().EqualByName(note1))
 	assert.Nil(t, mode.GetFirstDegree().GetPrevious())
 	assert.Nil(t, mode.GetFirstDegree().GetNext())
 
-	note2 := note.D.MustMakeNote()
+	note2 := note.D.NewNote()
 	mode.InsertNote(note2, 2)
 	assert.True(t, mode.GetFirstDegree().Note().EqualByName(note1))
 	assert.Nil(t, mode.GetFirstDegree().GetPrevious())
@@ -223,16 +223,19 @@ func TestSortByAbsoluteModalPositions(t *testing.T) {
 
 	testingFunc := func(t *testing.T, firstSortedDegree *degree.Node) {
 		t.Helper()
-		iterator := firstSortedDegree.IterateOneRound(false)
-		firstDegree := <-iterator
+		degrees := firstSortedDegree.IterateOneRound(false).GetAllDegrees()
+		if len(degrees) == 0 {
+			return
+		}
+		firstDegree := degrees[0]
 		var comparison bool
-		for degree := range iterator {
-			if degree.NextExists() {
-				comparison = degree.AbsoluteModalPosition().Weight() <= degree.GetNext().AbsoluteModalPosition().Weight()
-				if unsafe.Pointer(degree.GetNext()) != unsafe.Pointer(firstDegree) {
-					assert.True(t, comparison, "current - degree Num: %d, w: %d, next - degree Num: %d, w: %d", degree.Number(), degree.AbsoluteModalPosition().Weight(), degree.GetNext().Number, degree.GetNext().AbsoluteModalPosition().Weight())
+		for _, d := range degrees[1:] {
+			if d.NextExists() {
+				comparison = d.AbsoluteModalPosition().Weight() <= d.GetNext().AbsoluteModalPosition().Weight()
+				if unsafe.Pointer(d.GetNext()) != unsafe.Pointer(firstDegree) {
+					assert.True(t, comparison, "current - degree Num: %d, w: %d, next - degree Num: %d, w: %d", d.Number(), d.AbsoluteModalPosition().Weight(), d.GetNext().Number, d.GetNext().AbsoluteModalPosition().Weight())
 				} else {
-					assert.False(t, comparison, "current - degree Num: %d, w: %d, next - degree Num: %d, w: %d", degree.Number(), degree.AbsoluteModalPosition().Weight(), degree.GetNext().Number, degree.GetNext().AbsoluteModalPosition().Weight())
+					assert.False(t, comparison, "current - degree Num: %d, w: %d, next - degree Num: %d, w: %d", d.Number(), d.AbsoluteModalPosition().Weight(), d.GetNext().Number, d.GetNext().AbsoluteModalPosition().Weight())
 				}
 			}
 		}
@@ -258,7 +261,7 @@ func TestSortByAbsoluteModalPositions(t *testing.T) {
 	t.Run("test sort by AMP in case of degree without AMP", func(t *testing.T) {
 		firstDegree, lastDegree := getDegrees()
 		lastDegree.AttachNext(firstDegree)
-		firstDegree.GetNext().SetAbsoluteModalPosition(nil) // just one random degree without set absolute modal position
+		firstDegree.GetNext().SetAbsoluteModalPosition(degree.ModalPosition{}) // just one random degree without set absolute modal position
 		mode, err := MakeNewCustomModeWithDegree("custom mode", firstDegree)
 		require.NoError(t, err)
 		mode.SortByAbsoluteModalPositions(false)

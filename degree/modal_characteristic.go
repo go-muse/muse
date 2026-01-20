@@ -12,7 +12,7 @@ import (
 type ModalCharacteristic struct {
 	name                  CharacteristicName
 	degree                *Node
-	relativeModalPosition *ModalPosition
+	relativeModalPosition ModalPosition
 }
 
 // Name returns modal characteristic's name.
@@ -25,9 +25,9 @@ func (mc *ModalCharacteristic) Name() CharacteristicName {
 }
 
 // RelativeModalPosition returns relative modal position as part of modal characteristic of the deg.
-func (mc *ModalCharacteristic) RelativeModalPosition() *ModalPosition {
+func (mc *ModalCharacteristic) RelativeModalPosition() ModalPosition {
 	if mc == nil {
-		return nil
+		return ModalPosition{}
 	}
 
 	return mc.relativeModalPosition

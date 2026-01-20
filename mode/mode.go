@@ -211,9 +211,12 @@ func (m *Mode) Equal(mode *Mode) bool {
 	if m.name != mode.name || m.Length() != mode.Length() {
 		return false
 	}
-	d1chan := m.degree.IterateOneRound(false)
-	for d2 := range mode.degree.IterateOneRound(false) {
-		if !(<-d1chan).Equal(d2) {
+
+	degrees1 := m.degree.IterateOneRound(false).GetAllDegrees()
+	degrees2 := mode.degree.IterateOneRound(false).GetAllDegrees()
+
+	for i, d1 := range degrees1 {
+		if !d1.Equal(degrees2[i]) {
 			return false
 		}
 	}
