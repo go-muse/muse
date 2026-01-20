@@ -45,35 +45,60 @@ func (l Letter) IsValid() bool {
 	return l <= LetterB
 }
 
-// ErrInvalidLetter indicates that a value does not correspond to any valid
+// Semitone returns the semitone position of this letter within an octave.
+// C=0, D=2, E=4, F=5, G=7, A=9, B=11.
+// This is the chromatic pitch class of the natural (unaltered) note.
+func (l Letter) Semitone() uint8 {
+	switch l {
+	case LetterC:
+		return 0
+	case LetterD:
+		return 2
+	case LetterE:
+		return 4
+	case LetterF:
+		return 5
+	case LetterG:
+		return 7
+	case LetterA:
+		return 9
+	case LetterB:
+		return 11
+	default:
+		return 0
+	}
+}
+
+// ErrLetterInvalid indicates that a value does not correspond to any valid
 // diatonic note letter in the set {C, D, E, F, G, A, B}.
-var ErrInvalidLetter = errors.New("invalid diatonic note letter")
+var ErrLetterInvalid = errors.New("invalid diatonic note letter")
 
 // ParseLetter parses a string and returns the corresponding Letter.
 // The input string must be exactly one character long and must be one of: C, D, E, F, G, A, or B.
+// Both uppercase and lowercase letters are accepted.
 // Returns an error if the input is invalid.
 func ParseLetter(s string) (Letter, error) {
 	if len(s) != 1 {
-		return 0, ErrInvalidLetter
+		return 0, ErrLetterInvalid
 	}
 
 	switch s[0] {
-	case 'C':
+	case 'C', 'c':
 		return LetterC, nil
-	case 'D':
+	case 'D', 'd':
 		return LetterD, nil
-	case 'E':
+	case 'E', 'e':
 		return LetterE, nil
-	case 'F':
+	case 'F', 'f':
 		return LetterF, nil
-	case 'G':
+	case 'G', 'g':
 		return LetterG, nil
-	case 'A':
+	case 'A', 'a':
 		return LetterA, nil
-	case 'B':
+	case 'B', 'b':
 		return LetterB, nil
 	default:
-		return 0, ErrInvalidLetter
+		return 0, ErrLetterInvalid
 	}
 }
 
@@ -87,4 +112,62 @@ func MustParseLetter(s string) Letter {
 	}
 
 	return l
+}
+
+// Name creation methods for Letter.
+// These methods allow creating note names directly from a letter:
+//
+//	note.LetterC.Natural().NewNote()  // C
+//	note.LetterC.Sharp().NewNote()    // C#
+//	note.LetterD.Flat().NewNote()     // Db
+
+// Natural returns a Name with this letter and no accidental.
+func (l Letter) Natural() Name {
+	return NewName(l, Natural())
+}
+
+// Sharp returns a Name with this letter and a sharp accidental.
+func (l Letter) Sharp() Name {
+	return NewName(l, Sharp())
+}
+
+// Flat returns a Name with this letter and a flat accidental.
+func (l Letter) Flat() Name {
+	return NewName(l, Flat())
+}
+
+// DoubleSharp returns a Name with this letter and a double-sharp accidental.
+func (l Letter) DoubleSharp() Name {
+	return NewName(l, DoubleSharp())
+}
+
+// DoubleFlat returns a Name with this letter and a double-flat accidental.
+func (l Letter) DoubleFlat() Name {
+	return NewName(l, DoubleFlat())
+}
+
+// IsHigherThan reports whether this letter represents a higher pitch class
+// than the other letter within a single octave, using the natural (unaltered)
+// semitone positions: C=0, D=2, E=4, F=5, G=7, A=9, B=11.
+//
+// Example:
+//
+//	LetterD.IsHigherThan(LetterC) // true (D=2 > C=0)
+//	LetterC.IsHigherThan(LetterB) // false (C=0 < B=11)
+//	LetterE.IsHigherThan(LetterE) // false (equal)
+func (l Letter) IsHigherThan(other Letter) bool {
+	return l.Semitone() > other.Semitone()
+}
+
+// IsLowerThan reports whether this letter represents a lower pitch class
+// than the other letter within a single octave, using the natural (unaltered)
+// semitone positions: C=0, D=2, E=4, F=5, G=7, A=9, B=11.
+//
+// Example:
+//
+//	LetterC.IsLowerThan(LetterD) // true (C=0 < D=2)
+//	LetterB.IsLowerThan(LetterC) // false (B=11 > C=0)
+//	LetterE.IsLowerThan(LetterE) // false (equal)
+func (l Letter) IsLowerThan(other Letter) bool {
+	return l.Semitone() < other.Semitone()
 }

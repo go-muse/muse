@@ -12,16 +12,16 @@ import (
 // Creating a new chord.
 func ExampleNewChord() {
 	// notes with different durations
-	note1 := note.MustNewNoteWithOctave(note.E, 4).SetValue(duration.NewRelative(duration.NameWhole))
-	note2 := note.MustNewNoteWithOctave(note.G, 4).SetValue(duration.NewRelative(duration.NameHalf))
-	note3 := note.MustNewNoteWithOctave(note.B, 4).SetValue(duration.NewRelative(duration.NameQuarter))
-	note4 := note.MustNewNoteWithOctave(note.D, 5).SetValue(duration.NewRelative(duration.NameSixteenth))
+	note1 := note.MustNewWithOctave(note.E, 4).WithValue(duration.NewRelative(duration.NameWhole))
+	note2 := note.MustNewWithOctave(note.G, 4).WithValue(duration.NewRelative(duration.NameHalf))
+	note3 := note.MustNewWithOctave(note.B, 4).WithValue(duration.NewRelative(duration.NameQuarter))
+	note4 := note.MustNewWithOctave(note.D, 5).WithValue(duration.NewRelative(duration.NameSixteenth))
 
 	// duration for the chord
 	duration := duration.NewRelative(duration.NameHalf)
 
 	// notes will be added in the new chord with the specified duration. It will be the same for all the notes in the chord.
-	chord := chord.NewChord(note1, note2, note3, note4).SetValue(duration)
+	chord := chord.NewChord(note1, note2, note3, note4).WithValue(duration)
 
 	fmt.Println(chord.String())
 	// Output: notes: [E G B D], duration name: Half, custom duration: 0s
@@ -32,12 +32,12 @@ func ExampleNewChordEmpty() {
 	duration := duration.NewRelative(duration.NameHalf)
 
 	chord := chord.NewChordEmpty()
-	chord.SetValue(duration)
+	chord.WithValue(duration)
 
-	note1 := note.MustNewNoteWithOctave(note.E, 4)
-	note2 := note.MustNewNoteWithOctave(note.G, 4)
-	note3 := note.MustNewNoteWithOctave(note.B, 4)
-	note4 := note.MustNewNoteWithOctave(note.D, 5)
+	note1 := note.MustNewWithOctave(note.E, 4)
+	note2 := note.MustNewWithOctave(note.G, 4)
+	note3 := note.MustNewWithOctave(note.B, 4)
+	note4 := note.MustNewWithOctave(note.D, 5)
 
 	chord.AddNotes(note1, note2, note3, note4)
 
@@ -50,18 +50,18 @@ func ExampleChord_AddNotes() {
 	duration := duration.NewRelative(duration.NameHalf)
 
 	chord := chord.NewChordEmpty()
-	chord.SetValue(duration)
+	chord.WithValue(duration)
 
-	note1 := note.MustNewNoteWithOctave(note.E, 4)
-	note2 := note.MustNewNoteWithOctave(note.G, 4)
-	note3 := note.MustNewNoteWithOctave(note.B, 4)
-	note4 := note.MustNewNoteWithOctave(note.D, 5)
-	note5 := note.MustNewNoteWithOctave(note.D, 5) // existing note
-	note6 := note.MustNewNoteWithOctave(note.E, 4) // existing note
+	note1 := note.MustNewWithOctave(note.E, 4)
+	note2 := note.MustNewWithOctave(note.G, 4)
+	note3 := note.MustNewWithOctave(note.B, 4)
+	note4 := note.MustNewWithOctave(note.D, 5)
+	note5 := note.MustNewWithOctave(note.D, 5) // existing note
+	note6 := note.MustNewWithOctave(note.E, 4) // existing note
 
 	chord.AddNotes(note1, note2, note3, note4, note5, note6)
 
-	existingNote := note.MustNewNoteWithOctave(note.E, 4)
+	existingNote := note.MustNewWithOctave(note.E, 4)
 	chord.AddNote(existingNote)
 
 	fmt.Println(chord.String())
@@ -69,18 +69,18 @@ func ExampleChord_AddNotes() {
 }
 
 // Setting relative duration to the chord.
-func ExampleChord_SetValue() {
+func ExampleChord_WithValue() {
 	chord := chord.NewChordEmpty()
 
-	note1 := note.MustNewNoteWithOctave(note.E, 4)
-	note2 := note.MustNewNoteWithOctave(note.G, 4)
-	note3 := note.MustNewNoteWithOctave(note.B, 4)
-	note4 := note.MustNewNoteWithOctave(note.D, 5)
+	note1 := note.MustNewWithOctave(note.E, 4)
+	note2 := note.MustNewWithOctave(note.G, 4)
+	note3 := note.MustNewWithOctave(note.B, 4)
+	note4 := note.MustNewWithOctave(note.D, 5)
 
 	chord.AddNotes(note1, note2, note3, note4)
 
 	duration := duration.NewRelative(duration.NameHalf)
-	chord.SetValue(duration)
+	chord.WithValue(duration)
 
 	var resultStr string
 	for _, chordNote := range chord.Notes() {
@@ -95,17 +95,17 @@ func ExampleChord_SetValue() {
 }
 
 // Setting custom absolute duration to the chord.
-func ExampleChord_SetDuration() {
+func ExampleChord_WithDuration() {
 	chord := chord.NewChordEmpty()
 
-	note1 := note.MustNewNoteWithOctave(note.E, 4)
-	note2 := note.MustNewNoteWithOctave(note.G, 4)
-	note3 := note.MustNewNoteWithOctave(note.B, 4)
-	note4 := note.MustNewNoteWithOctave(note.D, 5)
+	note1 := note.MustNewWithOctave(note.E, 4)
+	note2 := note.MustNewWithOctave(note.G, 4)
+	note3 := note.MustNewWithOctave(note.B, 4)
+	note4 := note.MustNewWithOctave(note.D, 5)
 
 	chord.AddNotes(note1, note2, note3, note4)
 
-	chord.SetDuration(time.Second)
+	chord.WithDuration(time.Second)
 
 	var resultStr string
 	for _, chordNote := range chord.Notes() {

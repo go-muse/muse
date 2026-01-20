@@ -22,9 +22,9 @@ type modeBuilder struct {
 }
 
 // buildingFunc is a function that builds notes and halftone for the mode.
-type buildingFunc func(builder.HalftonesIterator, *note.Note) builder.Builder
+type buildingFunc func(builder.HalftonesIterator, note.Note) builder.Builder
 
-func (mbc *modeBuilder) build(modeName Name, firstNote *note.Note) *Mode {
+func (mbc *modeBuilder) build(modeName Name, firstNote note.Note) *Mode {
 	mode := &Mode{name: modeName}
 
 	// Insert first note in the mode

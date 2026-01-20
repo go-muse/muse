@@ -57,7 +57,7 @@ func ExampleNewIntervalByName() {
 // Making note by existing note and known interval.
 func ExampleMakeNoteByName() {
 	// The note from which we will make the second note by the interval.
-	firstNote := note.MustNewNoteWithOctave(note.C, octave.NumberDefault)
+	firstNote := note.C.NewNote().WithOctave(octave.MustNewByNumber(octave.NumberDefault))
 
 	// Needed interval
 	chromaticInterval, err := interval.NewChromatic(6) // six halftone means tritone interval
@@ -78,7 +78,7 @@ func ExampleMakeNoteByName() {
 	}
 
 	// The notes made from the same note and interval must be equal
-	if !secondNote1.IsEqualByName(secondNote2) {
+	if !secondNote1.EqualByName(secondNote2) {
 		panic("notes aren't equal")
 	}
 
@@ -88,7 +88,7 @@ func ExampleMakeNoteByName() {
 
 // Making degree by existing degree and known interval.
 func ExampleMakeDegreeByName() {
-	firstDegree := degree.New(1, 0, nil, nil, note.MustNewNoteWithOctave(note.C, octave.Number1), nil, nil)
+	firstDegree := degree.New(1, 0, nil, nil, note.C.NewNote().WithOctave(octave.MustNewByNumber(octave.Number1)), nil, degree.ModalPosition{})
 
 	secondDegree, err := interval.MakeDegreeByName(firstDegree, interval.NameTritone)
 	if err != nil {

@@ -10,12 +10,12 @@ import (
 var errInvalidFirstTemplateNote = errors.New("invalid first template note")
 
 // NewBuilderCommon builds notes for the mode.
-func NewBuilderCommon(modeTemplate HalftonesIterator, firstNote *note.Note) Builder {
-	send := func(n *note.Note, halfTones halftone.HalfTones) func() (*note.Note, halftone.HalfTones) {
-		return func() (*note.Note, halftone.HalfTones) { return n, halfTones }
+func NewBuilderCommon(modeTemplate HalftonesIterator, firstNote note.Note) Builder {
+	send := func(n note.Note, halfTones halftone.HalfTones) func() (note.Note, halftone.HalfTones) {
+		return func() (note.Note, halftone.HalfTones) { return n, halfTones }
 	}
 
-	f := func(c chan func() (*note.Note, halftone.HalfTones)) {
+	f := func(c chan func() (note.Note, halftone.HalfTones)) {
 		// Get instance with 12 template notes
 		templateNotes := getTemplateNotesCommon()
 
@@ -59,7 +59,7 @@ func NewBuilderCommon(modeTemplate HalftonesIterator, firstNote *note.Note) Buil
 		close(c)
 	}
 
-	c := make(chan func() (*note.Note, halftone.HalfTones))
+	c := make(chan func() (note.Note, halftone.HalfTones))
 	go f(c)
 
 	return c
@@ -70,7 +70,7 @@ type templateNoteCommon struct {
 	next          *templateNoteCommon
 	previous      *templateNoteCommon
 	isAltered     bool
-	notAltered    *note.Note
+	notAltered    note.Note
 	alteredNotes  []*noteRelation
 	resultingNote *noteRelation
 }
@@ -82,16 +82,16 @@ type templateNotesCommon struct {
 }
 
 // equal Compares Note and template note by name.
-func (tn *templateNoteCommon) equal(note *note.Note) bool {
+func (tn *templateNoteCommon) equal(note note.Note) bool {
 	if !tn.isAltered {
-		if tn.notAltered.IsEqualByName(note) {
+		if tn.notAltered.EqualByName(note) {
 			return true
 		}
 	}
 
 	if tn.alteredNotes != nil {
 		for _, ar := range tn.alteredNotes {
-			if ar.realNote().IsEqualByName(note) {
+			if ar.realNote().EqualByName(note) {
 				return true
 			}
 		}
@@ -108,7 +108,7 @@ func (tn *templateNoteCommon) getNext() *templateNoteCommon {
 // getTemplateNote determines template note by the given Note.
 // When building a mode from a specific note, we will need to move the pointer to the first note
 // and from it iterate further and pass it to the final notes builder, which decides on their naming.
-func (ti *templateNotesCommon) getTemplateNote(note *note.Note) *templateNoteCommon {
+func (ti *templateNotesCommon) getTemplateNote(note note.Note) *templateNoteCommon {
 	if ti.templateNoteCommon == nil {
 		return nil
 	}
@@ -141,10 +141,10 @@ func (tn *templateNoteCommon) getByHalftones(halfTones halftone.HalfTones) *temp
 
 // saveResultingNote inserts the final note into the template note
 // with preserving the information about which note is the base for the saved note.
-func (tn *templateNoteCommon) saveResultingNote(note *note.Note) {
+func (tn *templateNoteCommon) saveResultingNote(note note.Note) {
 	if tn.isAltered {
 		for _, ar := range tn.alteredNotes {
-			if ar.realNote().IsEqualByName(note) {
+			if ar.realNote().EqualByName(note) {
 				tn.resultingNote = &noteRelation{ar.baseNote(), note}
 			}
 		}
@@ -162,9 +162,9 @@ func (tn *templateNoteCommon) setNextTemplateNote(next *templateNoteCommon) {
 }
 
 // buildNoteByPrevious determines the final note based on a template note using the previous template note.
-func (tn *templateNoteCommon) buildNoteByPrevious() *note.Note {
+func (tn *templateNoteCommon) buildNoteByPrevious() note.Note {
 	if tn == nil {
-		return nil
+		return note.Note{}
 	}
 
 	// If it is not an alterable note (C, D, E, F, G, A, B) - we return the note itself.
@@ -175,30 +175,30 @@ func (tn *templateNoteCommon) buildNoteByPrevious() *note.Note {
 		// If it is an alterable note, then we compare it with the previous one.
 	} else { //nolint
 		for _, ar := range tn.alteredNotes {
-			if !ar.baseNote().IsEqualByName(tn.previous.resultingNote.baseNote()) {
+			if !ar.baseNote().EqualByName(tn.previous.resultingNote.baseNote()) {
 				return ar.realNote()
 			}
 		}
 	}
 
-	return nil
+	return note.Note{}
 }
 
 // noteRelation is relation between note, and it's base note.
 // It is used sto get base note by altered note or
 // to get base note from resulting note.
 type noteRelation struct {
-	base *note.Note
-	real *note.Note
+	base note.Note
+	real note.Note
 }
 
 // baseNote returns the base note from real note and base note relation.
-func (ar *noteRelation) baseNote() *note.Note {
+func (ar *noteRelation) baseNote() note.Note {
 	return ar.base
 }
 
 // realNote returns the real note from real note and base note relation.
-func (ar *noteRelation) realNote() *note.Note {
+func (ar *noteRelation) realNote() note.Note {
 	return ar.real
 }
 
@@ -206,7 +206,7 @@ func (ar *noteRelation) realNote() *note.Note {
 // It is involved in calculating the alteration of the constructed notes of the mode.
 type baseNote struct {
 	prev, next *baseNote
-	note       *note.Note
+	note       note.Note
 }
 
 // getTemplateNotesCommon creates 12 template notes for the instance when it is created
@@ -215,85 +215,85 @@ func getTemplateNotesCommon() *templateNotesCommon {
 	templateNote12 := &templateNoteCommon{
 		next:         nil,
 		isAltered:    false,
-		notAltered:   note.B.MustNewNote(),
-		alteredNotes: []*noteRelation{{note.C.MustNewNote(), note.CFLAT.MustNewNote()}},
+		notAltered:   note.B.NewNote(),
+		alteredNotes: []*noteRelation{{note.C.NewNote(), note.CFLAT.NewNote()}},
 	}
 
 	templateNote11 := &templateNoteCommon{
 		next:         templateNote12,
 		isAltered:    true,
-		notAltered:   nil,
-		alteredNotes: []*noteRelation{{note.A.MustNewNote(), note.ASHARP.MustNewNote()}, {note.B.MustNewNote(), note.BFLAT.MustNewNote()}},
+		notAltered:   note.Note{},
+		alteredNotes: []*noteRelation{{note.A.NewNote(), note.ASHARP.NewNote()}, {note.B.NewNote(), note.BFLAT.NewNote()}},
 	}
 
 	templateNote10 := &templateNoteCommon{
 		next:         templateNote11,
 		isAltered:    false,
-		notAltered:   note.A.MustNewNote(),
+		notAltered:   note.A.NewNote(),
 		alteredNotes: nil,
 	}
 
 	templateNote9 := &templateNoteCommon{
 		next:         templateNote10,
 		isAltered:    true,
-		notAltered:   nil,
-		alteredNotes: []*noteRelation{{note.G.MustNewNote(), note.GSHARP.MustNewNote()}, {note.A.MustNewNote(), note.AFLAT.MustNewNote()}},
+		notAltered:   note.Note{},
+		alteredNotes: []*noteRelation{{note.G.NewNote(), note.GSHARP.NewNote()}, {note.A.NewNote(), note.AFLAT.NewNote()}},
 	}
 
 	templateNote8 := &templateNoteCommon{
 		next:         templateNote9,
 		isAltered:    false,
-		notAltered:   note.G.MustNewNote(),
+		notAltered:   note.G.NewNote(),
 		alteredNotes: nil,
 	}
 
 	templateNote7 := &templateNoteCommon{
 		next:         templateNote8,
 		isAltered:    true,
-		notAltered:   nil,
-		alteredNotes: []*noteRelation{{note.F.MustNewNote(), note.FSHARP.MustNewNote()}, {note.G.MustNewNote(), note.GFLAT.MustNewNote()}},
+		notAltered:   note.Note{},
+		alteredNotes: []*noteRelation{{note.F.NewNote(), note.FSHARP.NewNote()}, {note.G.NewNote(), note.GFLAT.NewNote()}},
 	}
 
 	templateNote6 := &templateNoteCommon{
 		next:         templateNote7,
 		isAltered:    false,
-		notAltered:   note.F.MustNewNote(),
-		alteredNotes: []*noteRelation{{note.E.MustNewNote(), note.ESHARP.MustNewNote()}},
+		notAltered:   note.F.NewNote(),
+		alteredNotes: []*noteRelation{{note.E.NewNote(), note.ESHARP.NewNote()}},
 	}
 
 	templateNote5 := &templateNoteCommon{
 		next:         templateNote6,
 		isAltered:    false,
-		notAltered:   note.E.MustNewNote(),
-		alteredNotes: []*noteRelation{{note.F.MustNewNote(), note.FFLAT.MustNewNote()}},
+		notAltered:   note.E.NewNote(),
+		alteredNotes: []*noteRelation{{note.F.NewNote(), note.FFLAT.NewNote()}},
 	}
 
 	templateNote4 := &templateNoteCommon{
 		next:         templateNote5,
 		isAltered:    true,
-		notAltered:   nil,
-		alteredNotes: []*noteRelation{{note.D.MustNewNote(), note.DSHARP.MustNewNote()}, {note.E.MustNewNote(), note.EFLAT.MustNewNote()}},
+		notAltered:   note.Note{},
+		alteredNotes: []*noteRelation{{note.D.NewNote(), note.DSHARP.NewNote()}, {note.E.NewNote(), note.EFLAT.NewNote()}},
 	}
 
 	templateNote3 := &templateNoteCommon{
 		next:         templateNote4,
 		isAltered:    false,
-		notAltered:   note.D.MustNewNote(),
+		notAltered:   note.D.NewNote(),
 		alteredNotes: nil,
 	}
 
 	templateNote2 := &templateNoteCommon{
 		next:         templateNote3,
 		isAltered:    true,
-		notAltered:   nil,
-		alteredNotes: []*noteRelation{{note.C.MustNewNote(), note.CSHARP.MustNewNote()}, {note.D.MustNewNote(), note.DFLAT.MustNewNote()}},
+		notAltered:   note.Note{},
+		alteredNotes: []*noteRelation{{note.C.NewNote(), note.CSHARP.NewNote()}, {note.D.NewNote(), note.DFLAT.NewNote()}},
 	}
 
 	templateNote1 := &templateNoteCommon{
 		next:         templateNote2,
 		isAltered:    false,
-		notAltered:   note.C.MustNewNote(),
-		alteredNotes: []*noteRelation{{note.B.MustNewNote(), note.BSHARP.MustNewNote()}},
+		notAltered:   note.C.NewNote(),
+		alteredNotes: []*noteRelation{{note.B.NewNote(), note.BSHARP.NewNote()}},
 	}
 
 	// set links to previous template notes
@@ -318,44 +318,40 @@ func getTemplateNotesCommon() *templateNotesCommon {
 	baseNote7 := &baseNote{
 		prev: nil,
 		next: nil,
-		note: note.MustNewNote(note.B),
+		note: note.B.NewNote(),
 	}
 	baseNote6 := &baseNote{
 		prev: nil,
 		next: baseNote7,
-		note: note.MustNewNote(note.A),
+		note: note.A.NewNote(),
 	}
 	baseNote5 := &baseNote{
 		prev: nil,
 		next: baseNote6,
-		note: note.MustNewNote(note.G),
+		note: note.G.NewNote(),
 	}
 	baseNote4 := &baseNote{
 		prev: nil,
 		next: baseNote5,
-		note: note.MustNewNote(note.F),
+		note: note.F.NewNote(),
 	}
 	baseNote3 := &baseNote{
 		prev: nil,
 		next: baseNote4,
-		note: note.MustNewNote(note.E),
+		note: note.E.NewNote(),
 	}
 	baseNote2 := &baseNote{
 		prev: nil,
 		next: baseNote3,
-		note: note.MustNewNote(note.D),
+		note: note.D.NewNote(),
 	}
 	baseNote1 := &baseNote{
 		prev: nil,
 		next: baseNote2,
-		note: note.MustNewNote(note.C),
+		note: note.C.NewNote(),
 	}
 
 	baseNote7.next = baseNote1
 
 	return &templateNotesCommon{templateNote1, baseNote1}
-}
-
-func newBaseNote(n *note.Note) *note.Note {
-	return note.MustNewNote(n.Name()[0:1]).SetOctave(n.Octave())
 }

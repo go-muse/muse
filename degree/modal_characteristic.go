@@ -11,8 +11,8 @@ import (
 // ModalCharacteristic is a set of information about calculated relative modal position.
 type ModalCharacteristic struct {
 	name                  CharacteristicName
-	degree                *Degree
-	relativeModalPosition *ModalPosition
+	degree                *Node
+	relativeModalPosition ModalPosition
 }
 
 // Name returns modal characteristic's name.
@@ -25,16 +25,16 @@ func (mc *ModalCharacteristic) Name() CharacteristicName {
 }
 
 // RelativeModalPosition returns relative modal position as part of modal characteristic of the deg.
-func (mc *ModalCharacteristic) RelativeModalPosition() *ModalPosition {
+func (mc *ModalCharacteristic) RelativeModalPosition() ModalPosition {
 	if mc == nil {
-		return nil
+		return ModalPosition{}
 	}
 
 	return mc.relativeModalPosition
 }
 
-// Degree returns the degree which, when compared, yields this modal characteristic.
-func (mc *ModalCharacteristic) Degree() *Degree {
+// DegreeNode returns the degree node which, when compared, yields this modal characteristic.
+func (mc *ModalCharacteristic) DegreeNode() *Node {
 	if mc == nil {
 		return nil
 	}
@@ -61,8 +61,8 @@ func (mcs ModalCharacteristics) Copy() ModalCharacteristics {
 	return copyMcs
 }
 
-func newModalCharacteristic(dcName CharacteristicName, degree *Degree) *ModalCharacteristic {
-	mc := &ModalCharacteristic{name: dcName, degree: degree}
+func newModalCharacteristic(dcName CharacteristicName, degreeNode *Node) *ModalCharacteristic {
+	mc := &ModalCharacteristic{name: dcName, degree: degreeNode}
 	mc.relativeModalPosition = MustNewModalPosition(dcName, getWeightByDCName(dcName))
 
 	return mc
@@ -70,11 +70,11 @@ func newModalCharacteristic(dcName CharacteristicName, degree *Degree) *ModalCha
 
 // String is stringer for ModalCharacteristic.
 func (mc *ModalCharacteristic) String() string {
-	return fmt.Sprintf("Name: '%s', Weight: '%d', note name:'%s', RMP: '%s', AMP: '%s'\n", mc.Name(), mc.RelativeModalPosition().Weight(), mc.Degree().Note().Name(), mc.RelativeModalPosition().Name(), mc.Degree().AbsoluteModalPosition().Name())
+	return fmt.Sprintf("Name: '%s', Weight: '%d', note name:'%s', RMP: '%s', AMP: '%s'\n", mc.Name(), mc.RelativeModalPosition().Weight(), mc.DegreeNode().Note().Name(), mc.RelativeModalPosition().Name(), mc.DegreeNode().AbsoluteModalPosition().Name())
 }
 
 // CalculateRelativeMC defines modal characteristic by degree's number.
-func CalculateRelativeMC(degreeNum Number, nextDegree *Degree, halfTonesFromPrime halftone.HalfTones) (*ModalCharacteristic, error) {
+func CalculateRelativeMC(degreeNum Number, nextDegreeNode *Node, halfTonesFromPrime halftone.HalfTones) (*ModalCharacteristic, error) {
 	originalPosition, err := getOriginalPositionOfDegree(degreeNum)
 	if err != nil {
 		return nil, fmt.Errorf("get original position of degree '%d': %w", degreeNum, err)
@@ -86,17 +86,17 @@ func CalculateRelativeMC(degreeNum Number, nextDegree *Degree, halfTonesFromPrim
 		return nil, fmt.Errorf("get degree characteristic name of degree '%d' with diff '%d': %w", degreeNum, diff, err)
 	}
 
-	return newModalCharacteristic(dcName, nextDegree), nil
+	return newModalCharacteristic(dcName, nextDegreeNode), nil
 }
 
 // MustCalculateRelativeMC defines modal characteristic by degree's number. Panics in case of error.
-func MustCalculateRelativeMC(degreeNum Number, nextDegree *Degree, halfTonesFromPrime halftone.HalfTones) *ModalCharacteristic {
+func MustCalculateRelativeMC(degreeNum Number, nextDegreeNode *Node, halfTonesFromPrime halftone.HalfTones) *ModalCharacteristic {
 	originalPosition := mustGetOriginalPositionOfDegree(degreeNum)
 
 	diff := convert.SubUint8Uint8(uint8(halfTonesFromPrime), uint8(originalPosition))
 	dcName := mustGetDegreeCharacteristicName(diff, degreeNum)
 
-	return newModalCharacteristic(dcName, nextDegree)
+	return newModalCharacteristic(dcName, nextDegreeNode)
 }
 
 func mustGetOriginalPositionOfDegree(degreeNum Number) halftone.HalfTones {

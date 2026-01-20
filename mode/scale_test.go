@@ -32,25 +32,25 @@ func TestGenerateScale(t *testing.T) {
 			name:     "Minor scale ascending",
 			mode:     MustMakeNewMode(NameNaturalMinor, note.A),
 			desc:     false,
-			expected: scale.Scale{note.A.MustMakeNote(), note.B.MustMakeNote(), note.C.MustMakeNote(), note.D.MustMakeNote(), note.E.MustMakeNote(), note.F.MustMakeNote(), note.G.MustMakeNote()},
+			expected: scale.Scale{note.A.NewNote(), note.B.NewNote(), note.C.NewNote(), note.D.NewNote(), note.E.NewNote(), note.F.NewNote(), note.G.NewNote()},
 		},
 		{
 			name:     "Minor scale descending",
 			mode:     MustMakeNewMode(NameNaturalMinor, note.A),
 			desc:     true,
-			expected: scale.Scale{note.G.MustMakeNote(), note.F.MustMakeNote(), note.E.MustMakeNote(), note.D.MustMakeNote(), note.C.MustMakeNote(), note.B.MustMakeNote(), note.A.MustMakeNote()},
+			expected: scale.Scale{note.G.NewNote(), note.F.NewNote(), note.E.NewNote(), note.D.NewNote(), note.C.NewNote(), note.B.NewNote(), note.A.NewNote()},
 		},
 		{
 			name:     "Major scale ascending",
 			mode:     MustMakeNewMode(NameNaturalMajor, note.C),
 			desc:     false,
-			expected: scale.Scale{note.C.MustMakeNote(), note.D.MustMakeNote(), note.E.MustMakeNote(), note.F.MustMakeNote(), note.G.MustMakeNote(), note.A.MustMakeNote(), note.B.MustMakeNote()},
+			expected: scale.Scale{note.C.NewNote(), note.D.NewNote(), note.E.NewNote(), note.F.NewNote(), note.G.NewNote(), note.A.NewNote(), note.B.NewNote()},
 		},
 		{
 			name:     "Major scale descending",
 			mode:     MustMakeNewMode(NameNaturalMajor, note.C),
 			desc:     true,
-			expected: scale.Scale{note.B.MustMakeNote(), note.A.MustMakeNote(), note.G.MustMakeNote(), note.F.MustMakeNote(), note.E.MustMakeNote(), note.D.MustMakeNote(), note.C.MustMakeNote()},
+			expected: scale.Scale{note.B.NewNote(), note.A.NewNote(), note.G.NewNote(), note.F.NewNote(), note.E.NewNote(), note.D.NewNote(), note.C.NewNote()},
 		},
 	}
 

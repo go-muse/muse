@@ -1,100 +1,77 @@
 package note
 
 import (
-	"math"
+	"github.com/go-muse/muse/tuning"
 )
 
-// Standards frequencies of A4 in Hz.
-const (
-	FreqA444 = 444.0 // Certain orchestras for brighter sound
-	FreqA440 = 440.0 // Modern music and orchestras
-	FreqA432 = 432.0 // Verdi's frequency
-	FreqA415 = 415.0 // Performance of Baroque music
-)
+// referenceOctave is the octave number of the reference pitch A4.
+const referenceOctave = 4
 
-// getMapOfHalfTones returns map that contains the number of halftones above A4 for each note.
-func getMapOfHalfTones() map[Name]int8 {
-	return map[Name]int8{
-		C:       -9,
-		DFLAT2:  -9,
-		DFLAT:   -8,
-		CSHARP:  -8,
-		CSHARP2: -7,
-		D:       -7,
-		EFLAT2:  -7,
-		FFLAT2:  -6,
-		EFLAT:   -6,
-		DSHARP:  -6,
-		DSHARP2: -5,
-		E:       -5,
-		FFLAT:   -5,
-		ESHARP:  -4,
-		F:       -4,
-		GFLAT2:  -4,
-		ESHARP2: -3,
-		GFLAT:   -3,
-		FSHARP:  -3,
-		FSHARP2: -2,
-		G:       -2,
-		AFLAT2:  -2,
-		AFLAT:   -1,
-		GSHARP:  -1,
-		GSHARP2: 0,
-		A:       0,
-		BFLAT2:  0,
-		BFLAT:   1,
-		ASHARP:  1,
-		CFLAT2:  1,
-		B:       2,
-		CFLAT:   2, // Cb = B
-		BSHARP:  3, // B# = C
-		BSHARP2: 4, // B## = C#
-	}
-}
-
-// Frequency returns the frequency of the note calculated in the specified standard.
-func (n *Note) Frequency(standard float64) float64 {
-	if n == nil || n.Octave() == nil {
+// StepsFromA4 returns the number of steps from A4 in the given tone system.
+// For 12-tone system, this is the number of semitones.
+// For 24-tone system, this is the number of quarter-tones (each semitone = 2 steps).
+//
+// Requires the note to have an octave set. If octave is nil, returns 0.
+func (n Note) StepsFromA4(toneSystem tuning.ToneSystem) int {
+	if !n.octave.IsSet() {
 		return 0
 	}
 
-	baseName := n.BaseName()
-	accidentals := int8(0)
-	for _, char := range n.Name()[1:] {
-		if char == rune(AccidentalSharp[0]) {
-			accidentals++
-		} else if char == rune(AccidentalFlat[0]) {
-			accidentals--
-		}
+	// Get base semitone position within octave (C=0, D=2, ..., A=9, B=11)
+	baseSemitone := int(n.name.Letter().Semitone())
+
+	// Calculate semitones from A (within same octave)
+	// A=9, so C=0 means -9 from A, D=2 means -7 from A, etc.
+	stepsFromA := baseSemitone - int(LetterA.Semitone())
+
+	// Add alteration (sharps/flats)
+	stepsFromA += int(n.AlterationShift())
+
+	// Add octave offset (octave 4 is the reference)
+	// Each octave is 12 semitones
+	octaveOffset := int(n.octave.Number()) - referenceOctave
+	stepsIn12Tone := stepsFromA + octaveOffset*tuning.SemitonesPerOctave
+
+	// Convert to the target tone system
+	// For 12-tone: multiply by 1
+	// For 24-tone: multiply by 2 (each semitone = 2 quarter-tones)
+	if toneSystem == tuning.TwelveTone || toneSystem == 0 {
+		return stepsIn12Tone
 	}
 
-	semitoneOffset, exists := getMapOfHalfTones()[baseName]
-	if !exists {
-		return 0
-	}
-
-	totalSemitones := semitoneOffset + accidentals
-
-	// f = 440 * 2^(n/12), where n — halftones from A4 (A in first octave)
-	return standard * math.Pow(2, float64(totalSemitones+12*(int8(n.Octave().Number())-4))/12)
+	// Scale to target tone system
+	return stepsIn12Tone * int(toneSystem) / tuning.SemitonesPerOctave
 }
 
-// FrequencyBy444 returns the frequency of the note calculated in the 444 Hz standard.
-func (n *Note) FrequencyBy444() float64 {
-	return n.Frequency(FreqA444)
+// Frequency calculates and returns the frequency of the note using the given tuning.
+//
+// The tuning specifies:
+//   - Reference frequency (e.g., 440 Hz for A4)
+//   - Temperament (equal, just intonation, Pythagorean, etc.)
+//   - Tone system (12, 19, 24, 31 tones per octave)
+//
+// Requires the note to have an octave set.
+func (n Note) Frequency(t tuning.Tuning) float64 {
+	steps := n.StepsFromA4(t.ToneSystem)
+	return t.Frequency(steps)
 }
 
-// FrequencyBy440 returns the frequency of the note calculated in the 440 Hz standard.
-func (n *Note) FrequencyBy440() float64 {
-	return n.Frequency(FreqA440)
+// Frequency440 returns the frequency of the note in standard 12-TET tuning (A4 = 440 Hz).
+func (n Note) Frequency440() float64 {
+	return n.Frequency(tuning.Standard12TET())
 }
 
-// FrequencyBy432 returns the frequency of the note calculated in the 432 Hz standard.
-func (n *Note) FrequencyBy432() float64 {
-	return n.Frequency(FreqA432)
+// Frequency444 returns the frequency of the note in bright orchestral tuning (A4 = 444 Hz).
+func (n Note) Frequency444() float64 {
+	return n.Frequency(tuning.Bright12TET())
 }
 
-// FrequencyBy415 returns the frequency of the note calculated in the 415 Hz standard.
-func (n *Note) FrequencyBy415() float64 {
-	return n.Frequency(FreqA415)
+// Frequency432 returns the frequency of the note in Verdi tuning (A4 = 432 Hz).
+func (n Note) Frequency432() float64 {
+	return n.Frequency(tuning.Verdi12TET())
+}
+
+// Frequency415 returns the frequency of the note in Baroque tuning (A4 = 415 Hz).
+func (n Note) Frequency415() float64 {
+	return n.Frequency(tuning.Baroque12TET())
 }

@@ -1,120 +1,76 @@
+//nolint:gochecknoglobals // Predefined note names are intentionally global for convenient usage
 package note
 
-const (
-	// C is the name of the note "C".
-	C = Name("C")
+// Names is a common name for set of the names.
+type Names []Name
 
-	// DFLAT is the name of the note "Db".
-	DFLAT = Name("Db")
+// Length returns amount of names in the Names.
+func (ns Names) Length() uint64 {
+	return uint64(len(ns))
+}
 
-	// CSHARP is the name of the note "C#".
-	CSHARP = Name("C#")
+// Predefined note names for convenient note creation.
+// Usage: note.C.NewNote(), note.CSHARP.NewNote(), etc.
 
-	// D is the name of the note "D".
-	D = Name("D")
-
-	// EFLAT is the name of the note "Eb".
-	EFLAT = Name("Eb")
-
-	// DSHARP is the name of the note "D#".
-	DSHARP = Name("D#")
-
-	// E is the name of the note "E".
-	E = Name("E")
-
-	// F is the name of the note "F".
-	F = Name("F")
-
-	// GFLAT is the name of the note "Gb".
-	GFLAT = Name("Gb")
-
-	// FSHARP is the name of the note "F#".
-	FSHARP = Name("F#")
-
-	// G is the name of the note "G".
-	G = Name("G")
-
-	// AFLAT is the name of the note "Ab".
-	AFLAT = Name("Ab")
-
-	// GSHARP is the name of the note "G#".
-	GSHARP = Name("G#")
-
-	// A is the name of the note "A".
-	A = Name("A")
-
-	// BFLAT is the name of the note "Bb".
-	BFLAT = Name("Bb")
-
-	// ASHARP is the name of the note "A#".
-	ASHARP = Name("A#")
-
-	// B is the name of the note "B".
-	B = Name("B")
+// Natural notes (no accidentals).
+var (
+	C = NewName(LetterC, Natural())
+	D = NewName(LetterD, Natural())
+	E = NewName(LetterE, Natural())
+	F = NewName(LetterF, Natural())
+	G = NewName(LetterG, Natural())
+	A = NewName(LetterA, Natural())
+	B = NewName(LetterB, Natural())
 )
 
-// Exotic names
-
-const (
-	// CFLAT is the name of the note "Cb".
-	CFLAT = Name("Cb")
-
-	// BSHARP is the name of the note "B#".
-	BSHARP = Name("B#")
-
-	// FFLAT is the name of the note "Fb".
-	FFLAT = Name("Fb")
-
-	// ESHARP is the name of the note "E#".
-	ESHARP = Name("E#")
+// Sharp notes (single sharp).
+var (
+	CSHARP = NewName(LetterC, Sharp())
+	DSHARP = NewName(LetterD, Sharp())
+	ESHARP = NewName(LetterE, Sharp())
+	FSHARP = NewName(LetterF, Sharp())
+	GSHARP = NewName(LetterG, Sharp())
+	ASHARP = NewName(LetterA, Sharp())
+	BSHARP = NewName(LetterB, Sharp())
 )
 
-// Doubled signs of alteration
-
-const (
-	// DFLAT2 is the name of the note "Dbb".
-	DFLAT2 = Name("Dbb")
-
-	// CSHARP2 is the name of the note "C##".
-	CSHARP2 = Name("C##")
-
-	// EFLAT2 is the name of the note "Ebb".
-	EFLAT2 = Name("Ebb")
-
-	// DSHARP2 is the name of the note "D##".
-	DSHARP2 = Name("D##")
-
-	// GFLAT2 is the name of the note "Gbb".
-	GFLAT2 = Name("Gbb")
-
-	// FSHARP2 is the name of the note "F##".
-	FSHARP2 = Name("F##")
-
-	// AFLAT2 is the name of the note "Abb".
-	AFLAT2 = Name("Abb")
-
-	// GSHARP2 is the name of the note "G##".
-	GSHARP2 = Name("G##")
-
-	// BFLAT2 is the name of the note "Bbb".
-	BFLAT2 = Name("Bbb")
-
-	// ASHARP2 is the name of the note "A##".
-	ASHARP2 = Name("A##")
+// Flat notes (single flat).
+var (
+	CFLAT = NewName(LetterC, Flat())
+	DFLAT = NewName(LetterD, Flat())
+	EFLAT = NewName(LetterE, Flat())
+	FFLAT = NewName(LetterF, Flat())
+	GFLAT = NewName(LetterG, Flat())
+	AFLAT = NewName(LetterA, Flat())
+	BFLAT = NewName(LetterB, Flat())
 )
 
-// Exotic names with doubled signs
-
-const (
-	// CFLAT2 is the name of the note "Cb".
-	CFLAT2 = Name("Cbb")
-
-	// BSHARP2 is the name of the note "B#".
-	BSHARP2 = Name("B##")
-
-	// FFLAT2 is the name of the note "Fb".
-	FFLAT2 = Name("Fbb")
-
-	// ESHARP2 is the name of the note "E#".
-	ESHARP2 = Name("E##")
+// Double-sharp notes.
+var (
+	CSHARP2 = NewName(LetterC, DoubleSharp())
+	DSHARP2 = NewName(LetterD, DoubleSharp())
+	ESHARP2 = NewName(LetterE, DoubleSharp())
+	FSHARP2 = NewName(LetterF, DoubleSharp())
+	GSHARP2 = NewName(LetterG, DoubleSharp())
+	ASHARP2 = NewName(LetterA, DoubleSharp())
+	BSHARP2 = NewName(LetterB, DoubleSharp())
 )
+
+// Double-flat notes.
+var (
+	CFLAT2 = NewName(LetterC, DoubleFlat())
+	DFLAT2 = NewName(LetterD, DoubleFlat())
+	EFLAT2 = NewName(LetterE, DoubleFlat())
+	FFLAT2 = NewName(LetterF, DoubleFlat())
+	GFLAT2 = NewName(LetterG, DoubleFlat())
+	AFLAT2 = NewName(LetterA, DoubleFlat())
+	BFLAT2 = NewName(LetterB, DoubleFlat())
+)
+
+func GetChromaticNamesSharp() []Name {
+	return []Name{C, CSHARP, D, DSHARP, E, F, FSHARP, G, GSHARP, A, ASHARP, B}
+}
+
+func GetChromaticNamesFlat() []Name {
+	return []Name{C, DFLAT, D, EFLAT, E, F, GFLAT, G, AFLAT, A, BFLAT, B}
+}

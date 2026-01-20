@@ -7,13 +7,13 @@ import (
 
 // GenerateScale generates an ascending or descending scale.
 func (m *Mode) GenerateScale(desc bool) scale.Scale {
-	if m == nil || m.degree == nil || m.degree.Note() == nil {
+	if m == nil || m.degree == nil {
 		return nil
 	}
 
 	scl := make(scale.Scale, m.Length())
 
-	var fromDegree *degree.Degree
+	var fromDegree *degree.Node
 	if desc {
 		fromDegree = m.GetLastDegree()
 	} else {

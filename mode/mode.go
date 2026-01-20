@@ -14,8 +14,8 @@ import (
 // Mode is a set of degrees located at certain intervals from each other within octave.
 // Degrees are circular linked list.
 type Mode struct {
-	name   Name           // Mode Name.
-	degree *degree.Degree // The first degree in the mode (tonal center). The mode always points to the first degree.
+	name   Name         // Mode Name.
+	degree *degree.Node // The first degree in the mode (tonal center). The mode always points to the first degree.
 }
 
 // Name returns mode's name.
@@ -25,10 +25,7 @@ func (m *Mode) Name() Name {
 
 // MakeNewMode creates mode based on a mode template and the first note.
 func MakeNewMode(modeName Name, firstNoteName note.Name) (*Mode, error) {
-	firstNote, err := note.New(firstNoteName)
-	if err != nil {
-		return nil, fmt.Errorf("create first note by name = '%s': %w", firstNoteName, err)
-	}
+	firstNote := note.New(firstNoteName)
 
 	modeTemplate, err := GetTemplateByName(modeName)
 	if err != nil {
@@ -63,7 +60,7 @@ func MakeNewCustomMode(modeTemplate Template, firstNoteName string, modeName Nam
 		return nil, fmt.Errorf("validate mode template to create custom mode: %w", err)
 	}
 
-	firstNote, err := note.NewNoteFromString(firstNoteName)
+	firstNote, err := note.NewFromString(firstNoteName)
 	if err != nil {
 		return nil, fmt.Errorf("make first note to create custom mode by firstNoteName '%s': %w", firstNoteName, err)
 	}
@@ -77,7 +74,7 @@ func MakeNewCustomMode(modeTemplate Template, firstNoteName string, modeName Nam
 var ErrDegreeNumberInvalid = errors.New("invalid degree number")
 
 // MakeNewCustomModeWithDegree makes custom mode with given degrees chain.
-func MakeNewCustomModeWithDegree(modeName Name, firstDegree *degree.Degree) (*Mode, error) {
+func MakeNewCustomModeWithDegree(modeName Name, firstDegree *degree.Node) (*Mode, error) {
 	if firstDegree.Number() != degree.Number(1) {
 		return nil, fmt.Errorf("create mode with first degree number '%d'. First degree must be '1': %w", firstDegree.Number(), ErrDegreeNumberInvalid)
 	}
@@ -86,7 +83,7 @@ func MakeNewCustomModeWithDegree(modeName Name, firstDegree *degree.Degree) (*Mo
 }
 
 // MustMakeNewCustomModeWithDegree makes custom mode with given degrees chain, panics in case of error.
-func MustMakeNewCustomModeWithDegree(modeName Name, firstDegree *degree.Degree) *Mode {
+func MustMakeNewCustomModeWithDegree(modeName Name, firstDegree *degree.Node) *Mode {
 	mode, err := MakeNewCustomModeWithDegree(modeName, firstDegree)
 	if err != nil {
 		panic(err)
@@ -106,8 +103,8 @@ func (m *Mode) Length() degree.Number {
 	return length
 }
 
-// GetFirstDegree returns pointer to the first degree in the mode.
-func (m *Mode) GetFirstDegree() *degree.Degree {
+// GetFirstDegree returns pointer to the first degree node in the mode.
+func (m *Mode) GetFirstDegree() *degree.Node {
 	if m == nil || m.degree == nil {
 		return nil
 	}
@@ -120,8 +117,8 @@ func (m *Mode) GetFirstDegree() *degree.Degree {
 	return nil
 }
 
-// GetLastDegree returns pointer to the last degree in the mode.
-func (m *Mode) GetLastDegree() *degree.Degree {
+// GetLastDegree returns pointer to the last degree node in the mode.
+func (m *Mode) GetLastDegree() *degree.Node {
 	if m == nil || m.degree == nil {
 		return nil
 	}
@@ -136,8 +133,8 @@ func (m *Mode) GetLastDegree() *degree.Degree {
 	return currentDegree
 }
 
-// GetDegreeByDegreeNum returns degree by degree number.
-func (m *Mode) GetDegreeByDegreeNum(degreeNum degree.Number) *degree.Degree {
+// GetDegreeByDegreeNum returns degree node by degree number.
+func (m *Mode) GetDegreeByDegreeNum(degreeNum degree.Number) *degree.Node {
 	if m == nil || m.degree == nil {
 		return nil // or error?
 	}
@@ -150,18 +147,18 @@ func (m *Mode) GetDegreeByDegreeNum(degreeNum degree.Number) *degree.Degree {
 }
 
 // GetNoteByDegreeNum returns note by degree number.
-func (m *Mode) GetNoteByDegreeNum(degreeNum degree.Number) *note.Note {
+func (m *Mode) GetNoteByDegreeNum(degreeNum degree.Number) note.Note {
 	degree := m.GetDegreeByDegreeNum(degreeNum)
 	if degree != nil {
 		return degree.Note()
 	}
 
-	return nil
+	return note.Note{}
 }
 
 // InsertNote adds note as degree in the mode during mode building.
 // This will work for both closed and open degrees circle in the mode.
-func (m *Mode) InsertNote(note *note.Note, halfTonesFromPrime halftone.HalfTones) {
+func (m *Mode) InsertNote(note note.Note, halfTonesFromPrime halftone.HalfTones) {
 	if m == nil {
 		return
 	}
@@ -175,7 +172,7 @@ func (m *Mode) InsertNote(note *note.Note, halfTonesFromPrime halftone.HalfTones
 			nil,
 			note,
 			nil,
-			nil,
+			degree.ModalPosition{},
 		)
 
 		return
@@ -188,7 +185,7 @@ func (m *Mode) InsertNote(note *note.Note, halfTonesFromPrime halftone.HalfTones
 		nil,
 		note,
 		nil,
-		nil,
+		degree.ModalPosition{},
 	)
 
 	// in case of closed degree's circle
@@ -205,8 +202,8 @@ func (m *Mode) IterateOneRound(left bool) degree.Iterator {
 	return m.degree.IterateOneRound(left)
 }
 
-// IsEqual compares modes.
-func (m *Mode) IsEqual(mode *Mode) bool {
+// Equal compares modes.
+func (m *Mode) Equal(mode *Mode) bool {
 	if m == nil || mode == nil {
 		return false
 	}
@@ -214,9 +211,12 @@ func (m *Mode) IsEqual(mode *Mode) bool {
 	if m.name != mode.name || m.Length() != mode.Length() {
 		return false
 	}
-	d1chan := m.degree.IterateOneRound(false)
-	for d2 := range mode.degree.IterateOneRound(false) {
-		if !(<-d1chan).IsEqual(d2) {
+
+	degrees1 := m.degree.IterateOneRound(false).GetAllDegrees()
+	degrees2 := mode.degree.IterateOneRound(false).GetAllDegrees()
+
+	for i, d1 := range degrees1 {
+		if !d1.Equal(degrees2[i]) {
 			return false
 		}
 	}
@@ -232,7 +232,7 @@ func (m *Mode) GetIntervals(opts *interval.FilteringOptions) []interval.Diatonic
 		if !opts.HasFilterByAbsoluteModalPosition(degree.AbsoluteModalPosition().Name()) {
 			for _, mc := range degree.ModalCharacteristics() {
 				if !opts.HasFilterByDegreeCharacteristicName(mc.Name()) {
-					intervalWithDegrees, _ := interval.NewDiatonic(degree, mc.Degree())
+					intervalWithDegrees, _ := interval.NewDiatonic(degree, mc.DegreeNode())
 					if !opts.HasFilterBySonance(intervalWithDegrees.Chromatic().Sonance) {
 						intervalsWithDegrees = append(intervalsWithDegrees, *intervalWithDegrees)
 					}
@@ -290,9 +290,9 @@ func (m *Mode) SortByAbsoluteModalPositions(asc bool) {
 }
 
 // Contains checks for the presence of the specified note in the current mode.
-func (m *Mode) Contains(note *note.Note) bool {
+func (m *Mode) Contains(note note.Note) bool {
 	for degree := range m.IterateOneRound(false) {
-		if degree.Note().IsEqualByName(note) {
+		if degree.Note().EqualByName(note) {
 			return true
 		}
 	}
@@ -322,7 +322,7 @@ func (m *Mode) setRelativeModalPositions(modeTemplate Template) {
 }
 
 // setRelativeMCsOfDegree calculates relative modal characteristics of the degree and stores them in it.
-func setRelativeMCsOfDegree(d *degree.Degree, modeTemplate Template) {
+func setRelativeMCsOfDegree(d *degree.Node, modeTemplate Template) {
 	mcs := make(degree.ModalCharacteristics, 0, modeTemplate.Length())
 
 	// Rebuild mode template from the given degree and iterate through it

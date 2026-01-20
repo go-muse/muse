@@ -35,7 +35,7 @@ func NewTrack(trackSettings *Settings) *Track {
 }
 
 // AddNote adds a note to the track with the specified start time.
-func (t *Track) AddNote(n *note.Note, startTime time.Duration, isAbsolute bool) *Track {
+func (t *Track) AddNote(n note.Note, startTime time.Duration, isAbsolute bool) *Track {
 	if t == nil {
 		return nil
 	}
@@ -104,7 +104,7 @@ func (t *Track) Events() []*Event {
 }
 
 // AddNoteToTheEnd adds a note to the absolute end of the track.
-func (t *Track) AddNoteToTheEnd(n *note.Note, isAbsolute bool) *Track {
+func (t *Track) AddNoteToTheEnd(n note.Note, isAbsolute bool) *Track {
 	if t == nil {
 		return nil
 	}
@@ -179,7 +179,7 @@ func (t *Track) FindEnd() time.Duration {
 
 // GetStartAndEnd returns the start and end time of the event.
 func (t *Track) GetStartAndEnd(event *Event) (time.Duration, time.Duration) {
-	if t == nil || event == nil || event.note == nil {
+	if t == nil || event == nil {
 		return 0, 0
 	}
 
@@ -192,7 +192,7 @@ func (t *Track) GetStartAndEnd(event *Event) (time.Duration, time.Duration) {
 
 // GetEnd returns the end time of the event.
 func (t *Track) GetEnd(event *Event) time.Duration {
-	if t == nil || event == nil || event.note == nil {
+	if t == nil || event == nil {
 		return 0
 	}
 

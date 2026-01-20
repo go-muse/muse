@@ -16,16 +16,16 @@ import (
 func TestNewChord(t *testing.T) {
 	t.Run("NewChord: creating a new chord with different notes", func(t *testing.T) {
 		notes := note.Notes{
-			note.C.MustNewNote(),
-			note.E.MustNewNote(),
-			note.G.MustNewNote(),
+			note.C.NewNote(),
+			note.E.NewNote(),
+			note.G.NewNote(),
 		}
 
 		dur := duration.NewRelative("custom").
 			SetDots(2).
 			SetTuplet(tuplet.New(2, 3))
 
-		chord := NewChord(notes...).SetValue(dur)
+		chord := NewChord(notes...).WithValue(dur)
 
 		assert.Equal(t, len(notes), len(chord.notes), "expected %v notes, got %v", len(notes), len(chord.notes))
 		assert.Equal(t, dur, chord.Value(), "expected chord duration to be %v, got %v", dur, chord.Value())
@@ -37,16 +37,16 @@ func TestNewChord(t *testing.T) {
 
 	t.Run("NewChord: creating a new chord with existing notes", func(t *testing.T) {
 		notes := note.Notes{
-			note.C.MustNewNote().SetOctave(octave.MustNewByNumber(octave.Number4)),
-			note.E.MustNewNote().SetOctave(octave.MustNewByNumber(octave.Number4)),
-			note.G.MustNewNote().SetOctave(octave.MustNewByNumber(octave.Number4)),
-			note.C.MustNewNote().SetOctave(octave.MustNewByNumber(octave.Number4)), // existing note, won't be added
-			note.E.MustNewNote().SetOctave(octave.MustNewByNumber(octave.Number4)), // existing note, won't be added
-			note.G.MustNewNote().SetOctave(octave.MustNewByNumber(octave.Number4)), // existing note, won't be added
+			note.C.NewNote().WithOctave(octave.MustNewByNumber(octave.Number4)),
+			note.E.NewNote().WithOctave(octave.MustNewByNumber(octave.Number4)),
+			note.G.NewNote().WithOctave(octave.MustNewByNumber(octave.Number4)),
+			note.C.NewNote().WithOctave(octave.MustNewByNumber(octave.Number4)), // existing note, won't be added
+			note.E.NewNote().WithOctave(octave.MustNewByNumber(octave.Number4)), // existing note, won't be added
+			note.G.NewNote().WithOctave(octave.MustNewByNumber(octave.Number4)), // existing note, won't be added
 		}
 
 		dur := duration.NewRelative(duration.NameWhole).SetDots(2).SetTuplet(tuplet.New(2, 3))
-		chord := NewChord(notes...).SetValue(dur)
+		chord := NewChord(notes...).WithValue(dur)
 
 		differentNotes := 3
 		assert.Len(t, chord.notes, differentNotes, "expected %v notes, got %v", differentNotes, len(chord.notes))
@@ -81,7 +81,7 @@ func TestChord_String(t *testing.T) {
 func TestNewChordEmpty(t *testing.T) {
 	chord := NewChordEmpty()
 	assert.Empty(t, chord.notes, "expected %v notes, got %v", 0, len(chord.notes))
-	assert.Nil(t, chord.Value(), "expected chord duration to be nil, got %v", chord.Value())
+	assert.Empty(t, chord.Value(), "expected chord duration to be nil, got %v", chord.Value())
 }
 
 func TestChord_AddNote(t *testing.T) {
@@ -93,11 +93,11 @@ func TestChord_AddNote(t *testing.T) {
 		}
 
 		testCases := []struct {
-			note *note.Note
+			note note.Note
 		}{
-			{note.MustNewNoteWithOctave(note.C, 1)},
-			{note.MustNewNote(note.E).SetOctave(octave.MustNewByNumber(2)).SetValue(duration.NewRelative(duration.NameHalf))},
-			{note.MustNewNote(note.E).SetOctave(octave.MustNewByNumber(3)).SetValue(duration.NewRelative(duration.NameWhole).SetTupletTriplet())},
+			{note.C.NewNote().WithOctave(octave.MustNewByNumber(1))},
+			{note.E.NewNote().WithOctave(octave.MustNewByNumber(2)).WithValue(duration.NewRelative(duration.NameHalf))},
+			{note.E.NewNote().WithOctave(octave.MustNewByNumber(3)).WithValue(duration.NewRelative(duration.NameWhole).SetTupletTriplet())},
 		}
 
 		for _, testCase := range testCases {
@@ -106,7 +106,7 @@ func TestChord_AddNote(t *testing.T) {
 
 		for i, chordNote := range chord.notes {
 			assert.Equal(t, chord.Value(), chordNote.Value(), "note: %s, expected duration: %+v, actual: %+v", chordNote.Name(), chord.Value(), chordNote.Value())
-			assert.True(t, chordNote.IsEqualByName(testCases[i].note))
+			assert.True(t, chordNote.EqualByName(testCases[i].note))
 		}
 
 		assert.Equal(t, len(testCases), len(chord.notes))
@@ -120,11 +120,11 @@ func TestChord_AddNote(t *testing.T) {
 		}
 
 		testCases := []struct {
-			note *note.Note
+			note note.Note
 		}{
-			{note.MustNewNoteWithOctave(note.C, 1)},
-			{note.MustNewNoteWithOctave(note.E, 2).SetValue(duration.NewRelative(duration.NameHalf))},
-			{note.MustNewNoteWithOctave(note.G, 3).SetValue(duration.NewRelative(duration.NameWhole).SetTupletTriplet()).SetDuration(time.Hour)},
+			{note.C.NewNote().WithOctave(octave.MustNewByNumber(1))},
+			{note.E.NewNote().WithOctave(octave.MustNewByNumber(2)).WithValue(duration.NewRelative(duration.NameHalf))},
+			{note.G.NewNote().WithOctave(octave.MustNewByNumber(3)).WithValue(duration.NewRelative(duration.NameWhole).SetTupletTriplet()).WithDuration(time.Hour)},
 		}
 
 		// adding notes
@@ -146,7 +146,7 @@ func TestChord_AddNote(t *testing.T) {
 
 	t.Run("Chord_AddNote: adding to nil chord", func(t *testing.T) {
 		var chord *Chord
-		note := note.MustNewNoteWithOctave(note.C, 1)
+		note := note.MustNewWithOctave(note.C, 1)
 		chord.AddNote(note)
 		assert.Nil(t, chord)
 	})
@@ -161,16 +161,16 @@ func TestChord_AddNotes(t *testing.T) {
 		}
 
 		testCases := note.Notes{
-			note.MustNewNoteWithOctave(note.C, 1),
-			note.MustNewNoteWithOctave(note.E, 2).SetValue(duration.NewRelative(duration.NameHalf)),
-			note.MustNewNoteWithOctave(note.E, 3).SetValue(duration.NewRelative(duration.NameWhole).SetTupletTriplet()),
+			note.C.NewNote().WithOctave(octave.MustNewByNumber(1)),
+			note.E.NewNote().WithOctave(octave.MustNewByNumber(2)).WithValue(duration.NewRelative(duration.NameHalf)),
+			note.E.NewNote().WithOctave(octave.MustNewByNumber(3)).WithValue(duration.NewRelative(duration.NameWhole).SetTupletTriplet()),
 		}
 
 		chord.AddNotes(testCases...)
 
 		for i, chordNote := range chord.notes {
 			assert.Equal(t, chord.Value(), chordNote.Value(), "note: %s, expected duration: %+v, actual: %+v", chordNote.Name(), chord.Value(), chordNote.Value())
-			assert.True(t, chordNote.IsEqualByName(testCases[i]))
+			assert.True(t, chordNote.EqualByName(testCases[i]))
 		}
 
 		assert.Equal(t, len(testCases), len(chord.notes))
@@ -184,9 +184,9 @@ func TestChord_AddNotes(t *testing.T) {
 		}
 
 		testCases := note.Notes{
-			note.C.MustNewNote().SetOctave(octave.MustNewByNumber(1)),
-			note.E.MustNewNote().SetValue(duration.NewRelative(duration.NameHalf)).SetOctave(octave.MustNewByNumber(2)),
-			note.E.MustNewNote().SetValue(duration.NewRelative(duration.NameWhole).SetTupletTriplet()).SetOctave(octave.MustNewByNumber(3)),
+			note.C.NewNote().WithOctave(octave.MustNewByNumber(1)),
+			note.E.NewNote().WithValue(duration.NewRelative(duration.NameHalf)).WithOctave(octave.MustNewByNumber(2)),
+			note.E.NewNote().WithValue(duration.NewRelative(duration.NameWhole).SetTupletTriplet()).WithOctave(octave.MustNewByNumber(3)),
 		}
 
 		// adding notes
@@ -204,7 +204,7 @@ func TestChord_AddNotes(t *testing.T) {
 
 	t.Run("Chord_AddNotes: adding to nil chord", func(t *testing.T) {
 		var chord *Chord
-		chord.AddNotes(note.MustNewNoteWithOctave(note.C, 1), note.MustNewNoteWithOctave(note.D, 2))
+		chord.AddNotes(note.MustNewWithOctave(note.C, 1), note.MustNewWithOctave(note.D, 2))
 		assert.Nil(t, chord)
 	})
 }
@@ -214,9 +214,9 @@ func TestChord_GetNotes(t *testing.T) {
 		dur := duration.NewRelative(duration.NameHalf)
 		chord := &Chord{
 			notes: note.Notes{
-				note.MustNewNoteWithOctave(note.C, 1).SetValue(dur),
-				note.MustNewNoteWithOctave(note.E, 2).SetValue(dur),
-				note.MustNewNoteWithOctave(note.G, 3).SetValue(dur),
+				note.C.NewNote().WithOctave(octave.MustNewByNumber(1)).WithValue(dur),
+				note.E.NewNote().WithOctave(octave.MustNewByNumber(2)).WithValue(dur),
+				note.G.NewNote().WithOctave(octave.MustNewByNumber(3)).WithValue(dur),
 			},
 			value: dur,
 		}
@@ -232,20 +232,20 @@ func TestChord_GetNotes(t *testing.T) {
 	})
 }
 
-func TestChord_SetDurationRel(t *testing.T) {
-	t.Run("Chord_SetDurationRel: set duration to the chord", func(t *testing.T) {
+func TestChord_WithDurationRel(t *testing.T) {
+	t.Run("Chord_WithDurationRel: set duration to the chord", func(t *testing.T) {
 		dur := duration.NewRelative(duration.NameHalf)
 		chord := &Chord{
 			notes: note.Notes{
-				note.MustNewNoteWithOctave(note.C, 1).SetValue(dur),
-				note.MustNewNoteWithOctave(note.E, 2).SetValue(dur),
-				note.MustNewNoteWithOctave(note.G, 3).SetValue(dur),
+				note.C.NewNote().WithOctave(octave.MustNewByNumber(1)).WithValue(dur),
+				note.E.NewNote().WithOctave(octave.MustNewByNumber(2)).WithValue(dur),
+				note.G.NewNote().WithOctave(octave.MustNewByNumber(3)).WithValue(dur),
 			},
 			value: dur,
 		}
 
 		newDuration := duration.NewRelative(duration.NameWhole)
-		chord.SetValue(newDuration)
+		chord.WithValue(newDuration)
 		assert.Equal(t, newDuration, chord.Value(), "expected chord duration: %+v, actual chord duration: %+v", newDuration, chord.Value())
 
 		for _, chordNote := range chord.notes {
@@ -253,9 +253,9 @@ func TestChord_SetDurationRel(t *testing.T) {
 		}
 	})
 
-	t.Run("Chord_SetDurationRel: set duration to the nil chord", func(t *testing.T) {
+	t.Run("Chord_WithDurationRel: set duration to the nil chord", func(t *testing.T) {
 		var chord *Chord
-		assert.Nil(t, chord.SetValue(duration.NewRelative(duration.NameLong)))
+		assert.Nil(t, chord.WithValue(duration.NewRelative(duration.NameLong)))
 	})
 }
 
@@ -263,34 +263,34 @@ func TestChord_GetDuration(t *testing.T) {
 	t.Run("Chord_GetDurationRel: getting duration from the chord", func(t *testing.T) {
 		dur := duration.NewRelative(duration.NameHalf)
 		chord := NewChord(
-			note.MustNewNoteWithOctave(note.C, 1).SetValue(dur),
-			note.MustNewNoteWithOctave(note.E, 2).SetValue(dur),
-			note.MustNewNoteWithOctave(note.G, 3).SetValue(dur),
-		).SetValue(dur)
+			note.C.NewNote().WithOctave(octave.MustNewByNumber(1)).WithValue(dur),
+			note.E.NewNote().WithOctave(octave.MustNewByNumber(2)).WithValue(dur),
+			note.G.NewNote().WithOctave(octave.MustNewByNumber(3)).WithValue(dur),
+		).WithValue(dur)
 
 		assert.Equal(t, dur, chord.Value(), " expected duration: %+v, actual: %+v", dur, chord.Value())
 	})
 
 	t.Run("Chord_GetDurationRel: getting duration from the nil chord", func(t *testing.T) {
 		var chord *Chord
-		assert.Nil(t, chord.Value())
+		assert.Empty(t, chord.Value())
 	})
 }
 
-func TestChord_SetDurationAbs(t *testing.T) {
-	t.Run("Chord_SetDurationAbs: set custom duration to the chord", func(t *testing.T) {
+func TestChord_WithDurationAbs(t *testing.T) {
+	t.Run("Chord_WithDurationAbs: set custom duration to the chord", func(t *testing.T) {
 		dur := duration.NewRelative(duration.NameHalf)
 		chord := &Chord{
 			notes: note.Notes{
-				note.MustNewNoteWithOctave(note.C, 1).SetValue(dur),
-				note.MustNewNoteWithOctave(note.E, 2).SetValue(dur),
-				note.MustNewNoteWithOctave(note.G, 3).SetValue(dur),
+				note.C.NewNote().WithOctave(octave.MustNewByNumber(1)).WithValue(dur),
+				note.E.NewNote().WithOctave(octave.MustNewByNumber(2)).WithValue(dur),
+				note.G.NewNote().WithOctave(octave.MustNewByNumber(3)).WithValue(dur),
 			},
 			value: dur,
 		}
 
 		customDuration := time.Second
-		chord.SetDuration(customDuration)
+		chord.WithDuration(customDuration)
 		assert.Equal(t, customDuration, chord.duration, "expected chord custom duration: %+v, actual chord custom duration: %+v", customDuration, chord.duration)
 
 		for _, chordNote := range chord.notes {
@@ -298,9 +298,9 @@ func TestChord_SetDurationAbs(t *testing.T) {
 		}
 	})
 
-	t.Run("Chord_SetDurationAbs: set custom duration to the nil chord", func(t *testing.T) {
+	t.Run("Chord_WithDurationAbs: set custom duration to the nil chord", func(t *testing.T) {
 		var chord *Chord
-		assert.Nil(t, chord.SetDuration(time.Second))
+		assert.Nil(t, chord.WithDuration(time.Second))
 	})
 }
 
@@ -308,13 +308,13 @@ func TestChord_DurationAbs(t *testing.T) {
 	t.Run("Chord_DurationAbs: getting custom duration from the chord", func(t *testing.T) {
 		dur := duration.NewRelative(duration.NameHalf)
 		chord := NewChord(
-			note.MustNewNoteWithOctave(note.C, 1).SetValue(dur),
-			note.MustNewNoteWithOctave(note.E, 2).SetValue(dur),
-			note.MustNewNoteWithOctave(note.G, 3).SetValue(dur),
-		).SetValue(dur)
+			note.C.NewNote().WithOctave(octave.MustNewByNumber(1)).WithValue(dur),
+			note.E.NewNote().WithOctave(octave.MustNewByNumber(2)).WithValue(dur),
+			note.G.NewNote().WithOctave(octave.MustNewByNumber(3)).WithValue(dur),
+		).WithValue(dur)
 
 		customDuration := time.Second
-		chord.SetDuration(customDuration)
+		chord.WithDuration(customDuration)
 
 		assert.Equal(t, customDuration, chord.Duration(), " expected custom duration: %d, actual custom duration: %d", customDuration, chord.Duration())
 	})
@@ -328,9 +328,9 @@ func TestChord_DurationAbs(t *testing.T) {
 func TestChord_Empty(t *testing.T) {
 	t.Run("Chord_Empty: clearing the chord", func(t *testing.T) {
 		chord := NewChordEmpty().AddNotes(
-			note.MustNewNoteWithOctave(note.C, 1).SetValue(nil),
-			note.MustNewNoteWithOctave(note.E, 2).SetValue(nil),
-			note.MustNewNoteWithOctave(note.G, 3).SetValue(nil),
+			note.C.NewNote().WithOctave(octave.MustNewByNumber(1)).WithValue(duration.Relative{}),
+			note.E.NewNote().WithOctave(octave.MustNewByNumber(2)).WithValue(duration.Relative{}),
+			note.G.NewNote().WithOctave(octave.MustNewByNumber(3)).WithValue(duration.Relative{}),
 		)
 
 		assert.Empty(t, chord.Empty().notes)
@@ -345,11 +345,11 @@ func TestChord_Empty(t *testing.T) {
 func TestChord_RemoveNote(t *testing.T) {
 	t.Run("Chord_RemoveNote: remove from the chord", func(t *testing.T) {
 		testCases := note.Notes{
-			note.MustNewNoteWithOctave(note.C, 1),
-			note.MustNewNoteWithOctave(note.D, 2),
-			note.MustNewNoteWithOctave(note.E, 3),
-			note.MustNewNoteWithOctave(note.F, 4),
-			note.MustNewNoteWithOctave(note.G, 5),
+			note.C.NewNote().WithOctave(octave.MustNewByNumber(1)),
+			note.D.NewNote().WithOctave(octave.MustNewByNumber(2)),
+			note.E.NewNote().WithOctave(octave.MustNewByNumber(3)),
+			note.F.NewNote().WithOctave(octave.MustNewByNumber(4)),
+			note.G.NewNote().WithOctave(octave.MustNewByNumber(5)),
 		}
 
 		chord := NewChordEmpty().AddNotes(testCases...)
@@ -364,18 +364,18 @@ func TestChord_RemoveNote(t *testing.T) {
 
 	t.Run("Chord_RemoveNote: remove from the nil chord", func(t *testing.T) {
 		var chord *Chord
-		assert.Nil(t, chord.RemoveNote(note.MustNewNoteWithOctave(note.C, 1)))
+		assert.Nil(t, chord.RemoveNote(note.C.NewNote().WithOctave(octave.MustNewByNumber(1))))
 	})
 }
 
 func TestChord_RemoveNotes(t *testing.T) {
 	t.Run("Chord_RemoveNotes: remove from the chord", func(t *testing.T) {
 		testCases := note.Notes{
-			note.MustNewNoteWithOctave(note.C, 1),
-			note.MustNewNoteWithOctave(note.D, 2),
-			note.MustNewNoteWithOctave(note.E, 3),
-			note.MustNewNoteWithOctave(note.F, 4),
-			note.MustNewNoteWithOctave(note.G, 5),
+			note.C.NewNote().WithOctave(octave.MustNewByNumber(1)),
+			note.D.NewNote().WithOctave(octave.MustNewByNumber(2)),
+			note.E.NewNote().WithOctave(octave.MustNewByNumber(3)),
+			note.F.NewNote().WithOctave(octave.MustNewByNumber(4)),
+			note.G.NewNote().WithOctave(octave.MustNewByNumber(5)),
 		}
 
 		chord := NewChordEmpty().AddNotes(testCases...)
@@ -396,11 +396,11 @@ func TestChord_RemoveNotes(t *testing.T) {
 func TestChord_Exists(t *testing.T) {
 	t.Run("Chord_Exists: remove from the chord", func(t *testing.T) {
 		testCases := note.Notes{
-			note.MustNewNoteWithOctave(note.C, 1),
-			note.MustNewNoteWithOctave(note.D, 2),
-			note.MustNewNoteWithOctave(note.E, 3),
-			note.MustNewNoteWithOctave(note.F, 4),
-			note.MustNewNoteWithOctave(note.G, 5),
+			note.C.NewNote().WithOctave(octave.MustNewByNumber(1)),
+			note.D.NewNote().WithOctave(octave.MustNewByNumber(2)),
+			note.E.NewNote().WithOctave(octave.MustNewByNumber(3)),
+			note.F.NewNote().WithOctave(octave.MustNewByNumber(4)),
+			note.G.NewNote().WithOctave(octave.MustNewByNumber(5)),
 		}
 
 		chord := NewChordEmpty().AddNotes(testCases...)
@@ -409,15 +409,15 @@ func TestChord_Exists(t *testing.T) {
 		}
 
 		testCasesNotExist := note.Notes{
-			note.MustNewNoteWithOctave(note.C, 2),
-			note.MustNewNoteWithOctave(note.D, 1),
-			note.MustNewNoteWithOctave(note.E, 1),
-			note.MustNewNoteWithOctave(note.CFLAT, 1),
-			note.MustNewNoteWithOctave(note.DSHARP, 2),
-			note.MustNewNoteWithOctave(note.EFLAT2, 3),
-			note.MustNewNoteWithOctave(note.FSHARP2, 4),
-			note.MustNewNoteWithOctave(note.A, 5),
-			note.MustNewNoteWithOctave(note.B, 5),
+			note.C.NewNote().WithOctave(octave.MustNewByNumber(2)),
+			note.D.NewNote().WithOctave(octave.MustNewByNumber(1)),
+			note.E.NewNote().WithOctave(octave.MustNewByNumber(1)),
+			note.CFLAT.NewNote().WithOctave(octave.MustNewByNumber(1)),
+			note.DSHARP.NewNote().WithOctave(octave.MustNewByNumber(2)),
+			note.EFLAT2.NewNote().WithOctave(octave.MustNewByNumber(3)),
+			note.FSHARP2.NewNote().WithOctave(octave.MustNewByNumber(4)),
+			note.A.NewNote().WithOctave(octave.MustNewByNumber(5)),
+			note.B.NewNote().WithOctave(octave.MustNewByNumber(5)),
 		}
 
 		for _, testCase := range testCasesNotExist {
@@ -427,6 +427,6 @@ func TestChord_Exists(t *testing.T) {
 
 	t.Run("Chord_Exists: remove from the nil chord", func(t *testing.T) {
 		var chord *Chord
-		assert.False(t, chord.Exists(note.MustNewNoteWithOctave(note.C, 1)))
+		assert.False(t, chord.Exists(note.C.NewNote().WithOctave(octave.MustNewByNumber(1))))
 	})
 }

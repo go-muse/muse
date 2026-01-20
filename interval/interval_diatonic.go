@@ -14,14 +14,14 @@ type Type string
 // Such interval is known as a diatonic interval, but exists not only in diatonic modes.
 type Diatonic struct {
 	chromaticInterval *Chromatic
-	degree1, degree2  *degree.Degree
+	degree1, degree2  *degree.Node
 }
 
 // NewDiatonic creates mode interval by degrees and halftone between them.
 //
 // The function automatically creates a chromatic interval within itself.
 // The number of halftones from the tonic for each degree must be specified.
-func NewDiatonic(degree1, degree2 *degree.Degree) (*Diatonic, error) {
+func NewDiatonic(degree1, degree2 *degree.Node) (*Diatonic, error) {
 	halfTonesDiff := degree2.HalfTonesFromPrime() - degree1.HalfTonesFromPrime()
 
 	return newIntervalByDegreesAndHalfTones(halfTonesDiff, degree1, degree2)
@@ -64,7 +64,7 @@ func (di *Diatonic) ShortName() Name {
 }
 
 // Degree1 returns the first degree of the diatonic interval.
-func (di *Diatonic) Degree1() *degree.Degree {
+func (di *Diatonic) Degree1() *degree.Node {
 	if di == nil {
 		return nil
 	}
@@ -73,7 +73,7 @@ func (di *Diatonic) Degree1() *degree.Degree {
 }
 
 // Degree2 returns the second degree of the diatonic interval.
-func (di *Diatonic) Degree2() *degree.Degree {
+func (di *Diatonic) Degree2() *degree.Node {
 	if di == nil {
 		return nil
 	}
@@ -98,7 +98,7 @@ func (di *Diatonic) String() string {
 //
 // Mode interval is determined by degrees and halftone between them.
 // The function is needed in case of lack of information about the halftone distance of the steps from each other.
-func newIntervalByDegreesAndHalfTones(halfTones halftone.HalfTones, degree1, degree2 *degree.Degree) (*Diatonic, error) {
+func newIntervalByDegreesAndHalfTones(halfTones halftone.HalfTones, degree1, degree2 *degree.Node) (*Diatonic, error) {
 	degreesDiff := degree2.Number() - degree1.Number()
 
 	chromaticInterval, err := NewIntervalByHalfTonesAndDegrees(halfTones, degreesDiff)

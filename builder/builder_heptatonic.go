@@ -10,12 +10,12 @@ import (
 
 // NewBuilderHeptatonic builds sequence of notes and halftone for heptatonic mode
 // from prime note based on a given mode template and a first note.
-func NewBuilderHeptatonic(modeTemplate HalftonesIterator, firstNote *note.Note) Builder {
-	send := func(n *note.Note, halfTones halftone.HalfTones) func() (*note.Note, halftone.HalfTones) {
-		return func() (*note.Note, halftone.HalfTones) { return n, halfTones }
+func NewBuilderHeptatonic(modeTemplate HalftonesIterator, firstNote note.Note) Builder {
+	send := func(n note.Note, halfTones halftone.HalfTones) func() (note.Note, halftone.HalfTones) {
+		return func() (note.Note, halftone.HalfTones) { return n, halfTones }
 	}
 
-	f := func(c chan func() (*note.Note, halftone.HalfTones)) {
+	f := func(c chan func() (note.Note, halftone.HalfTones)) {
 		// Get instance with 12 template notes
 		templateNotes := getTemplateNotesHeptatonic()
 
@@ -51,10 +51,10 @@ func NewBuilderHeptatonic(modeTemplate HalftonesIterator, firstNote *note.Note) 
 			for diff != 0 {
 				switch {
 				case diff > 0:
-					nextBaseNote.AlterDown()
+					nextBaseNote = nextBaseNote.AlterDown()
 					diff--
 				case diff < 0:
-					nextBaseNote.AlterUp()
+					nextBaseNote = nextBaseNote.AlterUp()
 					diff++
 				}
 			}
@@ -69,7 +69,7 @@ func NewBuilderHeptatonic(modeTemplate HalftonesIterator, firstNote *note.Note) 
 		close(c)
 	}
 
-	c := make(chan func() (*note.Note, halftone.HalfTones))
+	c := make(chan func() (note.Note, halftone.HalfTones))
 	go f(c)
 
 	return c
@@ -91,7 +91,7 @@ type templateNotesHeptatonic struct {
 // getTemplateNote determines template note by the given Note.
 // When building a mode from a specific note, we will need to move the pointer to the first note
 // and from it iterate further and pass it to the final notes builder, which decides on their naming.
-func (ti *templateNotesHeptatonic) getTemplateNote(note *note.Note) *templateNoteHeptatonic {
+func (ti *templateNotesHeptatonic) getTemplateNote(note note.Note) *templateNoteHeptatonic {
 	if ti.templateNoteHeptatonic == nil {
 		return nil
 	}
@@ -113,9 +113,9 @@ func (ti *templateNotesHeptatonic) getTemplateNote(note *note.Note) *templateNot
 }
 
 // equal checks whether the specified note is equal to one of the notes contained in the current template note.
-func (tn *templateNoteHeptatonic) equal(note *note.Note) bool {
+func (tn *templateNoteHeptatonic) equal(note note.Note) bool {
 	for _, ar := range tn.allNotes {
-		if ar.realNote().IsEqualByName(note) {
+		if ar.realNote().EqualByName(note) {
 			return true
 		}
 	}
@@ -129,7 +129,7 @@ func (tn *templateNoteHeptatonic) getNext() *templateNoteHeptatonic {
 }
 
 // nextBaseNote sets next base note as current and returns it.
-func (ti *templateNotesHeptatonic) nextBaseNote() *note.Note {
+func (ti *templateNotesHeptatonic) nextBaseNote() note.Note {
 	ti.baseNote = ti.baseNote.next
 
 	return ti.baseNote.note
@@ -147,11 +147,11 @@ func (tn *templateNoteHeptatonic) calculateHalftonesFromPrime() {
 }
 
 // setLastUsedBaseNote sets last used base note as current.
-func (ti *templateNotesHeptatonic) setLastUsedBaseNote(note *note.Note) {
+func (ti *templateNotesHeptatonic) setLastUsedBaseNote(note note.Note) {
 	currentNote := ti.baseNote
 	for unsafe.Pointer(currentNote.next) != unsafe.Pointer(ti.baseNote) {
 		currentNote = currentNote.next
-		if newBaseNote(note).IsEqualByName(currentNote.note) {
+		if note.Base().EqualByName(currentNote.note) {
 			ti.baseNote = currentNote
 
 			break
@@ -173,7 +173,7 @@ func (tn *templateNoteHeptatonic) getByHalftones(halfTones halftone.HalfTones) *
 // It is involved in calculating the alteration of the constructed notes of the mode.
 type baseNoteHeptatonic struct {
 	next *baseNoteHeptatonic
-	note *note.Note
+	note note.Note
 }
 
 // getTemplateNotesHeptatonic creates 12 template notes for the instance when it is created
@@ -181,62 +181,62 @@ type baseNoteHeptatonic struct {
 func getTemplateNotesHeptatonic() *templateNotesHeptatonic {
 	templateNote12 := &templateNoteHeptatonic{
 		next:     nil,
-		allNotes: []*noteRelation{{note.B.MustNewNote(), note.B.MustNewNote()}, {note.A.MustNewNote(), note.ASHARP2.MustNewNote()}, {note.C.MustNewNote(), note.CFLAT.MustNewNote()}},
+		allNotes: []*noteRelation{{note.B.NewNote(), note.B.NewNote()}, {note.A.NewNote(), note.ASHARP2.NewNote()}, {note.C.NewNote(), note.CFLAT.NewNote()}},
 	}
 
 	templateNote11 := &templateNoteHeptatonic{
 		next:     templateNote12,
-		allNotes: []*noteRelation{{note.A.MustNewNote(), note.ASHARP.MustNewNote()}, {note.B.MustNewNote(), note.BFLAT.MustNewNote()}, {note.C.MustNewNote(), note.CFLAT2.MustNewNote()}},
+		allNotes: []*noteRelation{{note.A.NewNote(), note.ASHARP.NewNote()}, {note.B.NewNote(), note.BFLAT.NewNote()}, {note.C.NewNote(), note.CFLAT2.NewNote()}},
 	}
 
 	templateNote10 := &templateNoteHeptatonic{
 		next:     templateNote11,
-		allNotes: []*noteRelation{{note.A.MustNewNote(), note.A.MustNewNote()}, {note.B.MustNewNote(), note.BFLAT2.MustNewNote()}, {note.G.MustNewNote(), note.GSHARP2.MustNewNote()}},
+		allNotes: []*noteRelation{{note.A.NewNote(), note.A.NewNote()}, {note.B.NewNote(), note.BFLAT2.NewNote()}, {note.G.NewNote(), note.GSHARP2.NewNote()}},
 	}
 
 	templateNote9 := &templateNoteHeptatonic{
 		next:     templateNote10,
-		allNotes: []*noteRelation{{note.G.MustNewNote(), note.GSHARP.MustNewNote()}, {note.A.MustNewNote(), note.AFLAT.MustNewNote()}},
+		allNotes: []*noteRelation{{note.G.NewNote(), note.GSHARP.NewNote()}, {note.A.NewNote(), note.AFLAT.NewNote()}},
 	}
 
 	templateNote8 := &templateNoteHeptatonic{
 		next:     templateNote9,
-		allNotes: []*noteRelation{{note.G.MustNewNote(), note.G.MustNewNote()}, {note.A.MustNewNote(), note.AFLAT2.MustNewNote()}, {note.F.MustNewNote(), note.FSHARP2.MustNewNote()}},
+		allNotes: []*noteRelation{{note.G.NewNote(), note.G.NewNote()}, {note.A.NewNote(), note.AFLAT2.NewNote()}, {note.F.NewNote(), note.FSHARP2.NewNote()}},
 	}
 
 	templateNote7 := &templateNoteHeptatonic{
 		next:     templateNote8,
-		allNotes: []*noteRelation{{note.G.MustNewNote(), note.GFLAT.MustNewNote()}, {note.F.MustNewNote(), note.FSHARP.MustNewNote()}, {note.E.MustNewNote(), note.ESHARP2.MustNewNote()}},
+		allNotes: []*noteRelation{{note.G.NewNote(), note.GFLAT.NewNote()}, {note.F.NewNote(), note.FSHARP.NewNote()}, {note.E.NewNote(), note.ESHARP2.NewNote()}},
 	}
 
 	templateNote6 := &templateNoteHeptatonic{
 		next:     templateNote7,
-		allNotes: []*noteRelation{{note.F.MustNewNote(), note.F.MustNewNote()}, {note.E.MustNewNote(), note.ESHARP.MustNewNote()}, {note.G.MustNewNote(), note.GFLAT2.MustNewNote()}},
+		allNotes: []*noteRelation{{note.F.NewNote(), note.F.NewNote()}, {note.E.NewNote(), note.ESHARP.NewNote()}, {note.G.NewNote(), note.GFLAT2.NewNote()}},
 	}
 
 	templateNote5 := &templateNoteHeptatonic{
 		next:     templateNote6,
-		allNotes: []*noteRelation{{note.E.MustNewNote(), note.E.MustNewNote()}, {note.F.MustNewNote(), note.FFLAT.MustNewNote()}, {note.D.MustNewNote(), note.DSHARP2.MustNewNote()}},
+		allNotes: []*noteRelation{{note.E.NewNote(), note.E.NewNote()}, {note.F.NewNote(), note.FFLAT.NewNote()}, {note.D.NewNote(), note.DSHARP2.NewNote()}},
 	}
 
 	templateNote4 := &templateNoteHeptatonic{
 		next:     templateNote5,
-		allNotes: []*noteRelation{{note.E.MustNewNote(), note.EFLAT.MustNewNote()}, {note.D.MustNewNote(), note.DSHARP.MustNewNote()}, {note.F.MustNewNote(), note.FFLAT2.MustNewNote()}},
+		allNotes: []*noteRelation{{note.E.NewNote(), note.EFLAT.NewNote()}, {note.D.NewNote(), note.DSHARP.NewNote()}, {note.F.NewNote(), note.FFLAT2.NewNote()}},
 	}
 
 	templateNote3 := &templateNoteHeptatonic{
 		next:     templateNote4,
-		allNotes: []*noteRelation{{note.D.MustNewNote(), note.D.MustNewNote()}, {note.C.MustNewNote(), note.CSHARP2.MustNewNote()}, {note.E.MustNewNote(), note.EFLAT2.MustNewNote()}},
+		allNotes: []*noteRelation{{note.D.NewNote(), note.D.NewNote()}, {note.C.NewNote(), note.CSHARP2.NewNote()}, {note.E.NewNote(), note.EFLAT2.NewNote()}},
 	}
 
 	templateNote2 := &templateNoteHeptatonic{
 		next:     templateNote3,
-		allNotes: []*noteRelation{{note.D.MustNewNote(), note.DFLAT.MustNewNote()}, {note.C.MustNewNote(), note.CSHARP.MustNewNote()}, {note.B.MustNewNote(), note.BSHARP2.MustNewNote()}},
+		allNotes: []*noteRelation{{note.D.NewNote(), note.DFLAT.NewNote()}, {note.C.NewNote(), note.CSHARP.NewNote()}, {note.B.NewNote(), note.BSHARP2.NewNote()}},
 	}
 
 	templateNote1 := &templateNoteHeptatonic{
 		next:     templateNote2,
-		allNotes: []*noteRelation{{note.C.MustNewNote(), note.C.MustNewNote()}, {note.B.MustNewNote(), note.BSHARP.MustNewNote()}, {note.D.MustNewNote(), note.DFLAT2.MustNewNote()}},
+		allNotes: []*noteRelation{{note.C.NewNote(), note.C.NewNote()}, {note.B.NewNote(), note.BSHARP.NewNote()}, {note.D.NewNote(), note.DFLAT2.NewNote()}},
 	}
 
 	// There must be cycling,
@@ -246,31 +246,31 @@ func getTemplateNotesHeptatonic() *templateNotesHeptatonic {
 
 	baseNote7 := &baseNoteHeptatonic{
 		next: nil,
-		note: note.B.MustNewNote(),
+		note: note.B.NewNote(),
 	}
 	baseNote6 := &baseNoteHeptatonic{
 		next: baseNote7,
-		note: note.A.MustNewNote(),
+		note: note.A.NewNote(),
 	}
 	baseNote5 := &baseNoteHeptatonic{
 		next: baseNote6,
-		note: note.G.MustNewNote(),
+		note: note.G.NewNote(),
 	}
 	baseNote4 := &baseNoteHeptatonic{
 		next: baseNote5,
-		note: note.F.MustNewNote(),
+		note: note.F.NewNote(),
 	}
 	baseNote3 := &baseNoteHeptatonic{
 		next: baseNote4,
-		note: note.E.MustNewNote(),
+		note: note.E.NewNote(),
 	}
 	baseNote2 := &baseNoteHeptatonic{
 		next: baseNote3,
-		note: note.D.MustNewNote(),
+		note: note.D.NewNote(),
 	}
 	baseNote1 := &baseNoteHeptatonic{
 		next: baseNote2,
-		note: note.C.MustNewNote(),
+		note: note.C.NewNote(),
 	}
 
 	baseNote7.next = baseNote1

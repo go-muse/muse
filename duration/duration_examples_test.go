@@ -16,7 +16,7 @@ func ExampleNewRelative() {
 	dur := duration.NewRelative(duration.NameHalf)
 
 	// creating note and setting duration
-	note := note.MustNewNoteWithOctave(note.C, octave.Number3).SetValue(dur)
+	note := note.MustNewWithOctave(note.C, octave.Number3).WithValue(dur)
 
 	fmt.Println(note.Value().Name())
 	// Output: Half

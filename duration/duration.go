@@ -18,64 +18,50 @@ const (
 type Relative struct {
 	name   Name
 	dots   uint8
-	tuplet *tuplet.Tuplet
+	tuplet tuplet.Tuplet
 }
 
 // NewRelative creates new Duration by the given relative duration name.
-func NewRelative(name Name) *Relative {
-	return &Relative{
+func NewRelative(name Name) Relative {
+	return Relative{
 		name:   name,
 		dots:   0,
-		tuplet: nil,
+		tuplet: tuplet.Tuplet{},
 	}
 }
 
 // Name returns the duration's name.
-func (dr *Relative) Name() Name {
-	if dr == nil {
-		return ""
-	}
-
+func (dr Relative) Name() Name {
 	return dr.name
 }
 
 // Dots returns amount of the dots.
-func (dr *Relative) Dots() uint8 {
-	if dr == nil {
-		return 0
-	}
-
+func (dr Relative) Dots() uint8 {
 	return dr.dots
 }
 
+// Equal reports whether two relative durations are exactly equal,
+// comparing name, dots, and tuplet.
+func (dr Relative) Equal(other Relative) bool {
+	return dr.name == other.name &&
+		dr.dots == other.dots &&
+		dr.tuplet.Equal(other.tuplet)
+}
+
 // AddDot increments amount of the dots and returns the duration.
-func (dr *Relative) AddDot() *Relative {
-	if dr == nil {
-		return dr
-	}
-
+func (dr Relative) AddDot() Relative {
 	dr.dots++
-
 	return dr
 }
 
 // SetDots sets amount of the dots and returns the duration.
-func (dr *Relative) SetDots(n uint8) *Relative {
-	if dr == nil {
-		return dr
-	}
-
+func (dr Relative) SetDots(n uint8) Relative {
 	dr.dots = n
-
 	return dr
 }
 
 // RemoveDot decrements amount of the dots and returns the duration.
-func (dr *Relative) RemoveDot() *Relative {
-	if dr == nil {
-		return dr
-	}
-
+func (dr Relative) RemoveDot() Relative {
 	if dr.dots > 0 {
 		dr.dots--
 	}
@@ -84,80 +70,43 @@ func (dr *Relative) RemoveDot() *Relative {
 }
 
 // RemoveDots removes all dots and returns the duration.
-func (dr *Relative) RemoveDots() *Relative {
-	if dr == nil {
-		return dr
-	}
-
+func (dr Relative) RemoveDots() Relative {
 	dr.dots = 0
-
 	return dr
 }
 
 // Tuplet returns tuplet from the duration.
-func (dr *Relative) Tuplet() *tuplet.Tuplet {
-	if dr == nil {
-		return nil
-	}
-
+func (dr Relative) Tuplet() tuplet.Tuplet {
 	return dr.tuplet
 }
 
 // SetTuplet sets the given tuplet for the duration and returns the duration.
-func (dr *Relative) SetTuplet(t *tuplet.Tuplet) *Relative {
-	if dr == nil {
-		return dr
-	}
-
+func (dr Relative) SetTuplet(t tuplet.Tuplet) Relative {
 	dr.tuplet = t
-
 	return dr
 }
 
 // RemoveTuplet sets the tuplet from the duration and returns the duration.
-func (dr *Relative) RemoveTuplet() *Relative {
-	if dr == nil {
-		return dr
-	}
-
-	dr.tuplet = nil
-
+func (dr Relative) RemoveTuplet() Relative {
+	dr.tuplet = tuplet.Tuplet{}
 	return dr
 }
 
 // SetTupletDuplet sets the duplet as tuplet for the duration and returns the duration.
-func (dr *Relative) SetTupletDuplet() *Relative {
-	if dr == nil {
-		return dr
-	}
-
-	if dr.tuplet != nil {
-		dr.tuplet.SetDuplet()
-	} else {
-		dr.tuplet = tuplet.NewDuplet()
-	}
-
+func (dr Relative) SetTupletDuplet() Relative {
+	dr.tuplet = dr.tuplet.SetDuplet()
 	return dr
 }
 
 // SetTupletTriplet sets the triplet as tuplet for the duration and returns the duration.
-func (dr *Relative) SetTupletTriplet() *Relative {
-	if dr == nil {
-		return dr
-	}
-
-	if dr.tuplet != nil {
-		dr.tuplet.SetTriplet()
-	} else {
-		dr.tuplet = tuplet.NewTriplet()
-	}
-
+func (dr Relative) SetTupletTriplet() Relative {
+	dr.tuplet = dr.tuplet.SetTriplet()
 	return dr
 }
 
 // GetTimeDuration calculates and returns time.Duration of the current duration.
-func (dr *Relative) GetTimeDuration(amountOfBars decimal.Decimal) time.Duration {
-	if dr == nil || amountOfBars.LessThanOrEqual(decimal.Zero) {
+func (dr Relative) GetTimeDuration(amountOfBars decimal.Decimal) time.Duration {
+	if amountOfBars.LessThanOrEqual(decimal.Zero) {
 		return 0
 	}
 
@@ -174,7 +123,7 @@ func (dr *Relative) GetTimeDuration(amountOfBars decimal.Decimal) time.Duration 
 		result = result.Add(add)
 	}
 
-	if dr.tuplet != nil {
+	if dr.tuplet.IsSet() {
 		// Multiplying before dividing gives a more accurate result than multiplying by the calculated fraction.
 		result = result.Mul(decimal.NewFromUint64(dr.tuplet.M())).Div(decimal.NewFromUint64(dr.tuplet.N()))
 	}
@@ -183,8 +132,8 @@ func (dr *Relative) GetTimeDuration(amountOfBars decimal.Decimal) time.Duration 
 }
 
 // GetPartOfBar returns duration as part of a bar by relative duration.
-func (dr *Relative) GetPartOfBar(timeSignature *fraction.Fraction) decimal.Decimal {
-	if dr == nil || timeSignature == nil || !timeSignature.IsValid() {
+func (dr Relative) GetPartOfBar(timeSignature *fraction.Fraction) decimal.Decimal {
+	if timeSignature == nil || !timeSignature.IsValid() {
 		return decimal.Zero
 	}
 
@@ -200,7 +149,7 @@ func (dr *Relative) GetPartOfBar(timeSignature *fraction.Fraction) decimal.Decim
 		result = result.Add(add)
 	}
 
-	if dr.tuplet != nil {
+	if dr.tuplet.IsSet() {
 		// Multiplying before dividing gives a more accurate result than multiplying by the calculated fraction.
 		result = result.Mul(decimal.NewFromUint64(dr.tuplet.N())).Div(decimal.NewFromUint64(dr.tuplet.M()))
 	}
