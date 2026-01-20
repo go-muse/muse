@@ -44,7 +44,7 @@ func (n Name) GetTuplet() tuplet.Tuplet {
 	case NameFiveHundredTwelfth:
 		return tuplet.New(1, 512)
 	default:
-		return tuplet.Tuplet{}
+		return tuplet.New(1, 1)
 	}
 }
 
