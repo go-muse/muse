@@ -6,32 +6,29 @@ import (
 	"github.com/go-muse/muse/note"
 )
 
-// There is a possibility to iterate one cycle through the chained degrees.
-// The iteration starts with the first degree (tonic).
+// There is a possibility to iterate one cycle through the chained degree nodes.
+// The iteration starts with the first node (tonic).
 // You can specify the direction of iteration.
-// The function returns the iterator with functionality.
-// GetAll returns mode's degrees as a slice.
-func ExampleIterator_GetAllDegrees() {
+// GetAllDegrees returns mode's degree nodes as a slice.
+func ExampleGetAllDegrees() {
 	// In real life you can just build a mode by one line from mode package:
 	// mode := mode.MustMakeNewMode(mode.NameAeolian, note.A)
 	//
-	// or build degrees manually:
-	deg7 := New(7, 10, nil, nil, note.G.MustMakeNote(), nil, nil)
-	deg6 := New(6, 8, nil, deg7, note.F.MustMakeNote(), nil, nil)
-	deg5 := New(5, 7, nil, deg6, note.E.MustMakeNote(), nil, nil)
-	deg4 := New(4, 5, nil, deg5, note.D.MustMakeNote(), nil, nil)
-	deg3 := New(3, 3, nil, deg4, note.C.MustMakeNote(), nil, nil)
-	deg2 := New(2, 2, nil, deg3, note.B.MustMakeNote(), nil, nil)
-	deg1 := New(1, 0, nil, deg2, note.A.MustMakeNote(), nil, nil)
+	// or build degree nodes manually:
+	deg7 := New(7, 10, nil, nil, note.G.NewNote(), nil, ModalPosition{})
+	deg6 := New(6, 8, nil, deg7, note.F.NewNote(), nil, ModalPosition{})
+	deg5 := New(5, 7, nil, deg6, note.E.NewNote(), nil, ModalPosition{})
+	deg4 := New(4, 5, nil, deg5, note.D.NewNote(), nil, ModalPosition{})
+	deg3 := New(3, 3, nil, deg4, note.C.NewNote(), nil, ModalPosition{})
+	deg2 := New(2, 2, nil, deg3, note.B.NewNote(), nil, ModalPosition{})
+	deg1 := New(1, 0, nil, deg2, note.A.NewNote(), nil, ModalPosition{})
 
 	// it works even the chain is cycled
 	deg7.SetNext(deg1)
 
-	// iteration in forward direction, by degree.fields
-	iteratorForward := deg1.IterateOneRound(false)
-
-	for _, degree := range iteratorForward.GetAllDegrees() {
-		fmt.Printf("Degree Number: %d, Half tones from prime: %d, Note: %s\n", degree.Number(), degree.HalfTonesFromPrime(), degree.Note().Name())
+	// iteration in forward direction
+	for _, node := range GetAllDegrees(deg1.IterateOneRound(false)) {
+		fmt.Printf("Degree Number: %d, Half tones from prime: %d, Note: %s\n", node.Number(), node.HalfTonesFromPrime(), node.Note().Name())
 	}
 	// Output: Degree Number: 1, Half tones from prime: 0, Note: A
 	// Degree Number: 2, Half tones from prime: 2, Note: B
@@ -42,23 +39,22 @@ func ExampleIterator_GetAllDegrees() {
 	// Degree Number: 7, Half tones from prime: 10, Note: G
 }
 
-// There is a possibility to iterate one cycle through the degrees.
-// The iteration starts with the first degree (tonic).
+// There is a possibility to iterate one cycle through the degree nodes.
+// The iteration starts with the first node (tonic).
 // You can specify the direction of iteration.
-// The function returns the iterator with functionality.
-// GetAllNotes returns degrees' notes as a slice.
-func ExampleIterator_GetAllNotes() {
+// GetAllNotes returns nodes' notes as a slice.
+func ExampleGetAllNotes() {
 	// In real life you can just build a mode by one line from mode package:
 	// mode := mode.MustMakeNewMode(mode.NameAeolian, note.A)
 	//
-	// or build degrees manually:
-	deg7 := New(7, 10, nil, nil, note.G.MustMakeNote(), nil, nil)
-	deg6 := New(6, 8, nil, deg7, note.F.MustMakeNote(), nil, nil)
-	deg5 := New(5, 7, nil, deg6, note.E.MustMakeNote(), nil, nil)
-	deg4 := New(4, 5, nil, deg5, note.D.MustMakeNote(), nil, nil)
-	deg3 := New(3, 3, nil, deg4, note.C.MustMakeNote(), nil, nil)
-	deg2 := New(2, 2, nil, deg3, note.B.MustMakeNote(), nil, nil)
-	deg1 := New(1, 0, deg7, deg2, note.A.MustMakeNote(), nil, nil)
+	// or build degree nodes manually:
+	deg7 := New(7, 10, nil, nil, note.G.NewNote(), nil, ModalPosition{})
+	deg6 := New(6, 8, nil, deg7, note.F.NewNote(), nil, ModalPosition{})
+	deg5 := New(5, 7, nil, deg6, note.E.NewNote(), nil, ModalPosition{})
+	deg4 := New(4, 5, nil, deg5, note.D.NewNote(), nil, ModalPosition{})
+	deg3 := New(3, 3, nil, deg4, note.C.NewNote(), nil, ModalPosition{})
+	deg2 := New(2, 2, nil, deg3, note.B.NewNote(), nil, ModalPosition{})
+	deg1 := New(1, 0, deg7, deg2, note.A.NewNote(), nil, ModalPosition{})
 
 	deg7.SetNext(deg1).SetPrevious(deg6)
 	deg6.SetPrevious(deg5)
@@ -67,11 +63,11 @@ func ExampleIterator_GetAllNotes() {
 	deg3.SetPrevious(deg2)
 	deg2.SetPrevious(deg1)
 
-	// you can specify the direction of iteration from any degree
-	iteratorForward := deg3.IterateOneRound(false)
-	iteratorBackward := deg3.IterateOneRound(true)
+	// you can specify the direction of iteration from any node
+	notesForward := GetAllNotes(deg3.IterateOneRound(false))
+	notesBackward := GetAllNotes(deg3.IterateOneRound(true))
 
-	fmt.Printf("%+v\n%+v", iteratorForward.GetAllNotes(), iteratorBackward.GetAllNotes())
+	fmt.Printf("%+v\n%+v", notesForward, notesBackward)
 	// Output: [C D E F G A B]
 	// [C B A G F E D]
 }

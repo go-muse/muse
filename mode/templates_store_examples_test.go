@@ -163,15 +163,15 @@ func ExampleTemplatesStore_FindModeTemplatesByNotes() {
 	mts := mode.InitTemplatesStore()
 
 	notes := note.Notes{
-		note.C.MustMakeNote(),
-		note.D.MustMakeNote(),
-		note.E.MustMakeNote(),
-		note.F.MustMakeNote(),
-		note.G.MustMakeNote(),
-		note.A.MustMakeNote(),
-		note.B.MustMakeNote(),
-		note.C.MustMakeNote(), // duplicates are ok
-		note.C.MustMakeNote(), // duplicates are ok
+		note.C.NewNote(),
+		note.D.NewNote(),
+		note.E.NewNote(),
+		note.F.NewNote(),
+		note.G.NewNote(),
+		note.A.NewNote(),
+		note.B.NewNote(),
+		note.C.NewNote(), // duplicates are ok
+		note.C.NewNote(), // duplicates are ok
 	}
 
 	result := mts.FindModeTemplatesByNotes(notes).SortByPrimeNote(false)

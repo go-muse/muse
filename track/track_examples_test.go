@@ -23,14 +23,14 @@ func ExampleTrack_AddNote() {
 	// creating a track
 	track := track.NewTrack(trackSettings)
 
-	noteC := note.MustNewNoteWithOctave(note.C, octave.Number4).SetDuration(time.Second)
+	noteC := NoteWithOctave(note.C, octave.Number4).SetDuration(time.Second)
 	track.AddNote(
 		noteC,
 		0,
 		true,
 	)
 
-	noteD := note.MustNewNoteWithOctave(note.C, octave.Number4).SetValue(duration.NewRelative(duration.NameHalf))
+	noteD := NoteWithOctave(note.C, octave.Number4).SetValue(duration.NewRelative(duration.NameHalf))
 	track.AddNote(
 		noteD,
 		noteC.Duration(),

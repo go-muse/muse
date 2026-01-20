@@ -13,10 +13,6 @@ const referenceOctave = 4
 //
 // Requires the note to have an octave set. If octave is nil, returns 0.
 func (n Note) StepsFromA4(toneSystem tuning.ToneSystem) int {
-	if n.octave == nil {
-		return 0
-	}
-
 	// Get base semitone position within octave (C=0, D=2, ..., A=9, B=11)
 	baseSemitone := int(n.name.Letter().Semitone())
 

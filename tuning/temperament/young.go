@@ -29,18 +29,18 @@ func NewYoung() *Young {
 // youngRatios contains the frequency ratios for Young's well temperament.
 // Based on tempering six fifths by 3/16 syntonic comma.
 var youngRatios = []float64{
-	1.0,        // 0: C (Unison)
-	1.05350,    // 1: C#/Db
-	1.11916,    // 2: D
-	1.18519,    // 3: D#/Eb
-	1.25424,    // 4: E
-	1.33333,    // 5: F (pure 4/3)
-	1.40625,    // 6: F#/Gb
-	1.49662,    // 7: G
-	1.58025,    // 8: G#/Ab
-	1.67411,    // 9: A
-	1.77778,    // 10: A#/Bb (pure 16/9)
-	1.88145,    // 11: B
+	1.0,     // 0: C (Unison)
+	1.05350, // 1: C#/Db
+	1.11916, // 2: D
+	1.18519, // 3: D#/Eb
+	1.25424, // 4: youngRatiosE
+	1.33333, // 5: F (pure 4/3)
+	1.40625, // 6: F#/Gb
+	1.49662, // 7: G
+	1.58025, // 8: G#/Ab
+	1.67411, // 9: A
+	1.77778, // 10: A#/Bb (pure 16/9)
+	1.88145, // 11: B
 }
 
 // Frequency calculates the frequency using Young's well temperament.

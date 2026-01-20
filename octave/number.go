@@ -24,12 +24,12 @@ const (
 )
 
 // NewOctave creates a new octave by the octave number.
-func (n Number) NewOctave() (*Octave, error) {
+func (n Number) NewOctave() (Octave, error) {
 	return NewByNumber(n)
 }
 
 // MustNewOctave creates a new octave by the octave number with panic on error.
-func (n Number) MustNewOctave() *Octave {
+func (n Number) MustNewOctave() Octave {
 	return MustNewByNumber(n)
 }
 

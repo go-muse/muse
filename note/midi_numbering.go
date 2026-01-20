@@ -19,10 +19,6 @@ var chromaticNames = []Name{C, CSHARP, D, DSHARP, E, F, FSHARP, G, GSHARP, A, AS
 
 // MIDINumber returns note number coded by unsigned integer in range [0; 127] according to RFC 6295.
 func (n Note) MIDINumber() uint8 {
-	if n.octave == nil {
-		return minMIDINumber
-	}
-
 	// MIDI octave -1 starts at 0, so we add 1 to convert from musical octave numbering
 	// Then multiply by 12 (notes per octave) and add the note position
 	result := int(n.mustGetNoteNumberWithinOctave()) + (int(n.octave.Number())+1)*int(octave.NotesInOctave)

@@ -180,7 +180,7 @@ func (nat NamesAndTemplates) SortByTemplate(desc bool) NamesAndTemplates {
 
 type TemplateWithPrime struct {
 	*NameAndTemplate
-	PrimeNote *note.Note
+	PrimeNote note.Note
 }
 
 type TemplatesWithPrime []TemplateWithPrime
@@ -274,14 +274,14 @@ func (tswp TemplatesWithPrime) SortByPrimeNote(desc bool) TemplatesWithPrime {
 	sort.Slice(tswp, func(i, j int) bool {
 		switch desc {
 		case true:
-			if !tswp[i].PrimeNote.IsEqualByName(tswp[j].PrimeNote) {
-				return tswp[i].PrimeNote.Name() > tswp[j].PrimeNote.Name()
+			if !tswp[i].PrimeNote.EqualByName(tswp[j].PrimeNote) {
+				return tswp[i].PrimeNote.Name().IsBaseNameHigherThan(tswp[j].PrimeNote.Name())
 			}
 
 			return tswp[i].Name > tswp[j].Name
 		default:
-			if !tswp[i].PrimeNote.IsEqualByName(tswp[j].PrimeNote) {
-				return tswp[i].PrimeNote.Name() < tswp[j].PrimeNote.Name()
+			if !tswp[i].PrimeNote.EqualByName(tswp[j].PrimeNote) {
+				return tswp[i].PrimeNote.Name().IsBaseNameLowerThan(tswp[j].PrimeNote.Name())
 			}
 
 			return tswp[i].Name < tswp[j].Name

@@ -76,8 +76,8 @@ func TestOctaveNumber(t *testing.T) {
 	assert.Equal(t, expectedNumber, actualNumber, "expected octave number: %s, actual: %s", expectedNumber, actualNumber)
 }
 
-func TestOctaveIsEqual(t *testing.T) {
-	t.Run("TestOctaveIsEqual: positive cases", func(t *testing.T) {
+func TestOctaveEqual(t *testing.T) {
+	t.Run("TestOctaveEqual: positive cases", func(t *testing.T) {
 		type testCase struct {
 			octave1 *Octave
 			octave2 *Octave
@@ -98,11 +98,11 @@ func TestOctaveIsEqual(t *testing.T) {
 		}
 
 		for _, testCase := range testCases {
-			assert.True(t, testCase.octave1.IsEqual(testCase.octave2))
+			assert.True(t, testCase.octave1.Equal(testCase.octave2))
 		}
 	})
 
-	t.Run("TestOctaveIsEqual: negative cases", func(t *testing.T) {
+	t.Run("TestOctaveEqual: negative cases", func(t *testing.T) {
 		type testCase struct {
 			octave1 *Octave
 			octave2 *Octave
@@ -115,7 +115,7 @@ func TestOctaveIsEqual(t *testing.T) {
 		}
 
 		for _, testCase := range testCases {
-			assert.False(t, testCase.octave1.IsEqual(testCase.octave2))
+			assert.False(t, testCase.octave1.Equal(testCase.octave2))
 		}
 	})
 }

@@ -204,16 +204,6 @@ func ParseAccidental(s string) (Accidental, error) {
 	return Accidental{}, fmt.Errorf("%w: %q", ErrInvalidAccidental, s)
 }
 
-// allSameChar reports whether all characters in s are equal to c.
-func allSameChar(s string, c byte) bool {
-	for i := 0; i < len(s); i++ {
-		if s[i] != c {
-			return false
-		}
-	}
-	return true
-}
-
 // MustParseAccidental parses an accidental string and panics on error.
 //
 // This function is intended for use in tests, constants, and internal
@@ -225,4 +215,14 @@ func MustParseAccidental(s string) Accidental {
 	}
 
 	return a
+}
+
+// allSameChar reports whether all characters in s are equal to c.
+func allSameChar(s string, c byte) bool {
+	for i := 0; i < len(s); i++ {
+		if s[i] != c {
+			return false
+		}
+	}
+	return true
 }

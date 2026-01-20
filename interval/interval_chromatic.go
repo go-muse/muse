@@ -306,10 +306,10 @@ func NewIntervalByName(intervalName Name) (*Chromatic, error) {
 }
 
 // MakeNoteByName creates new note by the given interval name.
-func MakeNoteByName(firstNote *note.Note, intervalName Name) (*note.Note, error) {
+func MakeNoteByName(firstNote note.Note, intervalName Name) (note.Note, error) {
 	interval, err := NewIntervalByName(intervalName)
 	if err != nil {
-		return nil, err
+		return note.Note{}, err
 	}
 
 	b := builder.NewBuilderCommon(halftone.Template{interval.HalfTones()}, firstNote)
@@ -321,8 +321,8 @@ func MakeNoteByName(firstNote *note.Note, intervalName Name) (*note.Note, error)
 // ErrDegreeEmpty means nil degree was given as a parameter.
 var ErrDegreeEmpty = errors.New("empty degree")
 
-// MakeDegreeByName creates new degree by the given interval name.
-func MakeDegreeByName(d *degree.Degree, intervalName Name) (*degree.Degree, error) {
+// MakeDegreeByName creates new degree node by the given interval name.
+func MakeDegreeByName(d *degree.Node, intervalName Name) (*degree.Node, error) {
 	if d == nil {
 		return nil, ErrDegreeEmpty
 	}
@@ -332,7 +332,8 @@ func MakeDegreeByName(d *degree.Degree, intervalName Name) (*degree.Degree, erro
 		return nil, err
 	}
 
-	note, err := MakeNoteByName(d.Note(), intervalName)
+	firstNote := d.Note()
+	newNote, err := MakeNoteByName(firstNote, intervalName)
 	if err != nil {
 		return nil, err
 	}
@@ -342,9 +343,9 @@ func MakeDegreeByName(d *degree.Degree, intervalName Name) (*degree.Degree, erro
 		d.HalfTonesFromPrime()+interval.HalfTones(),
 		nil,
 		nil,
-		note,
+		newNote,
 		nil,
-		nil,
+		degree.ModalPosition{},
 	)
 
 	return newDegree, nil

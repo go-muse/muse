@@ -1,30 +1,27 @@
 package degree
 
 import (
-	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDegreesIterator_GetAllNotes(t *testing.T) {
-	t.Run("GetAllNotes: get all notes from degrees iterator", func(t *testing.T) {
-		firstDegree := generateDegrees(7, true)
-		iter := firstDegree.IterateOneRound(false)
-		notes := iter.GetAllNotes()
+func TestGetAllNotes(t *testing.T) {
+	t.Run("GetAllNotes: get all notes from nodes iterator", func(t *testing.T) {
+		firstNode := generateDegreeNodes(7, true)
+		notes := GetAllNotes(firstNode.IterateOneRound(false))
 
-		currentDegree := firstDegree
-		for _, note := range notes {
-			if !reflect.DeepEqual(*currentDegree.Note(), note) {
-				t.Errorf("expected: %+v, result: %+v", *currentDegree.Note(), note)
+		currentNode := firstNode
+		for _, n := range notes {
+			if !currentNode.Note().EqualByName(n) {
+				t.Errorf("expected: %+v, result: %+v", currentNode.Note(), n)
 			}
-
-			currentDegree = currentDegree.GetNext()
+			currentNode = currentNode.GetNext()
 		}
 	})
 
-	t.Run("GetAllNotes: get all notes from nil degrees iterator", func(t *testing.T) {
-		var nilDI Iterator
-		assert.Nil(t, nilDI.GetAllNotes())
+	t.Run("GetAllNotes: get all notes from nil iterator", func(t *testing.T) {
+		result := GetAllNotes(nil)
+		assert.Nil(t, result)
 	})
 }

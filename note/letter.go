@@ -145,3 +145,29 @@ func (l Letter) DoubleSharp() Name {
 func (l Letter) DoubleFlat() Name {
 	return NewName(l, DoubleFlat())
 }
+
+// IsHigherThan reports whether this letter represents a higher pitch class
+// than the other letter within a single octave, using the natural (unaltered)
+// semitone positions: C=0, D=2, E=4, F=5, G=7, A=9, B=11.
+//
+// Example:
+//
+//	LetterD.IsHigherThan(LetterC) // true (D=2 > C=0)
+//	LetterC.IsHigherThan(LetterB) // false (C=0 < B=11)
+//	LetterE.IsHigherThan(LetterE) // false (equal)
+func (l Letter) IsHigherThan(other Letter) bool {
+	return l.Semitone() > other.Semitone()
+}
+
+// IsLowerThan reports whether this letter represents a lower pitch class
+// than the other letter within a single octave, using the natural (unaltered)
+// semitone positions: C=0, D=2, E=4, F=5, G=7, A=9, B=11.
+//
+// Example:
+//
+//	LetterC.IsLowerThan(LetterD) // true (C=0 < D=2)
+//	LetterB.IsLowerThan(LetterC) // false (B=11 > C=0)
+//	LetterE.IsLowerThan(LetterE) // false (equal)
+func (l Letter) IsLowerThan(other Letter) bool {
+	return l.Semitone() < other.Semitone()
+}

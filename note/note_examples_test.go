@@ -101,8 +101,8 @@ func ExampleNewFromString() {
 // Create notes with octave.
 func ExampleNewWithOctave() {
 	// Create notes at different octaves
-	c4, _ := note.NewWithOctave(note.C, 4)  // Middle C
-	a4, _ := note.NewWithOctave(note.A, 4)  // A440
+	c4, _ := note.NewWithOctave(note.C, 4) // Middle C
+	a4, _ := note.NewWithOctave(note.A, 4) // A440
 
 	fmt.Println(c4.String(), c4.Octave().Number())
 	fmt.Println(a4.String(), a4.Octave().Number())

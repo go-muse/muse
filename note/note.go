@@ -15,9 +15,9 @@ import (
 // Each note has a name (i.e., pitch class) and is characterized by octave and duration.
 type Note struct {
 	name     Name
-	octave   *octave.Octave
-	duration *time.Duration
-	value    *duration.Relative
+	octave   octave.Octave
+	duration time.Duration
+	value    duration.Relative
 }
 
 // New constructs a Note from a Name.
@@ -90,7 +90,7 @@ func MustNewWithOctave(name Name, octaveNumber octave.Number) Note {
 }
 
 // Octave returns octave of the note.
-func (n Note) Octave() *octave.Octave {
+func (n Note) Octave() octave.Octave {
 	return n.octave
 }
 
@@ -102,15 +102,7 @@ func (n Note) EqualByName(other Note) bool {
 // EqualByOctave compares notes by octave.
 // If both octaves are nil, they are considered equal.
 func (n Note) EqualByOctave(other Note) bool {
-	if n.octave == nil && other.octave == nil {
-		return true
-	}
-
-	if n.octave == nil || other.octave == nil {
-		return false
-	}
-
-	return n.octave.IsEqual(other.octave)
+	return n.octave.Equal(other.octave)
 }
 
 // Equal compares notes by all parameters.
@@ -121,24 +113,7 @@ func (n Note) Equal(other Note) bool {
 // Copy creates a deep copy of Note with respect to direct pointer fields.
 // It clones octave, duration and value objects (if present) by value-copying the pointed structs.
 func (n Note) Copy() Note {
-	out := n
-
-	if n.octave != nil {
-		o := *n.octave
-		out.octave = &o
-	}
-
-	if n.duration != nil {
-		d := *n.duration
-		out.duration = &d
-	}
-
-	if n.value != nil {
-		v := *n.value
-		out.value = &v
-	}
-
-	return out
+	return n
 }
 
 // AlterUp alters the note upwards.
@@ -170,25 +145,33 @@ func (n Note) BaseName() string {
 	return n.name.BaseName()
 }
 
+// Base returns note's copy without accidentals.
+func (n Note) Base() Note {
+	newNote := n.Copy()
+	newNote.name.accidental = Natural()
+
+	return newNote
+}
+
 // AlterationShift returns information about alteration of the note (up or down). Sign means direction of alteration.
 func (n Note) AlterationShift() int8 {
 	return n.name.AlterationShift()
 }
 
 // SetOctave sets the specified octave to the note and returns the note.
-func (n Note) SetOctave(octave *octave.Octave) Note {
-	n.octave = octave
+func (n Note) SetOctave(o octave.Octave) Note {
+	n.octave = o
 	return n
 }
 
 // SetDuration sets absolute duration to the note and returns the note.
 func (n Note) SetDuration(d time.Duration) Note {
-	n.duration = &d
+	n.duration = d
 	return n
 }
 
 // SetValue sets relative duration to the note and returns the note.
-func (n Note) SetValue(v *duration.Relative) Note {
+func (n Note) SetValue(v duration.Relative) Note {
 	n.value = v
 	return n
 }
@@ -196,14 +179,11 @@ func (n Note) SetValue(v *duration.Relative) Note {
 // Duration returns absolute duration of the note.
 // Returns 0 if duration is not set.
 func (n Note) Duration() time.Duration {
-	if n.duration == nil {
-		return 0
-	}
-	return *n.duration
+	return n.duration
 }
 
 // Value returns relative duration of the note.
-func (n Note) Value() *duration.Relative {
+func (n Note) Value() duration.Relative {
 	return n.value
 }
 

@@ -1,43 +1,39 @@
 package degree
 
-import "github.com/go-muse/muse/note"
+import (
+	"iter"
 
-// Iterator is an object that allows iterating through a sequence of degrees
-// and also provides additional functionality.
-type Iterator <-chan *Degree
+	"github.com/go-muse/muse/note"
+)
 
-// GetAllDegrees iterates through a sequence of degrees
-// and returns them as slice.
-func (di Iterator) GetAllDegrees() []*Degree {
-	if di == nil {
+// Iterator is a function that yields degree nodes one by one.
+// It implements iter.Seq[*Node] for use with range loops.
+type Iterator = iter.Seq[*Node]
+
+// GetAllDegrees collects all degree nodes from an iterator into a slice.
+func GetAllDegrees(it Iterator) []*Node {
+	if it == nil {
 		return nil
 	}
 
-	var degrees []*Degree
-	for {
-		degree, ok := <-di
-		if !ok {
-			return degrees
-		}
-		degrees = append(degrees, degree)
+	var nodes []*Node
+	for node := range it {
+		nodes = append(nodes, node)
 	}
+
+	return nodes
 }
 
-// GetAllNotes iterates through a sequence of degrees
-// and returns their notes as slice.
-func (di Iterator) GetAllNotes() note.Notes {
-	if di == nil {
+// GetAllNotes collects all notes from degree nodes in an iterator.
+func GetAllNotes(it Iterator) note.Notes {
+	if it == nil {
 		return nil
 	}
 
 	notes := make(note.Notes, 0)
-	for {
-		degree, ok := <-di
-		if !ok {
-			return notes
-		}
-		if degree.Note() != nil {
-			notes = append(notes, degree.Note())
-		}
+	for node := range it {
+		notes = append(notes, node.Note())
 	}
+
+	return notes
 }

@@ -18,7 +18,7 @@ type Chord struct {
 }
 
 // NewChord creates a new chord with the specified notes.
-func NewChord(notes ...*note.Note) *Chord {
+func NewChord(notes ...note.Note) *Chord {
 	chord := &Chord{}
 
 	return chord.AddNotes(notes...)
@@ -39,7 +39,7 @@ func (c *Chord) String() string {
 }
 
 // AddNote adds a note to the chord, replacing it in case of a match.
-func (c *Chord) AddNote(n *note.Note) *Chord {
+func (c *Chord) AddNote(n note.Note) *Chord {
 	if c == nil {
 		return c
 	}
@@ -48,7 +48,7 @@ func (c *Chord) AddNote(n *note.Note) *Chord {
 	n.SetValue(c.value)
 
 	for _, chordNote := range c.notes {
-		if chordNote.IsEqual(n) {
+		if chordNote.Equal(n) {
 			return c
 		}
 	}
@@ -59,7 +59,7 @@ func (c *Chord) AddNote(n *note.Note) *Chord {
 }
 
 // AddNotes adds notes to the chord, replacing them in case of a match.
-func (c *Chord) AddNotes(notes ...*note.Note) *Chord {
+func (c *Chord) AddNotes(notes ...note.Note) *Chord {
 	if c == nil {
 		return c
 	}
@@ -67,7 +67,7 @@ func (c *Chord) AddNotes(notes ...*note.Note) *Chord {
 	var additionalNotes note.Notes
 	for _, note := range notes {
 		for _, chordNote := range c.notes {
-			if chordNote.IsEqual(note) {
+			if chordNote.Equal(note) {
 				goto NEXT
 			}
 		}
@@ -153,13 +153,13 @@ func (c *Chord) Empty() *Chord {
 }
 
 // RemoveNote removes a note from the chord that is similar to the specified by it's name and octave.
-func (c *Chord) RemoveNote(note *note.Note) *Chord {
+func (c *Chord) RemoveNote(note note.Note) *Chord {
 	if c == nil {
 		return nil
 	}
 
 	for i, chordNote := range c.notes {
-		if chordNote.IsEqual(note) {
+		if chordNote.Equal(note) {
 			c.notes = append(c.notes[:i], c.notes[i+1:]...)
 		}
 	}
@@ -181,13 +181,13 @@ func (c *Chord) RemoveNotes(notes note.Notes) *Chord {
 }
 
 // Exists checks if a note exists in the chord.
-func (c *Chord) Exists(note *note.Note) bool {
+func (c *Chord) Exists(note note.Note) bool {
 	if c == nil {
 		return false
 	}
 
 	for _, chordNote := range c.notes {
-		if chordNote.IsEqual(note) {
+		if chordNote.Equal(note) {
 			return true
 		}
 	}

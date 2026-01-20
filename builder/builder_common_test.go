@@ -18,7 +18,7 @@ func TestBuildCommonMode(t *testing.T) {
 		name          string
 	}
 
-	constructTestCase := func(modeTemplate halftone.Template, modeName string, firstNote *note.Note, expectedNotes note.Names) testCase {
+	constructTestCase := func(modeTemplate halftone.Template, modeName string, firstNote note.Note, expectedNotes note.Names) testCase {
 		return testCase{
 			modeTemplate:  modeTemplate,
 			builder:       NewBuilderCommon(modeTemplate, firstNote),
@@ -31,29 +31,29 @@ func TestBuildCommonMode(t *testing.T) {
 		// Pentatonics
 
 		// Main pentatonics
-		constructTestCase(halftone.Template{2, 2, 3, 2, 3}, "PentatonicMajor", note.MustNewNote(note.C), []note.Name{note.C, note.D, note.E, note.G, note.A}),
-		constructTestCase(halftone.Template{2, 3, 2, 3, 2}, "PentatonicSustained", note.MustNewNote(note.D), []note.Name{note.D, note.E, note.G, note.A, note.C}),
-		constructTestCase(halftone.Template{3, 2, 3, 2, 2}, "PentatonicBluesMinor", note.MustNewNote(note.E), []note.Name{note.E, note.G, note.A, note.C, note.D}),
-		constructTestCase(halftone.Template{2, 3, 2, 2, 3}, "PentatonicBluesMajor", note.MustNewNote(note.G), []note.Name{note.G, note.A, note.C, note.D, note.E}),
-		constructTestCase(halftone.Template{3, 2, 2, 3, 2}, "PentatonicBluesMinor", note.MustNewNote(note.A), []note.Name{note.A, note.C, note.D, note.E, note.G}),
+		constructTestCase(halftone.Template{2, 2, 3, 2, 3}, "PentatonicMajor", note.C.NewNote(), []note.Name{note.C, note.D, note.E, note.G, note.A}),
+		constructTestCase(halftone.Template{2, 3, 2, 3, 2}, "PentatonicSustained", note.D.NewNote(), []note.Name{note.D, note.E, note.G, note.A, note.C}),
+		constructTestCase(halftone.Template{3, 2, 3, 2, 2}, "PentatonicBluesMinor", note.E.NewNote(), []note.Name{note.E, note.G, note.A, note.C, note.D}),
+		constructTestCase(halftone.Template{2, 3, 2, 2, 3}, "PentatonicBluesMajor", note.G.NewNote(), []note.Name{note.G, note.A, note.C, note.D, note.E}),
+		constructTestCase(halftone.Template{3, 2, 2, 3, 2}, "PentatonicBluesMinor", note.A.NewNote(), []note.Name{note.A, note.C, note.D, note.E, note.G}),
 
 		// Japanese pentatonics
-		constructTestCase(halftone.Template{2, 1, 4, 1, 4}, "PentatonicHirajoshi", note.MustNewNote(note.C), []note.Name{note.C, note.D, note.EFLAT, note.G, note.AFLAT}),
-		constructTestCase(halftone.Template{1, 4, 1, 4, 2}, "PentatonicIwato", note.MustNewNote(note.D), []note.Name{note.D, note.EFLAT, note.G, note.AFLAT, note.C}),
-		constructTestCase(halftone.Template{4, 1, 4, 2, 1}, "PentatonicHonKumoiShiouzhi", note.MustNewNote(note.EFLAT), []note.Name{note.EFLAT, note.G, note.AFLAT, note.C, note.D}),
-		constructTestCase(halftone.Template{1, 4, 2, 1, 4}, "PentatonicHonKumoiJoshi", note.MustNewNote(note.G), []note.Name{note.G, note.AFLAT, note.C, note.D, note.EFLAT}),
-		constructTestCase(halftone.Template{4, 2, 1, 4, 1}, "PentatonicLydianPentatonic", note.MustNewNote(note.AFLAT), []note.Name{note.AFLAT, note.C, note.D, note.EFLAT, note.G}),
+		constructTestCase(halftone.Template{2, 1, 4, 1, 4}, "PentatonicHirajoshi", note.C.NewNote(), []note.Name{note.C, note.D, note.EFLAT, note.G, note.AFLAT}),
+		constructTestCase(halftone.Template{1, 4, 1, 4, 2}, "PentatonicIwato", note.D.NewNote(), []note.Name{note.D, note.EFLAT, note.G, note.AFLAT, note.C}),
+		constructTestCase(halftone.Template{4, 1, 4, 2, 1}, "PentatonicHonKumoiShiouzhi", note.EFLAT.NewNote(), []note.Name{note.EFLAT, note.G, note.AFLAT, note.C, note.D}),
+		constructTestCase(halftone.Template{1, 4, 2, 1, 4}, "PentatonicHonKumoiJoshi", note.G.NewNote(), []note.Name{note.G, note.AFLAT, note.C, note.D, note.EFLAT}),
+		constructTestCase(halftone.Template{4, 2, 1, 4, 1}, "PentatonicLydianPentatonic", note.AFLAT.NewNote(), []note.Name{note.AFLAT, note.C, note.D, note.EFLAT, note.G}),
 
 		// Modes with other amount of degrees
-		constructTestCase(halftone.Template{12}, "custom mode with 1 degree", note.MustNewNote(note.C), []note.Name{note.C}),
-		constructTestCase(halftone.Template{6, 6}, "custom mode with 2 degrees", note.MustNewNote(note.C), []note.Name{note.C, note.FSHARP}),
-		constructTestCase(halftone.Template{6, 6}, "custom mode with 2 degrees", note.MustNewNote(note.BSHARP), []note.Name{note.BSHARP, note.FSHARP}),
-		constructTestCase(halftone.Template{6, 6}, "custom mode with 2 degrees", note.MustNewNote(note.CFLAT), []note.Name{note.CFLAT, note.F}),
-		constructTestCase(halftone.Template{4, 4, 4}, "custom mode with 3 degrees", note.MustNewNote(note.C), []note.Name{note.C, note.E, note.GSHARP}),
-		constructTestCase(halftone.Template{3, 3, 3, 3}, "custom mode with 4 degrees", note.MustNewNote(note.C), []note.Name{note.C, note.DSHARP, note.FSHARP, note.A}),
-		constructTestCase(halftone.Template{3, 3, 3, 3}, "custom mode with 5 degrees", note.MustNewNote(note.C), []note.Name{note.C, note.DSHARP, note.FSHARP, note.A}),
-		constructTestCase(halftone.Template{2, 2, 2, 2, 2, 2}, "custom mode with 6 degrees", note.MustNewNote(note.C), []note.Name{note.C, note.D, note.E, note.FSHARP, note.GSHARP, note.ASHARP}),
-		constructTestCase(halftone.Template{2, 2, 2, 2, 2, 1, 1}, "custom mode with 7 degrees", note.MustNewNote(note.C), []note.Name{note.C, note.D, note.E, note.FSHARP, note.GSHARP, note.ASHARP, note.B}),
+		constructTestCase(halftone.Template{12}, "custom mode with 1 degree", note.C.NewNote(), []note.Name{note.C}),
+		constructTestCase(halftone.Template{6, 6}, "custom mode with 2 degrees", note.C.NewNote(), []note.Name{note.C, note.FSHARP}),
+		constructTestCase(halftone.Template{6, 6}, "custom mode with 2 degrees", note.BSHARP.NewNote(), []note.Name{note.BSHARP, note.FSHARP}),
+		constructTestCase(halftone.Template{6, 6}, "custom mode with 2 degrees", note.CFLAT.NewNote(), []note.Name{note.CFLAT, note.F}),
+		constructTestCase(halftone.Template{4, 4, 4}, "custom mode with 3 degrees", note.C.NewNote(), []note.Name{note.C, note.E, note.GSHARP}),
+		constructTestCase(halftone.Template{3, 3, 3, 3}, "custom mode with 4 degrees", note.C.NewNote(), []note.Name{note.C, note.DSHARP, note.FSHARP, note.A}),
+		constructTestCase(halftone.Template{3, 3, 3, 3}, "custom mode with 5 degrees", note.C.NewNote(), []note.Name{note.C, note.DSHARP, note.FSHARP, note.A}),
+		constructTestCase(halftone.Template{2, 2, 2, 2, 2, 2}, "custom mode with 6 degrees", note.C.NewNote(), []note.Name{note.C, note.D, note.E, note.FSHARP, note.GSHARP, note.ASHARP}),
+		constructTestCase(halftone.Template{2, 2, 2, 2, 2, 1, 1}, "custom mode with 7 degrees", note.C.NewNote(), []note.Name{note.C, note.D, note.E, note.FSHARP, note.GSHARP, note.ASHARP, note.B}),
 	}
 
 	testingFunc := func(modeTemplate halftone.Template, builder Builder, expectedNotes note.Names, testCaseName string) {
@@ -118,7 +118,7 @@ func Test_templateNotesCommon_getTemplateNote(t *testing.T) {
 				assert.NotNil(t, firstTemplateNote.alteredNotes)
 				var exist bool
 				for _, note := range firstTemplateNote.alteredNotes {
-					if note.realNote().IsEqualByName(testCases[i]) {
+					if note.realNote().EqualByName(testCases[i]) {
 						exist = true
 					}
 				}

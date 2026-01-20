@@ -9,7 +9,7 @@ import (
 
 // Creating mode with textual mode name and note name will validate them during mode building.
 func ExampleMakeNewMode() {
-	mode, err := mode.MakeNewMode(mode.Name("UltraLocrian"), note.Name("C"))
+	mode, err := mode.MakeNewMode(mode.Name("UltraLocrian"), note.C)
 	if err != nil {
 		panic(err)
 	}

@@ -13,7 +13,7 @@ import (
 func TestCalculateRelativeMC(t *testing.T) {
 	type testCase struct {
 		degreeNum          Number
-		nextDegree         *Degree
+		nextDegreeNode     *Node
 		halfTonesFromPrime halftone.HalfTones
 		expectedName       CharacteristicName
 	}
@@ -21,31 +21,31 @@ func TestCalculateRelativeMC(t *testing.T) {
 	testCases := []testCase{
 		{
 			degreeNum:          1,
-			nextDegree:         &Degree{note: note.MustNewNote(note.DFLAT)},
+			nextDegreeNode:     &Node{degree: Degree{note: note.DFLAT.NewNote()}},
 			halfTonesFromPrime: 1,
 			expectedName:       CharacteristicAug,
 		},
 		{
 			degreeNum:          1,
-			nextDegree:         &Degree{note: note.MustNewNote(note.CSHARP)},
+			nextDegreeNode:     &Node{degree: Degree{note: note.CSHARP.NewNote()}},
 			halfTonesFromPrime: 1,
 			expectedName:       CharacteristicAug,
 		},
 		{
 			degreeNum:          1,
-			nextDegree:         &Degree{note: note.MustNewNote(note.D)},
+			nextDegreeNode:     &Node{degree: Degree{note: note.D.NewNote()}},
 			halfTonesFromPrime: 2,
 			expectedName:       Characteristic2xAug,
 		},
 		{
 			degreeNum:          1,
-			nextDegree:         &Degree{note: note.MustNewNote(note.EFLAT)},
+			nextDegreeNode:     &Node{degree: Degree{note: note.EFLAT.NewNote()}},
 			halfTonesFromPrime: 3,
 			expectedName:       Characteristic3xAug,
 		},
 		{
 			degreeNum:          1,
-			nextDegree:         &Degree{note: note.MustNewNote(note.DSHARP)},
+			nextDegreeNode:     &Node{degree: Degree{note: note.DSHARP.NewNote()}},
 			halfTonesFromPrime: 3,
 			expectedName:       Characteristic3xAug,
 		},
@@ -55,7 +55,7 @@ func TestCalculateRelativeMC(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(string(tc.expectedName), func(t *testing.T) {
-			mc, err := CalculateRelativeMC(tc.degreeNum, tc.nextDegree, tc.halfTonesFromPrime)
+			mc, err := CalculateRelativeMC(tc.degreeNum, tc.nextDegreeNode, tc.halfTonesFromPrime)
 			require.NoError(t, err)
 			require.NotNil(t, mc)
 			assert.Equal(t, tc.expectedName, mc.Name())

@@ -18,7 +18,7 @@ func TestBuildHeptatonicMode(t *testing.T) {
 		name          string
 	}
 
-	constructTestCase := func(modeTemplate halftone.Template, modeName string, firstNote *note.Note, expectedNotes note.Names) testCase {
+	constructTestCase := func(modeTemplate halftone.Template, modeName string, firstNote note.Note, expectedNotes note.Names) testCase {
 		return testCase{
 			modeTemplate:  modeTemplate,
 			builder:       NewBuilderHeptatonic(modeTemplate, firstNote),
@@ -29,7 +29,7 @@ func TestBuildHeptatonicMode(t *testing.T) {
 
 	testCases := []testCase{
 		// Heptatonics
-		constructTestCase(halftone.Template{2, 2, 2, 2, 2, 1, 1}, "custom mode with 7 degrees", note.MustNewNote(note.C), []note.Name{note.C, note.D, note.E, note.FSHARP, note.GSHARP, note.ASHARP, note.B}),
+		constructTestCase(halftone.Template{2, 2, 2, 2, 2, 1, 1}, "custom mode with 7 degrees", note.C.NewNote(), []note.Name{note.C, note.D, note.E, note.FSHARP, note.GSHARP, note.ASHARP, note.B}),
 	}
 
 	testingFunc := func(modeTemplate halftone.Template, builder Builder, expectedNotes note.Names, testCaseName string) {
@@ -91,7 +91,7 @@ func Test_templateNotes7degree_getTemplateNote(t *testing.T) {
 	t.Run("getTemplateNotesHeptatonic negative cases", func(t *testing.T) {
 		// impossible case
 		templateNotesInstance.templateNoteHeptatonic = nil
-		assert.Nil(t, templateNotesInstance.getTemplateNote(note.C.MustNewNote()))
+		assert.Nil(t, templateNotesInstance.getTemplateNote(note.C.NewNote()))
 	})
 }
 
@@ -100,35 +100,35 @@ func Test_NextBaseNote(t *testing.T) {
 
 	testCases := []struct {
 		tns  note.Notes
-		want *note.Note
+		want note.Note
 	}{
 		{
-			tns:  note.Notes{note.MustNewNote(note.C), note.MustNewNote(note.CSHARP), note.MustNewNote(note.CFLAT), note.MustNewNote(note.CSHARP2), note.MustNewNote(note.CFLAT2)},
-			want: note.MustNewNote(note.D),
+			tns:  note.Notes{note.C.NewNote(), note.CSHARP.NewNote(), note.CFLAT.NewNote(), note.CSHARP2.NewNote(), note.CFLAT2.NewNote()},
+			want: note.D.NewNote(),
 		},
 		{
-			tns:  note.Notes{note.MustNewNote(note.D), note.MustNewNote(note.DSHARP), note.MustNewNote(note.DFLAT), note.MustNewNote(note.DSHARP2), note.MustNewNote(note.DFLAT2)},
-			want: note.MustNewNote(note.E),
+			tns:  note.Notes{note.D.NewNote(), note.DSHARP.NewNote(), note.DFLAT.NewNote(), note.DSHARP2.NewNote(), note.DFLAT2.NewNote()},
+			want: note.E.NewNote(),
 		},
 		{
-			tns:  note.Notes{note.MustNewNote(note.E), note.MustNewNote(note.ESHARP), note.MustNewNote(note.EFLAT), note.MustNewNote(note.ESHARP2), note.MustNewNote(note.EFLAT2)},
-			want: note.MustNewNote(note.F),
+			tns:  note.Notes{note.E.NewNote(), note.ESHARP.NewNote(), note.EFLAT.NewNote(), note.ESHARP2.NewNote(), note.EFLAT2.NewNote()},
+			want: note.F.NewNote(),
 		},
 		{
-			tns:  note.Notes{note.MustNewNote(note.F), note.MustNewNote(note.FSHARP), note.MustNewNote(note.FFLAT), note.MustNewNote(note.FSHARP2), note.MustNewNote(note.FFLAT2)},
-			want: note.MustNewNote(note.G),
+			tns:  note.Notes{note.F.NewNote(), note.FSHARP.NewNote(), note.FFLAT.NewNote(), note.FSHARP2.NewNote(), note.FFLAT2.NewNote()},
+			want: note.G.NewNote(),
 		},
 		{
-			tns:  note.Notes{note.MustNewNote(note.G), note.MustNewNote(note.GSHARP), note.MustNewNote(note.GFLAT), note.MustNewNote(note.GSHARP2), note.MustNewNote(note.GFLAT2)},
-			want: note.MustNewNote(note.A),
+			tns:  note.Notes{note.G.NewNote(), note.GSHARP.NewNote(), note.GFLAT.NewNote(), note.GSHARP2.NewNote(), note.GFLAT2.NewNote()},
+			want: note.A.NewNote(),
 		},
 		{
-			tns:  note.Notes{note.MustNewNote(note.A), note.MustNewNote(note.ASHARP), note.MustNewNote(note.AFLAT), note.MustNewNote(note.ASHARP2), note.MustNewNote(note.AFLAT2)},
-			want: note.MustNewNote(note.B),
+			tns:  note.Notes{note.A.NewNote(), note.ASHARP.NewNote(), note.AFLAT.NewNote(), note.ASHARP2.NewNote(), note.AFLAT2.NewNote()},
+			want: note.B.NewNote(),
 		},
 		{
-			tns:  note.Notes{note.MustNewNote(note.B), note.MustNewNote(note.BSHARP), note.MustNewNote(note.BFLAT), note.MustNewNote(note.BSHARP2), note.MustNewNote(note.BFLAT2)},
-			want: note.MustNewNote(note.C),
+			tns:  note.Notes{note.B.NewNote(), note.BSHARP.NewNote(), note.BFLAT.NewNote(), note.BSHARP2.NewNote(), note.BFLAT2.NewNote()},
+			want: note.C.NewNote(),
 		},
 	}
 

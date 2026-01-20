@@ -6,4 +6,4 @@ import (
 )
 
 // Builder is entity that encapsulates functionality to generate sequence of notes and halftones.
-type Builder <-chan func() (*note.Note, halftone.HalfTones)
+type Builder <-chan func() (note.Note, halftone.HalfTones)

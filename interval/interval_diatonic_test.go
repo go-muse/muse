@@ -8,16 +8,17 @@ import (
 
 	"github.com/go-muse/muse/degree"
 	"github.com/go-muse/muse/halftone"
+	"github.com/go-muse/muse/note"
 )
 
 func TestNewIntervalByDegrees(t *testing.T) {
 	type testCase struct {
-		degree1, degree2 *degree.Degree
+		degree1, degree2 *degree.Node
 		want             *Diatonic
 		err              error
 	}
 
-	makeTestCase := func(degree1, degree2 *degree.Degree, chromaticInterval *Chromatic, err error) testCase {
+	makeTestCase := func(degree1, degree2 *degree.Node, chromaticInterval *Chromatic, err error) testCase {
 		return testCase{
 			degree1: degree1,
 			degree2: degree2,
@@ -94,14 +95,14 @@ func TestNewIntervalByDegrees(t *testing.T) {
 func newDegreeWithNumAndHalfTones(
 	number degree.Number,
 	halfTonesFromPrime halftone.HalfTones,
-) *degree.Degree {
+) *degree.Node {
 	return degree.New(
 		number,
 		halfTonesFromPrime,
 		nil,
 		nil,
+		note.Note{},
 		nil,
-		nil,
-		nil,
+		degree.ModalPosition{},
 	)
 }

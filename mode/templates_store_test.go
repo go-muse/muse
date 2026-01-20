@@ -26,7 +26,7 @@ func TestModeTemplatesStore(t *testing.T) {
 			modeCustom, err = MakeNewCustomMode(modeTemplate, note.Name().String(), modeName)
 			require.NoError(t, err)
 			assert.Equal(t, modeTemplate.Length(), modeCustom.Length())
-			assert.True(t, modeNormal.IsEqual(modeCustom))
+			assert.True(t, modeNormal.Equal(modeCustom))
 		}
 	}
 }
@@ -91,7 +91,7 @@ func TestFindModeTemplatesByNotes(t *testing.T) {
 		expectedModes []Name
 	}{
 		{
-			notes:         note.MustNewNotesFromNoteNames(note.C, note.D, note.E, note.F, note.G, note.A, note.B),
+			notes:         note.NewFromNoteNames(note.C, note.D, note.E, note.F, note.G, note.A, note.B),
 			expectedModes: []Name{NameAeolian, NameIonian, NamePhrygian, NameLocrian, NameDorian, NameLydian, NameMixoLydian, NameNaturalMajor, NameNaturalMinor},
 		},
 	}

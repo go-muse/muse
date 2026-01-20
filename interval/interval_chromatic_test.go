@@ -66,7 +66,7 @@ func TestChromaticInterval_HalfTones(t *testing.T) {
 }
 
 func TestMakeNoteByName(t *testing.T) {
-	firstNote := note.MustNewNote(note.C)
+	firstNote := Note(note.C)
 	n, err := MakeNoteByName(firstNote, NameTritone)
 	require.NoError(t, err)
 	assert.NotNil(t, n)
@@ -74,7 +74,7 @@ func TestMakeNoteByName(t *testing.T) {
 }
 
 func TestMakeDegreeByName(t *testing.T) {
-	firstDegree := degree.New(1, 0, nil, nil, note.MustNewNote(note.C), nil, nil)
+	firstDegree := degree.New(1, 0, nil, nil, Note(note.C), nil, degree.ModalPosition{})
 	interval, err := NewChromatic(6)
 	require.NoError(t, err)
 	secondDegree, err := MakeDegreeByName(firstDegree, interval.Name())

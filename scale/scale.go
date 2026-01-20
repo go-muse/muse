@@ -10,7 +10,7 @@ import (
 type Scale note.Notes
 
 // NewScaleFromNotes creates a scale from a given notes.
-func NewScaleFromNotes(notes ...*note.Note) Scale {
+func NewScaleFromNotes(notes ...note.Note) Scale {
 	scale := make(Scale, 0, len(notes))
 	scale = append(scale, notes...)
 
@@ -21,12 +21,7 @@ func NewScaleFromNotes(notes ...*note.Note) Scale {
 func NewScaleFromNoteNames(noteNames ...note.Name) (Scale, error) {
 	scale := make(Scale, 0, len(noteNames))
 	for _, noteName := range noteNames {
-		n, err := note.New(noteName)
-		if err != nil {
-			return nil, fmt.Errorf("create note by name '%s': %w", noteName, err)
-		}
-
-		scale = append(scale, n)
+		scale = append(scale, note.New(noteName))
 	}
 
 	return scale, nil
@@ -36,7 +31,7 @@ func NewScaleFromNoteNames(noteNames ...note.Name) (Scale, error) {
 func MustNewScaleFromNoteNames(noteNames ...note.Name) Scale {
 	scale := make(Scale, 0, len(noteNames))
 	for _, noteName := range noteNames {
-		scale = append(scale, note.MustNewNote(noteName))
+		scale = append(scale, noteName.MustMakeNote())
 	}
 
 	return scale
@@ -55,22 +50,22 @@ func (s Scale) String() string {
 // GetFullChromaticScale returns all notes of the tonal system.
 func GetFullChromaticScale() Scale {
 	return Scale{
-		note.MustNewNote(note.C),
-		note.MustNewNote(note.DFLAT),
-		note.MustNewNote(note.CSHARP),
-		note.MustNewNote(note.D),
-		note.MustNewNote(note.EFLAT),
-		note.MustNewNote(note.DSHARP),
-		note.MustNewNote(note.E),
-		note.MustNewNote(note.F),
-		note.MustNewNote(note.GFLAT),
-		note.MustNewNote(note.FSHARP),
-		note.MustNewNote(note.G),
-		note.MustNewNote(note.AFLAT),
-		note.MustNewNote(note.GSHARP),
-		note.MustNewNote(note.A),
-		note.MustNewNote(note.BFLAT),
-		note.MustNewNote(note.ASHARP),
-		note.MustNewNote(note.B),
+		note.C.NewNote(),
+		note.DFLAT.NewNote(),
+		note.CSHARP.NewNote(),
+		note.D.NewNote(),
+		note.EFLAT.NewNote(),
+		note.DSHARP.NewNote(),
+		note.E.NewNote(),
+		note.F.NewNote(),
+		note.GFLAT.NewNote(),
+		note.FSHARP.NewNote(),
+		note.G.NewNote(),
+		note.AFLAT.NewNote(),
+		note.GSHARP.NewNote(),
+		note.A.NewNote(),
+		note.BFLAT.NewNote(),
+		note.ASHARP.NewNote(),
+		note.B.NewNote(),
 	}
 }
