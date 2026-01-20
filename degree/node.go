@@ -304,7 +304,7 @@ func (dn *Node) Equal(other *Node) bool {
 		return false
 	}
 
-	return true
+	return dn.Note().EqualByName(other.Note())
 }
 
 // EqualByDegreeNum compares degree nodes by degree number only.

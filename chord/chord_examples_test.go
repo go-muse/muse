@@ -12,10 +12,10 @@ import (
 // Creating a new chord.
 func ExampleNewChord() {
 	// notes with different durations
-	note1 := note.MustNewWithOctave(note.E, 4).SetValue(duration.NewRelative(duration.NameWhole))
-	note2 := note.MustNewWithOctave(note.G, 4).SetValue(duration.NewRelative(duration.NameHalf))
-	note3 := note.MustNewWithOctave(note.B, 4).SetValue(duration.NewRelative(duration.NameQuarter))
-	note4 := note.MustNewWithOctave(note.D, 5).SetValue(duration.NewRelative(duration.NameSixteenth))
+	note1 := note.MustNewWithOctave(note.E, 4).WithValue(duration.NewRelative(duration.NameWhole))
+	note2 := note.MustNewWithOctave(note.G, 4).WithValue(duration.NewRelative(duration.NameHalf))
+	note3 := note.MustNewWithOctave(note.B, 4).WithValue(duration.NewRelative(duration.NameQuarter))
+	note4 := note.MustNewWithOctave(note.D, 5).WithValue(duration.NewRelative(duration.NameSixteenth))
 
 	// duration for the chord
 	duration := duration.NewRelative(duration.NameHalf)

@@ -18,9 +18,6 @@ func TestNew(t *testing.T) {
 			if !note.Name().EqualSpelling(name) {
 				t.Fatalf("New(%v).Name(): got %v, want %v", name, note.Name(), name)
 			}
-			if note.Octave() != nil {
-				t.Fatalf("New(%v).Octave(): got %v, want nil", name, note.Octave())
-			}
 		})
 	}
 }
@@ -178,9 +175,6 @@ func TestNewWithOctave(t *testing.T) {
 			if !got.Name().EqualSpelling(tt.noteName) {
 				t.Fatalf("NewWithOctave().Name(): got %v, want %v", got.Name(), tt.noteName)
 			}
-			if got.Octave() == nil {
-				t.Fatalf("NewWithOctave().Octave(): got nil, want %d", tt.wantOctave)
-			}
 			if got.Octave().Number() != tt.wantOctave {
 				t.Fatalf("NewWithOctave().Octave().Number(): got %d, want %d", got.Octave().Number(), tt.wantOctave)
 			}
@@ -290,57 +284,64 @@ func TestNote_Equal(t *testing.T) {
 func TestNote_Copy(t *testing.T) {
 	t.Run("BasicCopy", func(t *testing.T) {
 		original := MustNewWithOctave(CSHARP, 4)
-		copy := original.Copy()
+		copied := original.Copy()
 
-		if !copy.Equal(original) {
+		if !copied.Equal(original) {
 			t.Fatalf("Copy() should be equal to original")
 		}
 
-		// Modify copy's octave shouldn't affect original
-		if copy.Octave() == original.Octave() {
-			t.Fatalf("Copy() should have different octave pointer")
+		// Verify that modifying copy doesn't affect original
+		copied = copied.WithOctave(octave.MustNewByNumber(5))
+		if copied.Octave().Equal(original.Octave()) {
+			t.Fatalf("Modifying copy's octave should not affect original")
+		}
+		if original.Octave().Number() != 4 {
+			t.Fatalf("Original octave should remain 4, got %d", original.Octave().Number())
 		}
 	})
 
 	t.Run("CopyWithDuration", func(t *testing.T) {
-		original := New(C).SetDuration(time.Second).SetValue(duration.NewRelative(duration.NameHalf))
-		copy := original.Copy()
+		original := New(C).WithDuration(time.Second).WithValue(duration.NewRelative(duration.NameHalf))
+		copied := original.Copy()
 
-		if copy.Duration() != original.Duration() {
-			t.Fatalf("Copy().Duration(): got %v, want %v", copy.Duration(), original.Duration())
+		if copied.Duration() != original.Duration() {
+			t.Fatalf("Copy().Duration(): got %v, want %v", copied.Duration(), original.Duration())
 		}
-		if copy.Value() == nil {
-			t.Fatalf("Copy().Value(): got nil")
+		if !copied.Value().Equal(original.Value()) {
+			t.Fatalf("Copy().Value(): got %v, want %v", copied.Value(), original.Value())
 		}
-		if copy.Value() == original.Value() {
-			t.Fatalf("Copy() should have different value pointer")
+
+		// Verify independence
+		copied = copied.WithValue(duration.NewRelative(duration.NameQuarter))
+		if copied.Value().Equal(original.Value()) {
+			t.Fatalf("Modifying copy's value should not affect original")
 		}
 	})
 
 	t.Run("CopyDurationPointerIndependence", func(t *testing.T) {
-		original := New(C).SetDuration(time.Second)
-		copy := original.Copy()
+		original := New(C).WithDuration(time.Second)
+		copied := original.Copy()
 
-		if copy.Duration() != original.Duration() {
-			t.Fatalf("Copy().Duration(): got %v, want %v", copy.Duration(), original.Duration())
+		if copied.Duration() != original.Duration() {
+			t.Fatalf("Copy().Duration(): got %v, want %v", copied.Duration(), original.Duration())
 		}
 
 		// Modify copy's duration shouldn't affect original
-		copy = copy.SetDuration(time.Minute)
+		copied = copied.WithDuration(time.Minute)
 		if original.Duration() != time.Second {
 			t.Fatalf("Modifying copy's duration affected original: got %v, want %v", original.Duration(), time.Second)
+		}
+		if copied.Duration() != time.Minute {
+			t.Fatalf("Copy's duration should be %v, got %v", time.Minute, copied.Duration())
 		}
 	})
 
 	t.Run("CopyNilOctave", func(t *testing.T) {
 		original := New(C)
-		copy := original.Copy()
+		copied := original.Copy()
 
-		if !copy.EqualByName(original) {
+		if !copied.EqualByName(original) {
 			t.Fatalf("Copy() with nil octave should preserve name")
-		}
-		if copy.Octave() != nil {
-			t.Fatalf("Copy() with nil octave should have nil octave")
 		}
 	})
 }
@@ -485,28 +486,17 @@ func TestNote_SetOctave(t *testing.T) {
 
 	t.Run("SetToNil", func(t *testing.T) {
 		note := New(C)
-		note = note.SetOctave(oct4)
-		if note.Octave() == nil {
-			t.Fatalf("SetOctave(): octave should not be nil")
-		}
+		note = note.WithOctave(oct4)
 		if note.Octave().Number() != 4 {
-			t.Fatalf("SetOctave(): got %d, want 4", note.Octave().Number())
+			t.Fatalf("WithOctave(): got %d, want 4", note.Octave().Number())
 		}
 	})
 
 	t.Run("ReplaceExisting", func(t *testing.T) {
 		note := MustNewWithOctave(C, 4)
-		note = note.SetOctave(oct5)
+		note = note.WithOctave(oct5)
 		if note.Octave().Number() != 5 {
-			t.Fatalf("SetOctave(): got %d, want 5", note.Octave().Number())
-		}
-	})
-
-	t.Run("SetNil", func(t *testing.T) {
-		note := MustNewWithOctave(C, 4)
-		note = note.SetOctave(nil)
-		if note.Octave() != nil {
-			t.Fatalf("SetOctave(nil): octave should be nil")
+			t.Fatalf("WithOctave(): got %d, want 5", note.Octave().Number())
 		}
 	})
 }
@@ -524,9 +514,9 @@ func TestNote_SetDuration(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			note := New(C).SetDuration(tt.duration)
+			note := New(C).WithDuration(tt.duration)
 			if got := note.Duration(); got != tt.duration {
-				t.Fatalf("SetDuration(): got %v, want %v", got, tt.duration)
+				t.Fatalf("WithDuration(): got %v, want %v", got, tt.duration)
 			}
 		})
 	}
@@ -541,7 +531,7 @@ func TestNote_Duration(t *testing.T) {
 	})
 
 	t.Run("AfterSet", func(t *testing.T) {
-		note := New(C).SetDuration(time.Second)
+		note := New(C).WithDuration(time.Second)
 		if got := note.Duration(); got != time.Second {
 			t.Fatalf("Duration(): got %v, want %v", got, time.Second)
 		}
@@ -549,7 +539,7 @@ func TestNote_Duration(t *testing.T) {
 }
 
 func TestNote_SetValue(t *testing.T) {
-	values := []*duration.Relative{
+	values := []duration.Relative{
 		duration.NewRelative(duration.NameWhole),
 		duration.NewRelative(duration.NameHalf),
 		duration.NewRelative(duration.NameQuarter),
@@ -558,25 +548,18 @@ func TestNote_SetValue(t *testing.T) {
 
 	for _, v := range values {
 		t.Run(string(v.Name()), func(t *testing.T) {
-			note := New(C).SetValue(v)
+			note := New(C).WithValue(v)
 			if note.Value() != v {
-				t.Fatalf("SetValue(): got %v, want %v", note.Value(), v)
+				t.Fatalf("WithValue(): got %v, want %v", note.Value(), v)
 			}
 		})
 	}
 }
 
 func TestNote_Value(t *testing.T) {
-	t.Run("DefaultNil", func(t *testing.T) {
-		note := New(C)
-		if got := note.Value(); got != nil {
-			t.Fatalf("Value(): got %v, want nil", got)
-		}
-	})
-
 	t.Run("AfterSet", func(t *testing.T) {
 		val := duration.NewRelative(duration.NameHalf)
-		note := New(C).SetValue(val)
+		note := New(C).WithValue(val)
 		if got := note.Value(); got != val {
 			t.Fatalf("Value(): got %v, want %v", got, val)
 		}

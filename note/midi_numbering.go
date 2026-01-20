@@ -63,5 +63,5 @@ func NewNoteFromMIDINumber(midiNumber uint8) (Note, error) {
 		return Note{}, fmt.Errorf("create octave with octave number '%d': %w", octaveNumber, err)
 	}
 
-	return New(name).SetOctave(oct), nil
+	return New(name).WithOctave(oct), nil
 }

@@ -14,7 +14,7 @@ import (
 type Chord struct {
 	notes    note.Notes
 	duration time.Duration
-	value    *duration.Relative
+	value    duration.Relative
 }
 
 // NewChord creates a new chord with the specified notes.
@@ -44,8 +44,8 @@ func (c *Chord) AddNote(n note.Note) *Chord {
 		return c
 	}
 
-	n.SetDuration(c.duration)
-	n.SetValue(c.value)
+	n.WithDuration(c.duration)
+	n.WithValue(c.value)
 
 	for _, chordNote := range c.notes {
 		if chordNote.Equal(n) {
@@ -72,8 +72,8 @@ func (c *Chord) AddNotes(notes ...note.Note) *Chord {
 			}
 		}
 
-		note.SetDuration(c.duration)
-		note.SetValue(c.value)
+		note.WithDuration(c.duration)
+		note.WithValue(c.value)
 		c.notes = append(c.notes, note)
 
 	NEXT:
@@ -102,7 +102,7 @@ func (c *Chord) SetDuration(d time.Duration) *Chord {
 	c.duration = d
 
 	for i := range c.notes {
-		c.notes[i].SetDuration(c.duration)
+		c.notes[i].WithDuration(c.duration)
 	}
 
 	return c
@@ -118,7 +118,7 @@ func (c *Chord) Duration() time.Duration {
 }
 
 // SetValue sets relative duration to the chord and returns the chord.
-func (c *Chord) SetValue(dr *duration.Relative) *Chord {
+func (c *Chord) SetValue(dr duration.Relative) *Chord {
 	if c == nil {
 		return c
 	}
@@ -126,16 +126,16 @@ func (c *Chord) SetValue(dr *duration.Relative) *Chord {
 	c.value = dr
 
 	for i := range c.notes {
-		c.notes[i].SetValue(c.value)
+		c.notes[i].WithValue(c.value)
 	}
 
 	return c
 }
 
 // Value returns relative duration of the chord.
-func (c *Chord) Value() *duration.Relative {
+func (c *Chord) Value() duration.Relative {
 	if c == nil {
-		return nil
+		return duration.Relative{}
 	}
 
 	return c.value

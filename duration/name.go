@@ -15,7 +15,7 @@ type Names []string
 // GetTuplet returns the tuplet ratio m:n as a Tuplet by duration's name.
 //
 //nolint:mnd
-func (n Name) GetTuplet() *tuplet.Tuplet {
+func (n Name) GetTuplet() tuplet.Tuplet {
 	switch n {
 	case NameLarge:
 		return tuplet.New(8, 1)
@@ -44,7 +44,7 @@ func (n Name) GetTuplet() *tuplet.Tuplet {
 	case NameFiveHundredTwelfth:
 		return tuplet.New(1, 512)
 	default:
-		return nil
+		return tuplet.Tuplet{}
 	}
 }
 
@@ -54,6 +54,6 @@ func (n Name) GetValue() decimal.Decimal {
 }
 
 // NewDuration makes new relative duration by the given duration name.
-func (n Name) NewDuration() *Relative {
+func (n Name) NewDuration() Relative {
 	return NewRelative(n)
 }

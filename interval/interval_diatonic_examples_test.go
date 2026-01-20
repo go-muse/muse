@@ -12,9 +12,9 @@ import (
 // Diatonic interval can be calculated between diatonic degrees.
 func ExampleNewDiatonic() {
 	// For example, degree1 is a second degree in a mode, and in contains note "D"
-	degree1 := degree.New(2, 2, nil, nil, NoteWithOctave(note.D, octave.Number0), nil, degree.ModalPosition{})
+	degree1 := degree.New(2, 2, nil, nil, note.D.NewNote().WithOctave(octave.MustNewByNumber(octave.Number0)), nil, degree.ModalPosition{})
 	// degree2 is the fourth degree in a mode, and it contains note "F"
-	degree2 := degree.New(4, 5, nil, nil, NoteWithOctave(note.F, octave.Number0), nil, degree.ModalPosition{})
+	degree2 := degree.New(4, 5, nil, nil, note.F.NewNote().WithOctave(octave.MustNewByNumber(octave.Number0)), nil, degree.ModalPosition{})
 
 	interval, err := interval.NewDiatonic(degree1, degree2)
 	if err != nil {

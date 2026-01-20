@@ -27,7 +27,7 @@ func ExampleGetAllDegrees() {
 	deg7.SetNext(deg1)
 
 	// iteration in forward direction
-	for _, node := range GetAllDegrees(deg1.IterateOneRound(false)) {
+	for _, node := range deg1.IterateOneRound(false).GetAllDegrees() {
 		fmt.Printf("Degree Number: %d, Half tones from prime: %d, Note: %s\n", node.Number(), node.HalfTonesFromPrime(), node.Note().Name())
 	}
 	// Output: Degree Number: 1, Half tones from prime: 0, Note: A
@@ -64,8 +64,8 @@ func ExampleGetAllNotes() {
 	deg2.SetPrevious(deg1)
 
 	// you can specify the direction of iteration from any node
-	notesForward := GetAllNotes(deg3.IterateOneRound(false))
-	notesBackward := GetAllNotes(deg3.IterateOneRound(true))
+	notesForward := deg3.IterateOneRound(false).GetAllNotes()
+	notesBackward := deg3.IterateOneRound(true).GetAllNotes()
 
 	fmt.Printf("%+v\n%+v", notesForward, notesBackward)
 	// Output: [C D E F G A B]

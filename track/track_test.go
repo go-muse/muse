@@ -105,7 +105,7 @@ func TestTrack_AddNote(t *testing.T) {
 
 	track := NewTrack(trackSettings)
 
-	n := NoteWithOctave(note.C, 4)
+	n := note.MustNewWithOctave(note.C, 4)
 	startTime := time.Second
 	isAbsolute := true
 
@@ -130,8 +130,8 @@ func TestTrack_AddNotes(t *testing.T) {
 	track := NewTrack(trackSettings)
 
 	notes := note.Notes{
-		NoteWithOctave(note.C, 4),
-		NoteWithOctave(note.D, 4),
+		note.MustNewWithOctave(note.C, 4),
+		note.MustNewWithOctave(note.D, 4),
 	}
 	startTime := time.Second
 	isAbsolute := true
@@ -157,8 +157,8 @@ func TestTrack_AddChord(t *testing.T) {
 	track := NewTrack(trackSettings)
 
 	chordNotes := note.Notes{
-		NoteWithOctave(note.C, 4),
-		NoteWithOctave(note.D, 4),
+		note.MustNewWithOctave(note.C, 4),
+		note.MustNewWithOctave(note.D, 4),
 	}
 	c := chord.NewChord(chordNotes...).SetValue(duration.NewRelative(duration.NameWhole))
 
@@ -186,7 +186,7 @@ func TestTrack_AddEvent(t *testing.T) {
 	track := NewTrack(trackSettings)
 
 	event := &Event{
-		note:       NoteWithOctave(note.C, 4),
+		note:       note.MustNewWithOctave(note.C, 4),
 		startTime:  time.Second,
 		isAbsolute: true,
 	}
@@ -209,7 +209,7 @@ func TestTrack_Events(t *testing.T) {
 	track := NewTrack(trackSettings)
 
 	event := &Event{
-		note:       NoteWithOctave(note.C, 4),
+		note:       note.MustNewWithOctave(note.C, 4),
 		startTime:  1 * time.Second,
 		isAbsolute: true,
 	}
@@ -232,13 +232,13 @@ func TestTrack_AddNoteToTheEnd(t *testing.T) {
 	track := NewTrack(trackSettings)
 
 	event1 := &Event{
-		note:       NoteWithOctave(note.C, 4).SetDuration(time.Second),
+		note:       note.MustNewWithOctave(note.C, 4).WithDuration(time.Second),
 		startTime:  1 * time.Second,
 		isAbsolute: true,
 	}
 
 	event2 := &Event{
-		note:       NoteWithOctave(note.C, 4).SetValue(duration.NewRelative(duration.NameWhole)),
+		note:       note.MustNewWithOctave(note.C, 4).WithValue(duration.NewRelative(duration.NameWhole)),
 		startTime:  2 * time.Second,
 		isAbsolute: false,
 	}
@@ -246,7 +246,7 @@ func TestTrack_AddNoteToTheEnd(t *testing.T) {
 	track.AddEvent(event1)
 	track.AddEvent(event2)
 
-	noteToEnd := NoteWithOctave(note.C, 4).SetValue(duration.NewRelative(duration.NameWhole))
+	noteToEnd := note.MustNewWithOctave(note.C, 4).WithValue(duration.NewRelative(duration.NameWhole))
 	track.AddNoteToTheEnd(noteToEnd, false)
 
 	assert.Len(t, track.Events(), 3, "they should be equal")
@@ -261,22 +261,22 @@ func TestTrack_AddNoteToTheEnd(t *testing.T) {
 func TestTrack_FindLastNotes(t *testing.T) {
 	t.Run("Track_FindLastNotes: absolute events, one result", func(t *testing.T) {
 		expectedResult := note.Notes{
-			note.C.MustNewNote().SetDuration(15 * time.Second),
+			note.C.NewNote().WithDuration(15 * time.Second),
 		}
 
 		track := &Track{
 			events: []*Event{
-				{startTime: 0 * time.Second, note: note.C.MustNewNote().SetDuration(7 * time.Second), isAbsolute: true}, // 7
-				{startTime: 1 * time.Second, note: note.C.MustNewNote().SetDuration(3 * time.Second), isAbsolute: true}, // 3
-				{startTime: 2 * time.Second, note: note.C.MustNewNote().SetDuration(3 * time.Second), isAbsolute: true}, // 3
-				{startTime: 0 * time.Second, note: note.C.MustNewNote().SetDuration(4 * time.Second), isAbsolute: true}, // 4
-				{startTime: 1 * time.Second, note: note.C.MustNewNote().SetDuration(2 * time.Second), isAbsolute: true}, // 2
-				{startTime: 3 * time.Second, note: expectedResult[0], isAbsolute: true},                                 // 8 is max
-				{startTime: 3 * time.Second, note: note.C.MustNewNote().SetDuration(6 * time.Second), isAbsolute: true}, // 6
-				{startTime: 1 * time.Second, note: note.C.MustNewNote().SetDuration(3 * time.Second), isAbsolute: true}, // 3
-				{startTime: 3 * time.Second, note: note.C.MustNewNote().SetDuration(7 * time.Second), isAbsolute: true}, // 7
-				{startTime: 5 * time.Second, note: note.C.MustNewNote().SetDuration(6 * time.Second), isAbsolute: true}, // 6
-				{startTime: 0 * time.Second, note: note.C.MustNewNote().SetDuration(6 * time.Second), isAbsolute: true}, // 6
+				{startTime: 0 * time.Second, note: note.C.NewNote().WithDuration(7 * time.Second), isAbsolute: true}, // 7
+				{startTime: 1 * time.Second, note: note.C.NewNote().WithDuration(3 * time.Second), isAbsolute: true}, // 3
+				{startTime: 2 * time.Second, note: note.C.NewNote().WithDuration(3 * time.Second), isAbsolute: true}, // 3
+				{startTime: 0 * time.Second, note: note.C.NewNote().WithDuration(4 * time.Second), isAbsolute: true}, // 4
+				{startTime: 1 * time.Second, note: note.C.NewNote().WithDuration(2 * time.Second), isAbsolute: true}, // 2
+				{startTime: 3 * time.Second, note: expectedResult[0], isAbsolute: true},                              // 8 is max
+				{startTime: 3 * time.Second, note: note.C.NewNote().WithDuration(6 * time.Second), isAbsolute: true}, // 6
+				{startTime: 1 * time.Second, note: note.C.NewNote().WithDuration(3 * time.Second), isAbsolute: true}, // 3
+				{startTime: 3 * time.Second, note: note.C.NewNote().WithDuration(7 * time.Second), isAbsolute: true}, // 7
+				{startTime: 5 * time.Second, note: note.C.NewNote().WithDuration(6 * time.Second), isAbsolute: true}, // 6
+				{startTime: 0 * time.Second, note: note.C.NewNote().WithDuration(6 * time.Second), isAbsolute: true}, // 6
 			},
 			Settings: &Settings{
 				BPM:           120,
@@ -292,23 +292,23 @@ func TestTrack_FindLastNotes(t *testing.T) {
 
 	t.Run("Track_FindLastNotes: absolute events, multiple results", func(t *testing.T) {
 		expectedResult := note.Notes{
-			note.C.MustNewNote().SetDuration(5 * time.Second),
-			note.C.MustNewNote().SetDuration(4 * time.Second),
-			note.C.MustNewNote().SetDuration(5 * time.Second),
+			note.C.NewNote().WithDuration(5 * time.Second),
+			note.C.NewNote().WithDuration(4 * time.Second),
+			note.C.NewNote().WithDuration(5 * time.Second),
 		}
 		track := &Track{
 			events: []*Event{
-				{startTime: 0 * time.Second, note: note.C.MustNewNote().SetDuration(7 * time.Second), isAbsolute: true}, // 7
-				{startTime: 1 * time.Second, note: note.C.MustNewNote().SetDuration(3 * time.Second), isAbsolute: true}, // 4
-				{startTime: 2 * time.Second, note: note.C.MustNewNote().SetDuration(3 * time.Second), isAbsolute: true}, // 5
-				{startTime: 0 * time.Second, note: note.C.MustNewNote().SetDuration(4 * time.Second), isAbsolute: true}, // 4
-				{startTime: 1 * time.Second, note: note.C.MustNewNote().SetDuration(2 * time.Second), isAbsolute: true}, // 3
-				{startTime: 3 * time.Second, note: expectedResult[0], isAbsolute: true},                                 // 8 is max
-				{startTime: 1 * time.Second, note: note.C.MustNewNote().SetDuration(3 * time.Second), isAbsolute: true}, // 4
-				{startTime: 4 * time.Second, note: expectedResult[1], isAbsolute: true},                                 // 8 is max
-				{startTime: 3 * time.Second, note: expectedResult[2], isAbsolute: true},                                 // 8 is max
-				{startTime: 5 * time.Second, note: note.C.MustNewNote().SetDuration(1 * time.Second), isAbsolute: true}, // 6
-				{startTime: 0 * time.Second, note: note.C.MustNewNote().SetDuration(6 * time.Second), isAbsolute: true}, // 6
+				{startTime: 0 * time.Second, note: note.C.NewNote().WithDuration(7 * time.Second), isAbsolute: true}, // 7
+				{startTime: 1 * time.Second, note: note.C.NewNote().WithDuration(3 * time.Second), isAbsolute: true}, // 4
+				{startTime: 2 * time.Second, note: note.C.NewNote().WithDuration(3 * time.Second), isAbsolute: true}, // 5
+				{startTime: 0 * time.Second, note: note.C.NewNote().WithDuration(4 * time.Second), isAbsolute: true}, // 4
+				{startTime: 1 * time.Second, note: note.C.NewNote().WithDuration(2 * time.Second), isAbsolute: true}, // 3
+				{startTime: 3 * time.Second, note: expectedResult[0], isAbsolute: true},                              // 8 is max
+				{startTime: 1 * time.Second, note: note.C.NewNote().WithDuration(3 * time.Second), isAbsolute: true}, // 4
+				{startTime: 4 * time.Second, note: expectedResult[1], isAbsolute: true},                              // 8 is max
+				{startTime: 3 * time.Second, note: expectedResult[2], isAbsolute: true},                              // 8 is max
+				{startTime: 5 * time.Second, note: note.C.NewNote().WithDuration(1 * time.Second), isAbsolute: true}, // 6
+				{startTime: 0 * time.Second, note: note.C.NewNote().WithDuration(6 * time.Second), isAbsolute: true}, // 6
 			},
 			Settings: &Settings{
 				BPM:           120,
@@ -324,16 +324,16 @@ func TestTrack_FindLastNotes(t *testing.T) {
 
 	t.Run("Track_FindLastNotes: relative events, one result", func(t *testing.T) {
 		expectedResult := note.Notes{
-			note.C.MustMakeNote().SetValue(duration.NewRelative(duration.NameWhole).SetTupletTriplet()),
+			note.C.NewNote().WithValue(duration.NewRelative(duration.NameWhole).SetTupletTriplet()),
 		}
 		track := &Track{
 			events: []*Event{
-				{startTime: time.Second, note: note.C.MustNewNote().SetValue(duration.NewRelative(duration.NameWhole).SetTupletDuplet())},                                 // 1,(6)s0
-				{startTime: time.Millisecond, note: note.C.MustNewNote().SetValue(duration.NewRelative(duration.NameWhole).SetTuplet(tuplet.New(2, 8)))},                  // 251ms
-				{startTime: time.Millisecond * 400, note: note.C.MustNewNote().SetValue(duration.NewRelative(duration.NameWhole).SetTuplet(tuplet.New(2, 3)).SetDots(1))}, // 1,4s
-				{startTime: time.Second * 3, note: expectedResult[0], isAbsolute: false},                                                                                  // 4,5s max
-				{startTime: time.Second, note: note.C.MustNewNote().SetValue(duration.NewRelative(duration.NameWhole).SetTuplet(tuplet.New(2, 3)).SetDots(2))},            // 2.1(6)s
-				{startTime: time.Second * 2, note: note.C.MustNewNote(), isAbsolute: false},                                                                               // 3s (1 is default without proper duration name)
+				{startTime: time.Second, note: note.C.NewNote().WithValue(duration.NewRelative(duration.NameWhole).SetTupletDuplet())},                                 // 1,(6)s0
+				{startTime: time.Millisecond, note: note.C.NewNote().WithValue(duration.NewRelative(duration.NameWhole).SetTuplet(tuplet.New(2, 8)))},                  // 251ms
+				{startTime: time.Millisecond * 400, note: note.C.NewNote().WithValue(duration.NewRelative(duration.NameWhole).SetTuplet(tuplet.New(2, 3)).SetDots(1))}, // 1,4s
+				{startTime: time.Second * 3, note: expectedResult[0], isAbsolute: false},                                                                               // 4,5s max
+				{startTime: time.Second, note: note.C.NewNote().WithValue(duration.NewRelative(duration.NameWhole).SetTuplet(tuplet.New(2, 3)).SetDots(2))},            // 2.1(6)s
+				{startTime: time.Second * 2, note: note.C.NewNote(), isAbsolute: false},                                                                                // 3s (1 is default without proper duration name)
 			},
 			Settings: &Settings{
 				BPM:           120,
@@ -349,19 +349,19 @@ func TestTrack_FindLastNotes(t *testing.T) {
 
 	t.Run("Track_FindLastNotes: relative events, multiple results", func(t *testing.T) {
 		expectedResult := note.Notes{
-			note.C.MustNewNote().SetValue(duration.NewRelative(duration.NameWhole).SetTupletTriplet()),
-			note.C.MustNewNote().SetValue(duration.NewRelative(duration.NameWhole).SetDots(1)),
-			note.C.MustNewNote().SetValue(duration.NewRelative(duration.NameDoubleWhole)),
+			note.C.NewNote().WithValue(duration.NewRelative(duration.NameWhole).SetTupletTriplet()),
+			note.C.NewNote().WithValue(duration.NewRelative(duration.NameWhole).SetDots(1)),
+			note.C.NewNote().WithValue(duration.NewRelative(duration.NameDoubleWhole)),
 		}
 		track := &Track{
 			events: []*Event{
-				{startTime: time.Second, note: Note(note.C).SetValue(duration.NewRelative(duration.NameWhole).SetTupletDuplet())},                                       // 1,(6)s
-				{startTime: time.Millisecond, note: Note(note.C).SetValue(duration.NewRelative(duration.NameWhole).SetTuplet(tuplet.New(2, 8)).SetDots(1))},             // 251ms
-				{startTime: time.Millisecond, note: Note(note.C).SetValue(duration.NewRelative(duration.NameWhole).SetTuplet(tuplet.New(2, 3)).SetDots(1))},             // 1,4s
-				{startTime: time.Second * 3, note: expectedResult[0], isAbsolute: false},                                                                                // 4,5s max
-				{startTime: time.Second, note: note.C.MustNewNote().SetValue(duration.NewRelative(duration.NameWhole).SetDots(2).SetTupletDuplet()), isAbsolute: false}, // 2.1(6)s
-				{startTime: time.Second * 3, note: expectedResult[1], isAbsolute: false},                                                                                // 4,5s max
-				{startTime: time.Second * 2, note: note.C.MustNewNote().SetValue(duration.NewRelative(duration.NameWhole)), isAbsolute: false},                          // 3s (1 is default without proper duration name)
+				{startTime: time.Second, note: note.C.NewNote().WithValue(duration.NewRelative(duration.NameWhole).SetTupletDuplet())},                               // 1,(6)s
+				{startTime: time.Millisecond, note: note.C.NewNote().WithValue(duration.NewRelative(duration.NameWhole).SetTuplet(tuplet.New(2, 8)).SetDots(1))},     // 251ms
+				{startTime: time.Millisecond, note: note.C.NewNote().WithValue(duration.NewRelative(duration.NameWhole).SetTuplet(tuplet.New(2, 3)).SetDots(1))},     // 1,4s
+				{startTime: time.Second * 3, note: expectedResult[0], isAbsolute: false},                                                                             // 4,5s max
+				{startTime: time.Second, note: note.C.NewNote().WithValue(duration.NewRelative(duration.NameWhole).SetDots(2).SetTupletDuplet()), isAbsolute: false}, // 2.1(6)s
+				{startTime: time.Second * 3, note: expectedResult[1], isAbsolute: false},                                                                             // 4,5s max
+				{startTime: time.Second * 2, note: note.C.NewNote().WithValue(duration.NewRelative(duration.NameWhole)), isAbsolute: false},                          // 3s (1 is default without proper duration name)
 				{startTime: time.Millisecond * 2500, note: expectedResult[2], isAbsolute: false},
 			},
 			Settings: &Settings{
@@ -387,25 +387,25 @@ func TestFindLastEvents(t *testing.T) {
 	track := NewTrack(trackSettings)
 
 	event1 := &Event{
-		note:       NoteWithOctave(note.C, 4).SetValue(duration.NewRelative(duration.NameWhole)),
+		note:       note.MustNewWithOctave(note.C, 4).WithValue(duration.NewRelative(duration.NameWhole)),
 		startTime:  1 * time.Second,
 		isAbsolute: false,
 	}
 
 	event2 := &Event{
-		note:       NoteWithOctave(note.C, 4).SetValue(duration.NewRelative(duration.NameWhole)),
+		note:       note.MustNewWithOctave(note.C, 4).WithValue(duration.NewRelative(duration.NameWhole)),
 		startTime:  2 * time.Second,
 		isAbsolute: false,
 	}
 
 	event3 := &Event{
-		note:       NoteWithOctave(note.C, 4).SetValue(duration.NewRelative(duration.NameWhole)),
+		note:       note.MustNewWithOctave(note.C, 4).WithValue(duration.NewRelative(duration.NameWhole)),
 		startTime:  4 * time.Second,
 		isAbsolute: false,
 	}
 
 	event4 := &Event{
-		note:       NoteWithOctave(note.C, 4).SetDuration(1 * time.Second),
+		note:       note.MustNewWithOctave(note.C, 4).WithDuration(1 * time.Second),
 		startTime:  4 * time.Second,
 		isAbsolute: true,
 	}
@@ -431,13 +431,13 @@ func TestFindEnd(t *testing.T) {
 	track := NewTrack(trackSettings)
 
 	event1 := &Event{
-		note:       NoteWithOctave(note.C, 4).SetValue(duration.NewRelative(duration.NameWhole)),
+		note:       note.MustNewWithOctave(note.C, 4).WithValue(duration.NewRelative(duration.NameWhole)),
 		startTime:  time.Second,
 		isAbsolute: false,
 	}
 
 	event2 := &Event{
-		note:       NoteWithOctave(note.C, 4).SetDuration(time.Second),
+		note:       note.MustNewWithOctave(note.C, 4).WithDuration(time.Second),
 		startTime:  2 * time.Second,
 		isAbsolute: true,
 	}
@@ -469,7 +469,7 @@ func TestTrack_GetStartAndEnd(t *testing.T) {
 	}{
 		{
 			event: &Event{
-				note:       NoteWithOctave(note.C, 4).SetValue(duration.NewRelative(duration.NameWhole)),
+				note:       note.MustNewWithOctave(note.C, 4).WithValue(duration.NewRelative(duration.NameWhole)),
 				startTime:  time.Second,
 				isAbsolute: false,
 			},
@@ -480,7 +480,7 @@ func TestTrack_GetStartAndEnd(t *testing.T) {
 		},
 		{
 			event: &Event{
-				note:       NoteWithOctave(note.C, 4).SetDuration(time.Millisecond * 500),
+				note:       note.MustNewWithOctave(note.C, 4).WithDuration(time.Millisecond * 500),
 				startTime:  time.Millisecond * 500,
 				isAbsolute: true,
 			},
@@ -515,7 +515,7 @@ func TestTrack_GetEnd(t *testing.T) {
 	}{
 		{
 			event: &Event{
-				note:       NoteWithOctave(note.C, 4).SetValue(duration.NewRelative(duration.NameWhole)),
+				note:       note.MustNewWithOctave(note.C, 4).WithValue(duration.NewRelative(duration.NameWhole)),
 				startTime:  time.Second,
 				isAbsolute: false,
 			},
@@ -523,7 +523,7 @@ func TestTrack_GetEnd(t *testing.T) {
 		},
 		{
 			event: &Event{
-				note:       NoteWithOctave(note.C, 4).SetDuration(time.Millisecond * 500),
+				note:       note.MustNewWithOctave(note.C, 4).WithDuration(time.Millisecond * 500),
 				startTime:  time.Millisecond * 500,
 				isAbsolute: true,
 			},

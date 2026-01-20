@@ -72,6 +72,10 @@ func (o Octave) Validate() error {
 	return nil
 }
 
+func (o Octave) IsSet() bool {
+	return o.name != ""
+}
+
 // Name returns the name of the octave.
 func (o Octave) Name() Name {
 	return o.name

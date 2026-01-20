@@ -252,7 +252,7 @@ func TestDegreeNode_GetForwardDegreeByDegreeNum(t *testing.T) {
 func TestGetAllDegrees(t *testing.T) {
 	t.Run("GetAllDegrees: non-empty chain", func(t *testing.T) {
 		firstNode := generateDegreeNodes(4, false)
-		result := GetAllDegrees(firstNode.IterateOneRound(false))
+		result := firstNode.IterateOneRound(false).GetAllDegrees()
 
 		if len(result) != 4 {
 			t.Errorf("expected 4 nodes, got %d", len(result))
@@ -266,15 +266,10 @@ func TestGetAllDegrees(t *testing.T) {
 
 	t.Run("GetAllDegrees: empty iterator", func(t *testing.T) {
 		var nilNode *Node
-		result := GetAllDegrees(nilNode.IterateOneRound(false))
+		result := nilNode.IterateOneRound(false).GetAllDegrees()
 		if len(result) != 0 {
 			t.Errorf("expected empty slice, got %d elements", len(result))
 		}
-	})
-
-	t.Run("GetAllDegrees: nil iterator", func(t *testing.T) {
-		result := GetAllDegrees(nil)
-		assert.Nil(t, result)
 	})
 }
 
@@ -477,8 +472,8 @@ func TestDegreeNode_sortByAbsoluteModalPositions(t *testing.T) {
 
 		sortedNode := firstNode.SortByAbsoluteModalPositions(true)
 
-		expectedNodes := GetAllDegrees(thirdNodeSorted.IterateOneRound(false))
-		resultNodes := GetAllDegrees(sortedNode.IterateOneRound(false))
+		expectedNodes := thirdNodeSorted.IterateOneRound(false).GetAllDegrees()
+		resultNodes := sortedNode.IterateOneRound(false).GetAllDegrees()
 		for i, resultNode := range resultNodes {
 			assert.True(t, expectedNodes[i].EqualByDegreeNum(resultNode), "resulting node number: %d, expectedNode number: %d", resultNode.Number(), expectedNodes[i].Number())
 		}
@@ -551,7 +546,7 @@ func TestDegreeNode_String(t *testing.T) {
 				modalCharacteristics: []ModalCharacteristic{{
 					name:   Characteristic2xAug,
 					degree: &Node{},
-					relativeModalPosition: &ModalPosition{
+					relativeModalPosition: ModalPosition{
 						name:   ModalPositionNameNeutral,
 						weight: 0,
 					},
@@ -1071,8 +1066,8 @@ func TestDegreeNode_ReverseSequence(t *testing.T) {
 	t.Run("TestReverseSequence with cycled sequence", func(t *testing.T) {
 		dn := generateDegreeNodes(7, true)
 		res := dn.ReverseSequence()
-		expectedNodes := GetAllDegrees(dn.GetPrevious().IterateOneRound(true))
-		resultNodes := GetAllDegrees(res.IterateOneRound(false))
+		expectedNodes := dn.GetPrevious().IterateOneRound(true).GetAllDegrees()
+		resultNodes := res.IterateOneRound(false).GetAllDegrees()
 		for i, node := range resultNodes {
 			assert.Equal(t, node.Number(), expectedNodes[i].Number(), "expected: %d, actual: %d", expectedNodes[i].Number(), node.Number())
 		}
@@ -1081,8 +1076,8 @@ func TestDegreeNode_ReverseSequence(t *testing.T) {
 	t.Run("TestReverseSequence with not cycled sequence", func(t *testing.T) {
 		dn := generateDegreeNodes(7, false)
 		res := dn.ReverseSequence()
-		expectedNodes := GetAllDegrees(dn.GetLast(false).IterateOneRound(true))
-		resultNodes := GetAllDegrees(res.IterateOneRound(false))
+		expectedNodes := dn.GetLast(false).IterateOneRound(true).GetAllDegrees()
+		resultNodes := res.IterateOneRound(false).GetAllDegrees()
 		for i, node := range resultNodes {
 			assert.Equal(t, node.Number(), expectedNodes[i].Number(), "expected: %d, actual: %d", expectedNodes[i].Number(), node.Number())
 		}

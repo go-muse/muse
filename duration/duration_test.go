@@ -14,11 +14,11 @@ import (
 func TestNewDuration(t *testing.T) {
 	testCases := []struct {
 		name Name
-		want *Relative
+		want Relative
 	}{
-		{name: NameLarge, want: &Relative{name: NameLarge, dots: 0, tuplet: nil}},
-		{name: NameLong, want: &Relative{name: NameLong, dots: 0, tuplet: nil}},
-		{name: NameDoubleWhole, want: &Relative{name: NameDoubleWhole, dots: 0, tuplet: nil}},
+		{name: NameLarge, want: Relative{name: NameLarge, dots: 0, tuplet: tuplet.Tuplet{}}},
+		{name: NameLong, want: Relative{name: NameLong, dots: 0, tuplet: tuplet.Tuplet{}}},
+		{name: NameDoubleWhole, want: Relative{name: NameDoubleWhole, dots: 0, tuplet: tuplet.Tuplet{}}},
 	}
 
 	for _, testCase := range testCases {
@@ -31,7 +31,7 @@ func TestDuration_Name(t *testing.T) {
 	duration1 := &Relative{name: validName}
 	assert.Equal(t, validName, duration1.Name())
 
-	var duration2 *Relative
+	var duration2 Relative
 	assert.Equal(t, Name(""), duration2.Name())
 }
 
@@ -39,7 +39,7 @@ func TestDuration_GetTimeDuration(t *testing.T) {
 	type (
 		args struct {
 			amountOfBars decimal.Decimal
-			*Relative
+			Relative
 		}
 		want struct {
 			duration time.Duration
@@ -189,7 +189,7 @@ func TestDuration_RemoveDots(t *testing.T) {
 
 func TestDuration_GetPartOfBar(t *testing.T) {
 	testCases := []struct {
-		duration      *Relative
+		duration      Relative
 		timeSignature *fraction.Fraction
 		want          decimal.Decimal
 	}{
@@ -253,23 +253,23 @@ func TestDuration_GetPartOfBar(t *testing.T) {
 func TestDuration_SetTuplet(t *testing.T) {
 	t.Run("Duration_SetTuplet: positive cases", func(t *testing.T) {
 		testCases := []struct {
-			duration *Relative
-			tuplet   *tuplet.Tuplet
+			duration Relative
+			tuplet   tuplet.Tuplet
 		}{
 			{
-				duration: &Relative{
-					tuplet: nil,
+				duration: Relative{
+					tuplet: tuplet.Tuplet{},
 				},
 				tuplet: tuplet.New(2, 3),
 			},
 			{
-				duration: &Relative{
+				duration: Relative{
 					tuplet: tuplet.New(3, 2),
 				},
 				tuplet: tuplet.New(2, 3),
 			},
 			{
-				duration: &Relative{
+				duration: Relative{
 					tuplet: tuplet.New(2, 3),
 				},
 				tuplet: tuplet.New(2, 3),
@@ -290,20 +290,20 @@ func TestDuration_SetTuplet(t *testing.T) {
 func TestDuration_SetTupletDuplet(t *testing.T) {
 	t.Run("SetTupletDuplet: positive cases", func(t *testing.T) {
 		testCases := []struct {
-			duration *Relative
+			duration Relative
 		}{
 			{
-				duration: &Relative{
-					tuplet: nil,
+				duration: Relative{
+					tuplet: tuplet.Tuplet{},
 				},
 			},
 			{
-				duration: &Relative{
+				duration: Relative{
 					tuplet: tuplet.New(3, 2),
 				},
 			},
 			{
-				duration: &Relative{
+				duration: Relative{
 					tuplet: tuplet.New(2, 3),
 				},
 			},
@@ -323,20 +323,20 @@ func TestDuration_SetTupletDuplet(t *testing.T) {
 func TestDuration_SetTupletTriplet(t *testing.T) {
 	t.Run("SetTupletTriplet: positive cases", func(t *testing.T) {
 		testCases := []struct {
-			duration *Relative
+			duration Relative
 		}{
 			{
-				duration: &Relative{
-					tuplet: nil,
+				duration: Relative{
+					tuplet: tuplet.Tuplet{},
 				},
 			},
 			{
-				duration: &Relative{
+				duration: Relative{
 					tuplet: tuplet.New(3, 2),
 				},
 			},
 			{
-				duration: &Relative{
+				duration: Relative{
 					tuplet: tuplet.New(2, 3),
 				},
 			},
@@ -345,10 +345,5 @@ func TestDuration_SetTupletTriplet(t *testing.T) {
 		for _, testCase := range testCases {
 			assert.Equal(t, tuplet.New(3, 2), testCase.duration.SetTupletTriplet().tuplet)
 		}
-	})
-
-	t.Run("SetTupletTriplet: negative cases", func(t *testing.T) {
-		var duration *Relative
-		assert.Nil(t, duration.SetTupletTriplet())
 	})
 }

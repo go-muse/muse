@@ -158,20 +158,20 @@ func (n Note) AlterationShift() int8 {
 	return n.name.AlterationShift()
 }
 
-// SetOctave sets the specified octave to the note and returns the note.
-func (n Note) SetOctave(o octave.Octave) Note {
+// WithOctave sets the specified octave to the note and returns the note.
+func (n Note) WithOctave(o octave.Octave) Note {
 	n.octave = o
 	return n
 }
 
-// SetDuration sets absolute duration to the note and returns the note.
-func (n Note) SetDuration(d time.Duration) Note {
+// WithDuration sets absolute duration to the note and returns the note.
+func (n Note) WithDuration(d time.Duration) Note {
 	n.duration = d
 	return n
 }
 
-// SetValue sets relative duration to the note and returns the note.
-func (n Note) SetValue(v duration.Relative) Note {
+// WithValue sets relative duration to the note and returns the note.
+func (n Note) WithValue(v duration.Relative) Note {
 	n.value = v
 	return n
 }

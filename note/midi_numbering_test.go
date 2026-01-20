@@ -65,8 +65,8 @@ func TestNote_MIDINumber(t *testing.T) {
 
 		// Edge cases with alterations crossing octave boundaries
 		// Note: MIDI calculation doesn't correct octave for enharmonic equivalents
-		{"B#-1", MustNewWithOctave(BSHARP, -1), 0},   // B# in octave -1 wraps to 0
-		{"Cb0", MustNewWithOctave(CFLAT, 0), 23},     // Cb in octave 0 = C0(12) - 1 + 12 = 23
+		{"B#-1", MustNewWithOctave(BSHARP, -1), 0}, // B# in octave -1 wraps to 0
+		{"Cb0", MustNewWithOctave(CFLAT, 0), 23},   // Cb in octave 0 = C0(12) - 1 + 12 = 23
 
 		// Double alterations
 		{"C##4", MustNewWithOctave(CSHARP2, 4), 62},
@@ -145,8 +145,8 @@ func TestNote_mustGetNoteNumberWithinOctave(t *testing.T) {
 		{CSHARP2, 2},
 		{DFLAT2, 0},
 		// Wrap-around cases
-		{CFLAT, 11},  // Cb = B
-		{BSHARP, 0},  // B# = C
+		{CFLAT, 11}, // Cb = B
+		{BSHARP, 0}, // B# = C
 	}
 
 	for _, tt := range tests {
@@ -181,8 +181,8 @@ func TestNewNoteFromMIDINumber(t *testing.T) {
 		{24, C, 1},
 		{36, C, 2},
 		{48, C, 3},
-		{60, C, 4},  // Middle C
-		{69, A, 4},  // A440
+		{60, C, 4}, // Middle C
+		{69, A, 4}, // A440
 		{72, C, 5},
 		{84, C, 6},
 		{96, C, 7},
@@ -200,9 +200,6 @@ func TestNewNoteFromMIDINumber(t *testing.T) {
 			}
 			if !note.Name().EqualSpelling(tt.wantName) {
 				t.Fatalf("NewNoteFromMIDINumber(%d).Name(): got %v, want %v", tt.midi, note.Name(), tt.wantName)
-			}
-			if note.Octave() == nil {
-				t.Fatalf("NewNoteFromMIDINumber(%d).Octave(): got nil", tt.midi)
 			}
 			if note.Octave().Number() != tt.wantOctave {
 				t.Fatalf("NewNoteFromMIDINumber(%d).Octave(): got %d, want %d", tt.midi, note.Octave().Number(), tt.wantOctave)
