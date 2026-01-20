@@ -179,9 +179,9 @@ func TestMustParseLetter(t *testing.T) {
 
 func TestLetter_Natural(t *testing.T) {
 	tests := []struct {
-		letter   Letter
-		wantStr  string
-		wantAcc  Accidental
+		letter  Letter
+		wantStr string
+		wantAcc Accidental
 	}{
 		{LetterC, "C", Natural()},
 		{LetterD, "D", Natural()},

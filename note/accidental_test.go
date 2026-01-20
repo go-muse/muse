@@ -111,9 +111,9 @@ func TestAccidental_String(t *testing.T) {
 
 func TestAccidental_AlterUp(t *testing.T) {
 	tests := []struct {
-		name   string
-		in     Accidental
-		want   Accidental
+		name string
+		in   Accidental
+		want Accidental
 	}{
 		{"NaturalToSharp", Natural(), Sharp()},
 		{"SharpToDoubleSharp", Sharp(), DoubleSharp()},
@@ -404,6 +404,7 @@ func TestGetNotesWithAlterations_TwoAlterations(t *testing.T) {
 		for _, n := range result {
 			if n.Name().EqualSpelling(exp) {
 				found = true
+
 				break
 			}
 		}

@@ -10,7 +10,7 @@ import (
 // The iteration starts with the first node (tonic).
 // You can specify the direction of iteration.
 // GetAllDegrees returns mode's degree nodes as a slice.
-func ExampleGetAllDegrees() {
+func ExampleIterator_GetAllDegrees() {
 	// In real life you can just build a mode by one line from mode package:
 	// mode := mode.MustMakeNewMode(mode.NameAeolian, note.A)
 	//
@@ -43,7 +43,7 @@ func ExampleGetAllDegrees() {
 // The iteration starts with the first node (tonic).
 // You can specify the direction of iteration.
 // GetAllNotes returns nodes' notes as a slice.
-func ExampleGetAllNotes() {
+func ExampleIterator_GetAllNotes() {
 	// In real life you can just build a mode by one line from mode package:
 	// mode := mode.MustMakeNewMode(mode.NameAeolian, note.A)
 	//

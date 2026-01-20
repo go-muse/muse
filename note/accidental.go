@@ -13,11 +13,9 @@ import (
 // specific tuning system.
 type MilliCents int32
 
-var (
-	// ErrInvalidAccidental is returned when a string or value
-	// cannot be interpreted as a valid accidental representation.
-	ErrInvalidAccidental = errors.New("invalid accidental")
-)
+// ErrInvalidAccidental is returned when a string or value
+// cannot be interpreted as a valid accidental representation.
+var ErrInvalidAccidental = errors.New("invalid accidental")
 
 // Accidental represents a musical accidental (alteration).
 //

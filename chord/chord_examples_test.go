@@ -21,7 +21,7 @@ func ExampleNewChord() {
 	duration := duration.NewRelative(duration.NameHalf)
 
 	// notes will be added in the new chord with the specified duration. It will be the same for all the notes in the chord.
-	chord := chord.NewChord(note1, note2, note3, note4).SetValue(duration)
+	chord := chord.NewChord(note1, note2, note3, note4).WithValue(duration)
 
 	fmt.Println(chord.String())
 	// Output: notes: [E G B D], duration name: Half, custom duration: 0s
@@ -32,7 +32,7 @@ func ExampleNewChordEmpty() {
 	duration := duration.NewRelative(duration.NameHalf)
 
 	chord := chord.NewChordEmpty()
-	chord.SetValue(duration)
+	chord.WithValue(duration)
 
 	note1 := note.MustNewWithOctave(note.E, 4)
 	note2 := note.MustNewWithOctave(note.G, 4)
@@ -50,7 +50,7 @@ func ExampleChord_AddNotes() {
 	duration := duration.NewRelative(duration.NameHalf)
 
 	chord := chord.NewChordEmpty()
-	chord.SetValue(duration)
+	chord.WithValue(duration)
 
 	note1 := note.MustNewWithOctave(note.E, 4)
 	note2 := note.MustNewWithOctave(note.G, 4)
@@ -69,7 +69,7 @@ func ExampleChord_AddNotes() {
 }
 
 // Setting relative duration to the chord.
-func ExampleChord_SetValue() {
+func ExampleChord_WithValue() {
 	chord := chord.NewChordEmpty()
 
 	note1 := note.MustNewWithOctave(note.E, 4)
@@ -80,7 +80,7 @@ func ExampleChord_SetValue() {
 	chord.AddNotes(note1, note2, note3, note4)
 
 	duration := duration.NewRelative(duration.NameHalf)
-	chord.SetValue(duration)
+	chord.WithValue(duration)
 
 	var resultStr string
 	for _, chordNote := range chord.Notes() {
@@ -95,7 +95,7 @@ func ExampleChord_SetValue() {
 }
 
 // Setting custom absolute duration to the chord.
-func ExampleChord_SetDuration() {
+func ExampleChord_WithDuration() {
 	chord := chord.NewChordEmpty()
 
 	note1 := note.MustNewWithOctave(note.E, 4)
@@ -105,7 +105,7 @@ func ExampleChord_SetDuration() {
 
 	chord.AddNotes(note1, note2, note3, note4)
 
-	chord.SetDuration(time.Second)
+	chord.WithDuration(time.Second)
 
 	var resultStr string
 	for _, chordNote := range chord.Notes() {

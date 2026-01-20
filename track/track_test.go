@@ -160,7 +160,7 @@ func TestTrack_AddChord(t *testing.T) {
 		note.MustNewWithOctave(note.C, 4),
 		note.MustNewWithOctave(note.D, 4),
 	}
-	c := chord.NewChord(chordNotes...).SetValue(duration.NewRelative(duration.NameWhole))
+	c := chord.NewChord(chordNotes...).WithValue(duration.NewRelative(duration.NameWhole))
 
 	startTime := time.Second
 	isAbsolute := true

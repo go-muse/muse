@@ -26,18 +26,18 @@ func NewKirnbergerIII() *KirnbergerIII {
 // Based on tempering specific fifths to achieve pure major thirds
 // on C-E, G-B, and F-A.
 var kirnbergerIIIRatios = []float64{
-	1.0,                   // 0: C (Unison)
-	256.0 / 243.0,         // 1: C#/Db
+	1.0,           // 0: C (Unison)
+	256.0 / 243.0, // 1: C#/Db
 	math.Sqrt(2) / math.Pow(3.0/2.0, 0.5) * (9.0 / 8.0), // 2: D
-	32.0 / 27.0,           // 3: D#/Eb
-	5.0 / 4.0,             // 4: E (pure major third)
-	4.0 / 3.0,             // 5: F
-	45.0 / 32.0,           // 6: F#/Gb
-	math.Pow(5, 0.25),     // 7: G (tempered)
-	128.0 / 81.0,          // 8: G#/Ab
-	5.0 / 3.0,             // 9: A (pure major sixth from F)
-	16.0 / 9.0,            // 10: A#/Bb
-	15.0 / 8.0,            // 11: B (pure major third from G)
+	32.0 / 27.0,       // 3: D#/Eb
+	5.0 / 4.0,         // 4: E (pure major third)
+	4.0 / 3.0,         // 5: F
+	45.0 / 32.0,       // 6: F#/Gb
+	math.Pow(5, 0.25), // 7: G (tempered)
+	128.0 / 81.0,      // 8: G#/Ab
+	5.0 / 3.0,         // 9: A (pure major sixth from F)
+	16.0 / 9.0,        // 10: A#/Bb
+	15.0 / 8.0,        // 11: B (pure major third from G)
 }
 
 // Frequency calculates the frequency using Kirnberger III temperament.

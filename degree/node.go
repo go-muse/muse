@@ -71,6 +71,7 @@ func (dn *Node) Degree() Degree {
 	if dn == nil {
 		return Degree{}
 	}
+
 	return dn.degree
 }
 
@@ -102,6 +103,7 @@ func (dn *Node) GetNext() *Node {
 	if dn == nil {
 		return nil
 	}
+
 	return dn.next
 }
 
@@ -111,6 +113,7 @@ func (dn *Node) SetNext(nextNode *Node) *Node {
 		return nil
 	}
 	dn.next = nextNode
+
 	return dn
 }
 
@@ -119,6 +122,7 @@ func (dn *Node) GetPrevious() *Node {
 	if dn == nil {
 		return nil
 	}
+
 	return dn.previous
 }
 
@@ -128,6 +132,7 @@ func (dn *Node) SetPrevious(previousNode *Node) *Node {
 		return nil
 	}
 	dn.previous = previousNode
+
 	return dn
 }
 
@@ -136,6 +141,7 @@ func (dn *Node) Note() note.Note {
 	if dn == nil {
 		return note.Note{}
 	}
+
 	return dn.degree.note
 }
 
@@ -151,6 +157,7 @@ func (dn *Node) ModalCharacteristics() ModalCharacteristics {
 	if dn == nil {
 		return nil
 	}
+
 	return dn.degree.modalCharacteristics
 }
 
@@ -166,6 +173,7 @@ func (dn *Node) AbsoluteModalPosition() ModalPosition {
 	if dn == nil {
 		return ModalPosition{}
 	}
+
 	return dn.degree.absoluteModalPosition
 }
 
@@ -359,6 +367,7 @@ func (dn *Node) InsertNext(node *Node) {
 	if dn.NextExists() {
 		dn.GetNext().AttachPrevious(node)
 	}
+
 	dn.AttachNext(node)
 }
 

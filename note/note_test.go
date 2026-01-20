@@ -480,7 +480,7 @@ func TestNote_AlterationShift(t *testing.T) {
 	}
 }
 
-func TestNote_SetOctave(t *testing.T) {
+func TestNote_WithOctave(t *testing.T) {
 	oct4 := octave.MustNewByNumber(4)
 	oct5 := octave.MustNewByNumber(5)
 
@@ -501,7 +501,7 @@ func TestNote_SetOctave(t *testing.T) {
 	})
 }
 
-func TestNote_SetDuration(t *testing.T) {
+func TestNote_WithDuration(t *testing.T) {
 	tests := []struct {
 		name     string
 		duration time.Duration
@@ -538,7 +538,7 @@ func TestNote_Duration(t *testing.T) {
 	})
 }
 
-func TestNote_SetValue(t *testing.T) {
+func TestNote_WithValue(t *testing.T) {
 	values := []duration.Relative{
 		duration.NewRelative(duration.NameWhole),
 		duration.NewRelative(duration.NameHalf),

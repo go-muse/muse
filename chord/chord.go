@@ -93,8 +93,8 @@ func (c *Chord) Notes() note.Notes {
 	return c.notes
 }
 
-// SetDuration sets custom duration to the chord and returns the chord.
-func (c *Chord) SetDuration(d time.Duration) *Chord {
+// WithDuration sets custom duration to the chord and returns the chord.
+func (c *Chord) WithDuration(d time.Duration) *Chord {
 	if c == nil {
 		return c
 	}
@@ -117,8 +117,8 @@ func (c *Chord) Duration() time.Duration {
 	return c.duration
 }
 
-// SetValue sets relative duration to the chord and returns the chord.
-func (c *Chord) SetValue(dr duration.Relative) *Chord {
+// WithValue sets relative duration to the chord and returns the chord.
+func (c *Chord) WithValue(dr duration.Relative) *Chord {
 	if c == nil {
 		return c
 	}

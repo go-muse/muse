@@ -20,7 +20,7 @@ func NewEqual() *Equal {
 }
 
 // Frequency calculates the frequency using equal temperament.
-// Formula: f = referenceFreq * 2^(stepsFromReference / stepsPerOctave)
+// Formula: f = referenceFreq * 2^(stepsFromReference / stepsPerOctave).
 func (e *Equal) Frequency(referenceFreq float64, stepsFromReference int, stepsPerOctave int) float64 {
 	if stepsPerOctave == 0 {
 		return referenceFreq

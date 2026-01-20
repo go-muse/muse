@@ -14,7 +14,8 @@ func (it Iterator) GetAllDegrees() []*Node {
 		return nil
 	}
 
-	var nodes []*Node
+	// Pre-allocate with typical capacity for a diatonic scale (7 degrees)
+	nodes := make([]*Node, 0, 7)
 	for node := range it {
 		nodes = append(nodes, node)
 	}

@@ -31,18 +31,18 @@ func NewWerckmeisterIII() *WerckmeisterIII {
 // The Pythagorean comma is (3^12)/(2^19) ≈ 1.01364.
 // 1/4 comma = comma^(1/4) ≈ 1.00339.
 var werckmeisterIIIRatios = []float64{
-	1.0,                    // 0: C (Unison)
-	256.0 / 243.0,          // 1: C#/Db (Pythagorean limma)
-	1.1174033085417763,     // 2: D (tempered)
-	32.0 / 27.0,            // 3: D#/Eb (Pythagorean minor 3rd)
-	1.2528272887537059,     // 4: E (tempered)
-	4.0 / 3.0,              // 5: F (pure fourth)
-	1024.0 / 729.0,         // 6: F#/Gb (Pythagorean tritone)
-	1.4949569988157949,     // 7: G (tempered fifth)
-	128.0 / 81.0,           // 8: G#/Ab (Pythagorean minor 6th)
-	1.6704363316362592,     // 9: A (tempered)
-	16.0 / 9.0,             // 10: A#/Bb (Pythagorean minor 7th)
-	1.8792409618044082,     // 11: B (tempered)
+	1.0,                // 0: C (Unison)
+	256.0 / 243.0,      // 1: C#/Db (Pythagorean limma)
+	1.1174033085417763, // 2: D (tempered)
+	32.0 / 27.0,        // 3: D#/Eb (Pythagorean minor 3rd)
+	1.2528272887537059, // 4: E (tempered)
+	4.0 / 3.0,          // 5: F (pure fourth)
+	1024.0 / 729.0,     // 6: F#/Gb (Pythagorean tritone)
+	1.4949569988157949, // 7: G (tempered fifth)
+	128.0 / 81.0,       // 8: G#/Ab (Pythagorean minor 6th)
+	1.6704363316362592, // 9: A (tempered)
+	16.0 / 9.0,         // 10: A#/Bb (Pythagorean minor 7th)
+	1.8792409618044082, // 11: B (tempered)
 }
 
 // Frequency calculates the frequency using Werckmeister III temperament.

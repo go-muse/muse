@@ -1,3 +1,4 @@
+//nolint:gochecknoglobals // Predefined note names are intentionally global for convenient usage
 package note
 
 // Names is a common name for set of the names.
@@ -65,3 +66,11 @@ var (
 	AFLAT2 = NewName(LetterA, DoubleFlat())
 	BFLAT2 = NewName(LetterB, DoubleFlat())
 )
+
+func GetChromaticNamesSharp() []Name {
+	return []Name{C, CSHARP, D, DSHARP, E, F, FSHARP, G, GSHARP, A, ASHARP, B}
+}
+
+func GetChromaticNamesFlat() []Name {
+	return []Name{C, DFLAT, D, EFLAT, E, F, GFLAT, G, AFLAT, A, BFLAT, B}
+}

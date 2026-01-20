@@ -18,7 +18,7 @@ import (
 // become unusable.
 //
 // Quarter-comma meantone ratios (for 12-tone system):
-// The fifth ratio is 5^(1/4) ≈ 1.495349 (vs 1.5 for pure)
+// The fifth ratio is 5^(1/4) ≈ 1.495349 (vs 1.5 for pure).
 type Meantone struct{}
 
 // NewMeantone creates a new quarter-comma meantone temperament instance.
@@ -39,8 +39,8 @@ var meantoneRatios = []float64{
 	math.Pow(5, 0.25),                      // 7: Perfect 5th (tempered)
 	8.0 / 5.0,                              // 8: Minor 6th (pure)
 	math.Pow(5, 0.5) * math.Pow(5, 0.25) / 2.0, // 9: Major 6th
-	4.0 * math.Pow(5, 0.25) / 5.0,          // 10: Minor 7th
-	5.0 * math.Pow(5, 0.25) / 4.0,          // 11: Major 7th
+	4.0 * math.Pow(5, 0.25) / 5.0,              // 10: Minor 7th
+	5.0 * math.Pow(5, 0.25) / 4.0,              // 11: Major 7th
 }
 
 // Frequency calculates the frequency using quarter-comma meantone temperament.

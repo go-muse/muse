@@ -37,7 +37,7 @@ func ExampleNote() {
 }
 
 // Create a note and set its octave.
-func ExampleNote_SetOctave() {
+func ExampleNote_WithOctave() {
 	// Create octave #4 (First Octave)
 	oct, err := octave.NewByNumber(octave.Number4)
 	if err != nil {
@@ -55,7 +55,7 @@ func ExampleNote_SetOctave() {
 }
 
 // Setting and getting relative duration.
-func ExampleNote_SetValue() {
+func ExampleNote_WithValue() {
 	// Half note duration
 	dur := duration.NewRelative(duration.NameHalf)
 
@@ -79,7 +79,7 @@ func ExampleNote_Value() {
 }
 
 // Setting and getting absolute (custom) duration.
-func ExampleNote_SetDuration() {
+func ExampleNote_WithDuration() {
 	// Create note and set custom duration
 	n := note.MustNewWithOctave(note.C, octave.Number3).WithDuration(time.Second)
 

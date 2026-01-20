@@ -13,10 +13,6 @@ const (
 	maxMIDINumber = uint8(127)
 )
 
-// chromaticNames contains the 12 chromatic note names starting from C.
-// Used for converting MIDI numbers to note names.
-var chromaticNames = []Name{C, CSHARP, D, DSHARP, E, F, FSHARP, G, GSHARP, A, ASHARP, B}
-
 // MIDINumber returns note number coded by unsigned integer in range [0; 127] according to RFC 6295.
 func (n Note) MIDINumber() uint8 {
 	if !n.octave.IsSet() {
@@ -59,7 +55,7 @@ func NewNoteFromMIDINumber(midiNumber uint8) (Note, error) {
 		return Note{}, fmt.Errorf("midi number: '%d'. must be in [0; 127]: %w", midiNumber, ErrMIDINumberUnknown)
 	}
 
-	name := chromaticNames[midiNumber%uint8(halftone.HalfTonesInOctave)]
+	name := GetChromaticNamesSharp()[midiNumber%uint8(halftone.HalfTonesInOctave)]
 	octaveNumber := int8(midiNumber/uint8(halftone.HalfTonesInOctave)) - 1
 
 	oct, err := octave.NewByNumber(octave.Number(octaveNumber))

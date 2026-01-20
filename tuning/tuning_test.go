@@ -208,9 +208,9 @@ func TestTuning_WithToneSystem(t *testing.T) {
 
 func TestTuning_Frequency_DifferentReferences(t *testing.T) {
 	tests := []struct {
-		name    string
-		tuning  Tuning
-		wantA4  float64
+		name   string
+		tuning Tuning
+		wantA4 float64
 	}{
 		{"Standard A440", Standard12TET(), 440.0},
 		{"Baroque A415", Baroque12TET(), 415.0},

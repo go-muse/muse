@@ -417,6 +417,7 @@ func TestDegreeNode_sortByAbsoluteModalPositions(t *testing.T) {
 		for dn := range firstSortedNode.IterateOneRound(false) {
 			if isFirst {
 				isFirst = false
+
 				continue
 			}
 			if dn.NextExists() {

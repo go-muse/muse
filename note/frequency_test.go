@@ -267,7 +267,7 @@ func TestNote_Frequency_EnharmonicEquivalence(t *testing.T) {
 	}
 }
 
-// almostEqual checks if two floats are approximately equal within epsilon
+// almostEqual checks if two floats are approximately equal within epsilon.
 func almostEqual(a, b, epsilon float64) bool {
 	return math.Abs(a-b) <= epsilon
 }

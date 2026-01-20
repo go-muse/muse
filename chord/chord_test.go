@@ -25,7 +25,7 @@ func TestNewChord(t *testing.T) {
 			SetDots(2).
 			SetTuplet(tuplet.New(2, 3))
 
-		chord := NewChord(notes...).SetValue(dur)
+		chord := NewChord(notes...).WithValue(dur)
 
 		assert.Equal(t, len(notes), len(chord.notes), "expected %v notes, got %v", len(notes), len(chord.notes))
 		assert.Equal(t, dur, chord.Value(), "expected chord duration to be %v, got %v", dur, chord.Value())
@@ -46,7 +46,7 @@ func TestNewChord(t *testing.T) {
 		}
 
 		dur := duration.NewRelative(duration.NameWhole).SetDots(2).SetTuplet(tuplet.New(2, 3))
-		chord := NewChord(notes...).SetValue(dur)
+		chord := NewChord(notes...).WithValue(dur)
 
 		differentNotes := 3
 		assert.Len(t, chord.notes, differentNotes, "expected %v notes, got %v", differentNotes, len(chord.notes))
@@ -232,8 +232,8 @@ func TestChord_GetNotes(t *testing.T) {
 	})
 }
 
-func TestChord_SetDurationRel(t *testing.T) {
-	t.Run("Chord_SetDurationRel: set duration to the chord", func(t *testing.T) {
+func TestChord_WithDurationRel(t *testing.T) {
+	t.Run("Chord_WithDurationRel: set duration to the chord", func(t *testing.T) {
 		dur := duration.NewRelative(duration.NameHalf)
 		chord := &Chord{
 			notes: note.Notes{
@@ -245,7 +245,7 @@ func TestChord_SetDurationRel(t *testing.T) {
 		}
 
 		newDuration := duration.NewRelative(duration.NameWhole)
-		chord.SetValue(newDuration)
+		chord.WithValue(newDuration)
 		assert.Equal(t, newDuration, chord.Value(), "expected chord duration: %+v, actual chord duration: %+v", newDuration, chord.Value())
 
 		for _, chordNote := range chord.notes {
@@ -253,9 +253,9 @@ func TestChord_SetDurationRel(t *testing.T) {
 		}
 	})
 
-	t.Run("Chord_SetDurationRel: set duration to the nil chord", func(t *testing.T) {
+	t.Run("Chord_WithDurationRel: set duration to the nil chord", func(t *testing.T) {
 		var chord *Chord
-		assert.Nil(t, chord.SetValue(duration.NewRelative(duration.NameLong)))
+		assert.Nil(t, chord.WithValue(duration.NewRelative(duration.NameLong)))
 	})
 }
 
@@ -266,7 +266,7 @@ func TestChord_GetDuration(t *testing.T) {
 			note.C.NewNote().WithOctave(octave.MustNewByNumber(1)).WithValue(dur),
 			note.E.NewNote().WithOctave(octave.MustNewByNumber(2)).WithValue(dur),
 			note.G.NewNote().WithOctave(octave.MustNewByNumber(3)).WithValue(dur),
-		).SetValue(dur)
+		).WithValue(dur)
 
 		assert.Equal(t, dur, chord.Value(), " expected duration: %+v, actual: %+v", dur, chord.Value())
 	})
@@ -277,8 +277,8 @@ func TestChord_GetDuration(t *testing.T) {
 	})
 }
 
-func TestChord_SetDurationAbs(t *testing.T) {
-	t.Run("Chord_SetDurationAbs: set custom duration to the chord", func(t *testing.T) {
+func TestChord_WithDurationAbs(t *testing.T) {
+	t.Run("Chord_WithDurationAbs: set custom duration to the chord", func(t *testing.T) {
 		dur := duration.NewRelative(duration.NameHalf)
 		chord := &Chord{
 			notes: note.Notes{
@@ -290,7 +290,7 @@ func TestChord_SetDurationAbs(t *testing.T) {
 		}
 
 		customDuration := time.Second
-		chord.SetDuration(customDuration)
+		chord.WithDuration(customDuration)
 		assert.Equal(t, customDuration, chord.duration, "expected chord custom duration: %+v, actual chord custom duration: %+v", customDuration, chord.duration)
 
 		for _, chordNote := range chord.notes {
@@ -298,9 +298,9 @@ func TestChord_SetDurationAbs(t *testing.T) {
 		}
 	})
 
-	t.Run("Chord_SetDurationAbs: set custom duration to the nil chord", func(t *testing.T) {
+	t.Run("Chord_WithDurationAbs: set custom duration to the nil chord", func(t *testing.T) {
 		var chord *Chord
-		assert.Nil(t, chord.SetDuration(time.Second))
+		assert.Nil(t, chord.WithDuration(time.Second))
 	})
 }
 
@@ -311,10 +311,10 @@ func TestChord_DurationAbs(t *testing.T) {
 			note.C.NewNote().WithOctave(octave.MustNewByNumber(1)).WithValue(dur),
 			note.E.NewNote().WithOctave(octave.MustNewByNumber(2)).WithValue(dur),
 			note.G.NewNote().WithOctave(octave.MustNewByNumber(3)).WithValue(dur),
-		).SetValue(dur)
+		).WithValue(dur)
 
 		customDuration := time.Second
-		chord.SetDuration(customDuration)
+		chord.WithDuration(customDuration)
 
 		assert.Equal(t, customDuration, chord.Duration(), " expected custom duration: %d, actual custom duration: %d", customDuration, chord.Duration())
 	})
