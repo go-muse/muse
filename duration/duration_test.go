@@ -150,41 +150,32 @@ func TestDuration_GetTimeDuration(t *testing.T) {
 }
 
 func TestDuration_RemoveTuplet(t *testing.T) {
-	duration := &Relative{
+	duration := Relative{
 		name:   "",
 		dots:   0,
 		tuplet: tuplet.New(2, 3),
 	}
 
-	duration.RemoveTuplet()
+	duration = duration.RemoveTuplet()
 
-	assert.Nil(t, duration.Tuplet())
-
-	var duration2 *Relative
-	assert.Nil(t, duration2.Tuplet())
+	assert.Empty(t, duration.Tuplet())
 }
 
 func TestDuration_RemoveDot(t *testing.T) {
 	dots := uint8(3)
-	duration := &Relative{
+	duration := Relative{
 		dots: dots,
 	}
 
 	assert.Equal(t, dots-1, duration.RemoveDot().Dots())
-
-	var duration2 *Relative
-	assert.Zero(t, duration2.RemoveDot().Dots())
 }
 
 func TestDuration_RemoveDots(t *testing.T) {
-	duration := &Relative{
+	duration := Relative{
 		dots: 3,
 	}
 
 	assert.Zero(t, duration.RemoveDots().Dots())
-
-	var duration2 *Relative
-	assert.Zero(t, duration2.RemoveDots().Dots())
 }
 
 func TestDuration_GetPartOfBar(t *testing.T) {
@@ -280,11 +271,6 @@ func TestDuration_SetTuplet(t *testing.T) {
 			assert.Equal(t, testCase.tuplet, testCase.duration.SetTuplet(testCase.tuplet).tuplet)
 		}
 	})
-
-	t.Run("Duration_SetTuplet: negative cases", func(t *testing.T) {
-		var duration *Relative
-		assert.Nil(t, duration.SetTuplet(tuplet.New(2, 3)))
-	})
 }
 
 func TestDuration_SetTupletDuplet(t *testing.T) {
@@ -312,11 +298,6 @@ func TestDuration_SetTupletDuplet(t *testing.T) {
 		for _, testCase := range testCases {
 			assert.Equal(t, tuplet.New(2, 3), testCase.duration.SetTupletDuplet().tuplet)
 		}
-	})
-
-	t.Run("SetTupletDuplet: negative cases", func(t *testing.T) {
-		var duration *Relative
-		assert.Nil(t, duration.SetTupletDuplet())
 	})
 }
 

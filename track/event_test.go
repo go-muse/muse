@@ -29,10 +29,7 @@ func TestEvent_Note(t *testing.T) {
 	assert.Equal(t, n, event.Note(), "they should be equal")
 
 	event = &Event{}
-	assert.Nil(t, event.Note(), "it should be nil")
-
-	event = nil
-	assert.Nil(t, event.Note(), "it should be nil")
+	assert.Empty(t, event.Note(), "it should be empty")
 }
 
 func TestEvent_SetNote(t *testing.T) {

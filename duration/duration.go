@@ -94,13 +94,13 @@ func (dr Relative) RemoveTuplet() Relative {
 
 // SetTupletDuplet sets the duplet as tuplet for the duration and returns the duration.
 func (dr Relative) SetTupletDuplet() Relative {
-	dr.tuplet.SetDuplet()
+	dr.tuplet = dr.tuplet.SetDuplet()
 	return dr
 }
 
 // SetTupletTriplet sets the triplet as tuplet for the duration and returns the duration.
 func (dr Relative) SetTupletTriplet() Relative {
-	dr.tuplet.SetTriplet()
+	dr.tuplet = dr.tuplet.SetTriplet()
 	return dr
 }
 
