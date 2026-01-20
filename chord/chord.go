@@ -44,8 +44,8 @@ func (c *Chord) AddNote(n note.Note) *Chord {
 		return c
 	}
 
-	n.WithDuration(c.duration)
-	n.WithValue(c.value)
+	n = n.WithDuration(c.duration)
+	n = n.WithValue(c.value)
 
 	for _, chordNote := range c.notes {
 		if chordNote.Equal(n) {
@@ -72,8 +72,8 @@ func (c *Chord) AddNotes(notes ...note.Note) *Chord {
 			}
 		}
 
-		note.WithDuration(c.duration)
-		note.WithValue(c.value)
+		note = note.WithDuration(c.duration)
+		note = note.WithValue(c.value)
 		c.notes = append(c.notes, note)
 
 	NEXT:
@@ -102,7 +102,7 @@ func (c *Chord) SetDuration(d time.Duration) *Chord {
 	c.duration = d
 
 	for i := range c.notes {
-		c.notes[i].WithDuration(c.duration)
+		c.notes[i] = c.notes[i].WithDuration(c.duration)
 	}
 
 	return c
@@ -126,7 +126,7 @@ func (c *Chord) SetValue(dr duration.Relative) *Chord {
 	c.value = dr
 
 	for i := range c.notes {
-		c.notes[i].WithValue(c.value)
+		c.notes[i] = c.notes[i].WithValue(c.value)
 	}
 
 	return c

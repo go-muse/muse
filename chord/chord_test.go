@@ -81,7 +81,7 @@ func TestChord_String(t *testing.T) {
 func TestNewChordEmpty(t *testing.T) {
 	chord := NewChordEmpty()
 	assert.Empty(t, chord.notes, "expected %v notes, got %v", 0, len(chord.notes))
-	assert.Nil(t, chord.Value(), "expected chord duration to be nil, got %v", chord.Value())
+	assert.Empty(t, chord.Value(), "expected chord duration to be nil, got %v", chord.Value())
 }
 
 func TestChord_AddNote(t *testing.T) {
@@ -273,7 +273,7 @@ func TestChord_GetDuration(t *testing.T) {
 
 	t.Run("Chord_GetDurationRel: getting duration from the nil chord", func(t *testing.T) {
 		var chord *Chord
-		assert.Nil(t, chord.Value())
+		assert.Empty(t, chord.Value())
 	})
 }
 

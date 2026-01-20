@@ -33,8 +33,8 @@ func (e Event) Note() note.Note {
 	return e.note
 }
 
-// SetNote sets the note of the event and returns the event.
-func (e Event) SetNote(n note.Note) Event {
+// WithNote sets the note of the event and returns the event.
+func (e Event) WithNote(n note.Note) Event {
 	e.note = n
 	return e
 }
@@ -44,14 +44,14 @@ func (e Event) StartTime() time.Duration {
 	return e.startTime
 }
 
-// SetStartTime sets the start time of the event and returns the event.
-func (e Event) SetStartTime(startTime time.Duration) Event {
+// WithStartTime sets the start time of the event and returns the event.
+func (e Event) WithStartTime(startTime time.Duration) Event {
 	e.startTime = startTime
 	return e
 }
 
-// SetIsAbsolute sets the absolute flag of the event and returns the event.
-func (e Event) SetIsAbsolute(isAbsolute bool) Event {
+// WithIsAbsolute sets the absolute flag of the event and returns the event.
+func (e Event) WithIsAbsolute(isAbsolute bool) Event {
 	e.isAbsolute = isAbsolute
 	return e
 }

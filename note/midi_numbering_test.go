@@ -82,7 +82,7 @@ func TestNote_MIDINumber(t *testing.T) {
 	}
 }
 
-func TestNote_MIDINumber_NilOctave(t *testing.T) {
+func TestNote_MIDINumber_EmptyOctave(t *testing.T) {
 	// Note without octave should return 0
 	note := New(C)
 	if got := note.MIDINumber(); got != 0 {
