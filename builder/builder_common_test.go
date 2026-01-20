@@ -136,6 +136,6 @@ func Test_templateNotesCommon_getTemplateNote(t *testing.T) {
 	t.Run("getTemplateNotesCommon negative cases", func(t *testing.T) {
 		// impossible case
 		templateNotesInstance.templateNoteCommon = nil
-		assert.Nil(t, templateNotesInstance.getTemplateNote(note.C.MustMakeNote()))
+		assert.Nil(t, templateNotesInstance.getTemplateNote(note.C.NewNote()))
 	})
 }

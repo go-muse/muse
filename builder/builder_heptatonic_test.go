@@ -78,7 +78,7 @@ func Test_templateNotes7degree_getTemplateNote(t *testing.T) {
 
 	t.Run("getTemplateNotesHeptatonic positive cases", func(t *testing.T) {
 		testCases := note.GetNotesWithAlterations(
-			note.Notes{note.C.MustMakeNote(), note.D.MustMakeNote(), note.E.MustMakeNote(), note.F.MustMakeNote(), note.G.MustMakeNote(), note.A.MustMakeNote(), note.B.MustMakeNote()},
+			note.Notes{note.C.NewNote(), note.D.NewNote(), note.E.NewNote(), note.F.NewNote(), note.G.NewNote(), note.A.NewNote(), note.B.NewNote()},
 			2,
 		)
 		for i := range testCases {
